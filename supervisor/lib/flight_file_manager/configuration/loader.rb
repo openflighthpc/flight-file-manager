@@ -30,16 +30,16 @@
 module FlightFileManager
   class Configuration
     class Loader
-      def initialize(root, config_file)
+      def initialize(root, config_files)
         @root = root
-        @config_file = config_file
+        @config_files = Array(config_files)
       end
 
       def load
-        merged = defaults.merge(from_config_file).merge(from_env_vars)
+        merged = defaults.merge(from_config_files).merge(from_env_vars)
         Configuration.new.tap do |config|
           merged.each do |key, value|
-            config.send("#{key}=", transform(key, value))
+            config.send("#{key}=", value)
           end
         end
       rescue => e
@@ -58,11 +58,12 @@ module FlightFileManager
           .deep_transform_keys(&:to_s)
       end
 
-      def from_config_file
-        if @config_file.exist?
-          ( YAML.load_file(@config_file) || {} ).deep_transform_keys(&:to_s)
-        else
-          raise "Could not load configuration. No such file - #{@config_file}"
+      def from_config_files
+        @config_files.reduce({}) do |accum, config_file|
+          if config_file.exist?
+            config = ( YAML.load_file(config_file) || {} ).deep_transform_keys(&:to_s)
+          end
+          accum.merge(config || {})
         end
       rescue ::Psych::SyntaxError => e
         raise "YAML syntax error occurred while parsing #{@config_file}. " \
@@ -73,23 +74,12 @@ module FlightFileManager
       def from_env_vars
         Configuration::ATTRIBUTES.reduce({}) do |accum, attr|
           if attr[:env_var]
-            env_var = "FLIGHT_FILE_MANAGER_#{attr[:name].upcase}"
+            env_var = "FLIGHT_SCHEDULER_#{attr[:name].upcase}"
             unless ENV[env_var].nil?
               accum[attr[:name]] = ENV[env_var]
             end
           end
           accum
-        end.deep_transform_keys(&:to_s)
-      end
-
-      def transform(key, value)
-        config_definition = Configuration::ATTRIBUTES.detect do |h|
-          h[:name].to_s == key.to_s
-        end
-        if config_definition[:transform]
-          config_definition[:transform].call(value)
-        else
-          value
         end
       end
     end
