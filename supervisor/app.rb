@@ -81,48 +81,6 @@ before do
   self.current_user = username
 end
 
-# Checks the request Content-Type is application/json where appropriate
-# Saves the input JSON as if it was a form input
-#
-# Adapted from:
-# https://raw.githubusercontent.com/rack/rack-contrib/master/lib/rack/contrib/post_body_content_type_parser.rb
-# The MIT License (MIT)
-# Copyright (c) 2008 The Committers
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-# THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-before do
-  next if ['GET', 'HEAD', 'OPTIONS'].include? env['REQUEST_METHOD']
-  if env['CONTENT_TYPE'] == 'application/json'
-    begin
-      io = env['rack.input']
-      body = io.read
-      io.rewind
-      json = body.empty? ? {} : JSON.parse(body, create_additions: false)
-      raise BadRequest.new(detail: 'the body must be a JSON hash') unless json.is_a?(Hash)
-      json.each { |k, v| params[k] ||= v }
-    rescue JSON::ParserError
-      raise BadRequest.new(detail: 'failed to parse body as JSON')
-    end
-  else
-    raise UnsupportedMediaType
-  end
-end
-
 get '/ping' do
   status 200
   { status: 'OK' }.to_json
@@ -130,11 +88,11 @@ end
 
 post '/cloudcmd' do
   payload = {
+    username: current_user,
+    password: SecureRandom.alphanumeric(20),
     port: 8080, # Make me dynamic/ configurable
-    password: SecureRandom.alphanumeric(20)
   }
   config = {
-    username: current_user,
     prefix: 'files',
     root: '/', # Make me the user's home directory
     oneFilePanel: true,
@@ -154,6 +112,6 @@ post '/cloudcmd' do
   # TODO: Create the cloudcmd session
 
   # Return the payload
-  payload.to_json
+  [201, payload.to_json]
 end
 
