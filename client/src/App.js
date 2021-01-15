@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router } from "react-router-dom";
+
+import * as Toast from './ToastContext';
+import AppLayout from './AppLayout';
+import FetchProvider from './FetchProvider';
+import { Provider as ConfigProvider } from './ConfigContext';
+import { Provider as CurrentUserProvider } from './CurrentUserContext';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ConfigProvider>
+        <Router basename={process.env.REACT_APP_MOUNT_PATH}>
+          <CurrentUserProvider>
+            <Toast.Provider>
+              <Toast.Container />
+              <FetchProvider>
+                <AppLayout />
+              </FetchProvider>
+            </Toast.Provider>
+          </CurrentUserProvider>
+        </Router>
+      </ConfigProvider>
     </div>
   );
 }
