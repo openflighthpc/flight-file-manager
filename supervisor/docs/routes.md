@@ -20,18 +20,19 @@ HTTP/2 200 OK
 { "status": "OK" }
 ```
 
-## POST - /cloudcmd
+## POST - /cloudcmds
 
 Create a new cloudcmd session. Return the `port` the cloudcmd server was started on and the `username`/`password` to access it.
 
 ```
-POST /cloudcmd
+POST /cloudcmds
 Authorization: Basic <base64 username:password>
 Accepts: application/json
 
 HTTP/2 201 CREATE
 {
   "port": <integer>,
+  "username": <string>,
   "password": <string>
 }
 ```
