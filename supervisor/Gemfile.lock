@@ -35,6 +35,7 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (13.0.3)
+    rpam-ruby19 (1.2.1)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -73,6 +74,7 @@ DEPENDENCIES
   puma
   rack-test
   rake
+  rpam-ruby19
   rspec
   rspec-collection_matchers
   sinatra

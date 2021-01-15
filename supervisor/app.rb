@@ -36,7 +36,7 @@ configure do
 end
 
 not_found do
-  { errors: [NotFound.new] }.to_json
+  { errors: ['Not Found'] }.to_json
 end
 
 # Converts HttpError objects into their JSON representation. Each object already
@@ -45,13 +45,15 @@ error(HttpError) do
   e = env['sinatra.error']
   level = (e.is_a?(UnexpectedError) ? :error : :debug)
   LOGGER.send level, e.full_message
+  status e.http_status
   { errors: [e] }.to_json
 end
 
 # Catches all other errors and returns a generic Internal Server Error
 error(StandardError) do
   LOGGER.error env['sinatra.error'].full_message
-  { errors: [UnexpectedError.new] }.to_json
+  status 500
+  { errors: ['An unexpected error has occurred!'] }.to_json
 end
 
 # Sets the response headers
@@ -86,7 +88,7 @@ get '/ping' do
   { status: 'OK' }.to_json
 end
 
-post '/cloudcmd' do
+post '/cloudcmds' do
   payload = {
     username: current_user,
     password: SecureRandom.alphanumeric(20),
@@ -112,6 +114,7 @@ post '/cloudcmd' do
   # TODO: Create the cloudcmd session
 
   # Return the payload
-  [201, payload.to_json]
+  status 201
+  payload.to_json
 end
 
