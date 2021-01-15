@@ -31,6 +31,9 @@ module FlightFileManager
   class Configuration
     autoload(:Loader, 'flight_file_manager/configuration/loader')
 
+    PRODUCTION_PATH = 'etc/flight-file-manager.yaml'
+    PATH_GENERATOR = ->(env) { "etc/flight-file-manager.#{env}.yaml" }
+
     class ConfigError < StandardError; end
 
     ATTRIBUTES = [
@@ -63,7 +66,15 @@ module FlightFileManager
     attr_accessor(*ATTRIBUTES.map { |a| a[:name] })
 
     def self.load(root)
-      Loader.new(root, root.join('etc/flight-file-manager.yaml')).load
+      if ENV['RACK_ENV'] == 'production'
+        Loader.new(root, root.join(PRODUCTION_PATH)).load
+      else
+        paths = [
+          root.join(PATH_GENERATOR.call(ENV['RACK_ENV'])),
+          root.join(PATH_GENERATOR.call("#{ENV['RACK_ENV']}.local")),
+        ]
+        Loader.new(root, paths).load
+      end
     end
 
     def log_level=(level)
