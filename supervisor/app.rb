@@ -89,6 +89,20 @@ get '/ping' do
 end
 
 post '/cloudcmds' do
+  config_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
+  if File.exists? config_path
+    # TODO: Ensure the cloudcmd process is still running!
+    # If not, continue with the create request
+    # XXX: Should the password be reissued to authenticated uses? Or should they be forced
+    # to recreate the session
+    payload = JSON.load(File.read(config_path))
+                  .slice('username', 'password', 'port')
+                  .merge(errors: ['A cloudcmd session already exists!'])
+                  .to_json
+    status 409
+    halt payload
+  end
+
   payload = {
     username: current_user,
     password: SecureRandom.alphanumeric(20),
@@ -107,7 +121,6 @@ post '/cloudcmds' do
   }
 
   # TODO: Handle existing "sessions"
-  config_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
   FileUtils.mkdir_p File.dirname(config_path)
   File.write(config_path, config.to_json)
 

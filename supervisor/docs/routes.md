@@ -24,6 +24,8 @@ HTTP/2 200 OK
 
 Create a new cloudcmd session. Return the `port` the cloudcmd server was started on and the `username`/`password` to access it.
 
+A new `cloudcmd` session will not be created if one already exists for the user. Instead a `409 - Conflict` is returned with the existing details.
+
 ```
 POST /cloudcmds
 Authorization: Basic <base64 username:password>
@@ -34,6 +36,16 @@ HTTP/2 201 CREATE
   "port": <integer>,
   "username": <string>,
   "password": <string>
+}
+
+HTTP/2 409 CONFLICT
+{
+  "port": <integer>,
+  "username": <string>,
+  "password": <string>,
+  "errors": [
+    <conflict-message>
+  ]
 }
 ```
 
