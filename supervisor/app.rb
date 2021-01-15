@@ -27,6 +27,7 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
+require 'securerandom'
 require_relative 'app/errors'
 
 configure do
@@ -125,5 +126,34 @@ end
 get '/ping' do
   status 200
   { status: 'OK' }.to_json
+end
+
+post '/cloudcmd' do
+  payload = {
+    port: 8080, # Make me dynamic/ configurable
+    password: SecureRandom.alphanumeric(20)
+  }
+  config = {
+    username: current_user,
+    prefix: 'files',
+    root: '/', # Make me the user's home directory
+    oneFilePanel: true,
+    keysPanel: false,
+    console: false,
+    terminal: false,
+    configDialog: false,
+    contact: false,
+    **payload
+  }
+
+  # TODO: Handle existing "sessions"
+  config_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
+  FileUtils.mkdir_p File.dirname(config_path)
+  File.write(config_path, config.to_json)
+
+  # TODO: Create the cloudcmd session
+
+  # Return the payload
+  payload.to_json
 end
 

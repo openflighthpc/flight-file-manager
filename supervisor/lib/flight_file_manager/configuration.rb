@@ -50,6 +50,11 @@ module FlightFileManager
         default: 'login'
       },
       {
+        name: 'cache_dir',
+        env_var: true,
+        default: ->(root) { root.join('var/cache') }
+      },
+      {
         name: 'log_level',
         env_var: true,
         default: ->(_) { ENV['RACK_ENV'] == 'development' ? 'debug' : 'info' }
