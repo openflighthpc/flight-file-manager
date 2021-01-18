@@ -110,7 +110,7 @@ post '/cloudcmds' do
     port: 8080, # Make me dynamic/ configurable
   }
   config = {
-    prefix: 'files',
+    prefix: '/files',
     root: passwd.dir,
     oneFilePanel: true,
     keysPanel: false,
@@ -131,6 +131,10 @@ post '/cloudcmds' do
                          .gsub('$config_path', config_path)
   FlightFileManager.logger.info("Executing Command: #{cmd}")
 
+  # Create the log directory
+  log_path = File.join(FlightFileManager.config.log_dir, 'cloudcmd', "#{current_user}.log")
+  FileUtils.mkdir_p File.dirname(log_path)
+
   # XXX: Stash the PID and use it for persistent sessions
   Kernel.fork do
     # XXX: Should SIGTERM be trapped here?
@@ -149,7 +153,7 @@ post '/cloudcmds' do
                 unsetenv_others: true,
                 close_others: true,
                 chdir: passwd.dir,
-                [:out, :err] => '/dev/null')
+                [:out, :err] => log_path)
   end
 
   # Return the payload
