@@ -16,17 +16,13 @@ function UnauthenticatedDashboard() {
       </img>
 
       <p>
-        The Flight Desktop Access Service allows you to access interactive
-        GUI (graphical user interface) desktop sessions running on your
-        cluster from the comfort of your browser.
-        Powered by the Flight Desktop tool, part of the OpenFlightHPC user
-        suite, this app allows you to launch, manage and connect to GUI
-        desktop sessions that operate within your OpenFlightHPC environment.
+        The Flight File Manager Service allows you to manage your files on
+        your cluster in a familiar file browser GUI (graphical user interface)
+        from within the comfort of your browser.
       </p>
 
       <p>
-        To start interacting with desktop sessions and gain access to your
-        HPC environment sign in below.
+        To start managing your files with Flight File Manager sign in below.
       </p>
 
       <div className="card-deck">

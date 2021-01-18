@@ -4,6 +4,7 @@ import { CSSTransition } from "react-transition-group";
 
 import AuthenticatedRoute from './AuthenticatedRoute';
 import ErrorBoundary from './ErrorBoundary';
+import './AnimatedRouter.css';
 
 function AnimatedRouter({ exact, routes, sideNav }) {
   const SideNav = sideNav;

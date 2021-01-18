@@ -7,7 +7,7 @@ import UnconfiguredDashboard from './UnconfiguredDashboard';
 
 const routes = [
   {
-    path: '/files',
+    path: '/browse',
     name: 'XXX Name needed',
     Component: <div>XXX component needed</div>,
     authenticated: true,

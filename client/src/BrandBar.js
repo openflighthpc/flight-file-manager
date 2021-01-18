@@ -55,17 +55,9 @@ function NavItems() {
     <li className="nav-item">
       <Link
         className="nav-link nav-menu-button"
-        to="/sessions"
+        to="/files"
       >
-        My sessions
-      </Link>
-    </li>
-    <li className="nav-item">
-      <Link
-        className="nav-link nav-menu-button"
-        to="/sessions/new"
-      >
-        Launch new session
+        Manage your files
       </Link>
     </li>
     </>

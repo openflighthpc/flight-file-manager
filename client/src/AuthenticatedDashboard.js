@@ -18,24 +18,20 @@ function AuthenticatedDashboard() {
         <div className="card">
           <div className="card-body fa-background fa-background-desktop">
             <h5 className="card-title text-center">
-              View your running desktop sessions
+              Manage your compute environment files
             </h5>
             <p className="card-text">
-              You can view your running desktops session by clicking on the
+              Manage the files on your compute environment by clicking on the
               button below.
-            </p>
-            <p className="card-text">
-              You will be able to establish a connection or shutdown a desktop
-              session.
             </p>
           </div>
           <CardFooter>
             <Link
               className="btn btn-success btn-block"
-              to="/sessions"
+              to="/browse"
             >
-              <i className="fa fa-desktop mr-1"></i>
-              <span>View sessions</span>
+              <i className="fa fa-file mr-1"></i>
+              <span>Manage files</span>
             </Link>
           </CardFooter>
         </div>
@@ -43,6 +39,5 @@ function AuthenticatedDashboard() {
     </div>
   );
 }
-
 
 export default AuthenticatedDashboard;
