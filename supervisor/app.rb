@@ -101,7 +101,7 @@ helpers do
         Process.getpgid(pid)
         true
       rescue Errno::ESRCH
-        false
+        return false
       end
     elsif File.exists?(pid_path)
       status 500
@@ -198,6 +198,17 @@ post '/cloudcmd' do
   end
   FileUtils.mkdir_p File.dirname(pid_path)
   File.write pid_path, pid
+  FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' (PID: #{pid})"
+
+  # Do not wait for cloudcmd to exit, also ensures it is still running
+  begin
+    Process.detach(pid)
+  rescue Errno::ESRCH
+    status 500
+    halt({
+      errors: ['Failed to create cloudcmd process']
+    })
+  end
 
   # Return the payload
   status 201
