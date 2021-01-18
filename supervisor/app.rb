@@ -133,22 +133,32 @@ end
 
 post '/cloudcmd' do
   config_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
+  port_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.port')
   if running?
-    # XXX: Should the password be reissued to authenticated uses? Or should they be forced
-    # to recreate the session
-    payload = JSON.load(File.read(config_path))
-                  .slice('username', 'password', 'port')
-                  .merge(errors: ['A cloudcmd session already exists!'])
-                  .to_json
-    status 409
-    halt payload
+    if File.exists?(port_path)
+      # XXX: Should the password be reissued to authenticated uses? Or should they be forced
+      # to recreate the session
+      payload = JSON.load(File.read(config_path))
+                    .slice('username', 'password')
+                    .merge(
+                      errors: ['A cloudcmd session already exists!'],
+                      port: File.read(port_path)
+                    )
+                    .to_json
+      status 409
+      halt payload
+    else
+      status 500
+      halt({
+        errors: ["The cloudcmd session for '#{current_user}' is missing its port! (PID: #{read_pid})"]
+      }.to_json)
+    end
   end
 
   passwd = Etc.getpwnam(current_user)
   payload = {
     username: current_user,
-    password: SecureRandom.alphanumeric(20),
-    port: 8080, # Make me dynamic/ configurable
+    password: SecureRandom.alphanumeric(20)
   }
   config = {
     prefix: '/files',
@@ -162,14 +172,16 @@ post '/cloudcmd' do
     **payload
   }
 
-  # TODO: Handle existing "sessions"
+  # Update the config and remove port file
   FileUtils.mkdir_p File.dirname(config_path)
   File.write(config_path, config.to_json)
+  FileUtils.rm_f port_path
 
   # Generate the command
   cmd = FlightFileManager.config
                          .cloudcmd_command
                          .gsub('$config_path', config_path)
+                         .gsub('$port_path', port_path)
   FlightFileManager.logger.info("Executing Command: #{cmd}")
 
   # Create the log directory
@@ -200,6 +212,13 @@ post '/cloudcmd' do
   File.write pid_path, pid
   FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' (PID: #{pid})"
 
+  # Wait until the port is written or the daemon exists
+  loop do
+    break if Process.wait2(pid, Process::WNOHANG)
+    break if File.exists?(port_path)
+    sleep 1
+  end
+
   # Do not wait for cloudcmd to exit, also ensures it is still running
   begin
     Process.detach(pid)
@@ -212,7 +231,7 @@ post '/cloudcmd' do
 
   # Return the payload
   status 201
-  payload.to_json
+  payload.merge(port: File.read(port_path)).to_json
 end
 
 delete '/cloudcmd' do

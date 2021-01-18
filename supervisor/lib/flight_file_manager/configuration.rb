@@ -70,7 +70,10 @@ module FlightFileManager
       {
         name: 'cloudcmd_command',
         env_var: true,
-        default: 'cloudcmd -c $config_path'
+        default: ->(root) do
+          path = root.join('libexec/cloudcmd.sh')
+          "#{path} $config_path $port_path"
+        end
       }
     ]
     attr_accessor(*ATTRIBUTES.map { |a| a[:name] })
