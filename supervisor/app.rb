@@ -88,7 +88,7 @@ get '/ping' do
   { status: 'OK' }.to_json
 end
 
-post '/cloudcmds' do
+post '/cloudcmd' do
   config_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
   if File.exists? config_path
     # TODO: Ensure the cloudcmd process is still running!
