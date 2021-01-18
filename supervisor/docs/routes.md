@@ -49,3 +49,15 @@ HTTP/2 409 CONFLICT
 }
 ```
 
+## DELETE - /cloudcmd
+
+Destroy an existing cloudcmd session. It SHOULD return `201 - ACCEPTED` or `204 - NO CONTENT` under normal operations. It SHALL return `204 - NO CONTENT` if the session is successfully terminated. It SHOULD return `204 - NO CONTENT` if there is no actively running session. It SHALL return `201 - ACCEPTED` when there is a pre-existing `cloudcmd` session which SHOULD exit after the response has been issued.
+
+```
+DELETE /cloudcmd
+Authorization: Basic <base64 username:password>
+Accepts: application/json
+
+HTTP/2 204 NO CONTENT
+HTTP/2 202 ACCEPTED
+```
