@@ -61,6 +61,11 @@ module FlightFileManager
         name: 'log_level',
         env_var: true,
         default: ->(_) { ENV['RACK_ENV'] == 'development' ? 'debug' : 'info' }
+      },
+      {
+        name: 'cloudcmd_command',
+        env_var: true,
+        default: 'cloudcmd -c $config_path'
       }
     ]
     attr_accessor(*ATTRIBUTES.map { |a| a[:name] })
