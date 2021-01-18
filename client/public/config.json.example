@@ -18,19 +18,8 @@
   # tranformed into the absolute URL `${apiRootUrl}/sessions`.
   "apiRootUrl": "https://gateway1.my.custer/files/api",
 
-  # The path prefix used for websocket connections.
-  "websocketPathPrefix": "/ws",
-
-  # The IP that the websocket proxy uses to connect to the websockify process.
-  #
-  # If unset, the IP address reported by the session will be used.
-  #
-  # If the websocket proxy and the websockify process are running on the same
-  # machine, you probably want to set this to "127.0.0.1".  If they are not,
-  # you probably want to not have this set.
-  "websocketPathIp": "127.0.0.1"
-
-
+  # The root URL for the cloudcmd server.
+  "filesApiRootUrl": "https://gateway1.my.custer/files/api/files",
 
 
   ### Development only settings ###

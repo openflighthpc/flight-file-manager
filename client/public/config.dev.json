@@ -2,7 +2,6 @@
   "clusterName": "File Manager Test",
   "clusterDescription": "A description of this cluster.",
   "clusterLogo": "https://s3.eu-west-2.amazonaws.com/alces-flight-center/logos/Alces_flight_logo_horiz.png",
-  "apiRootUrl": "https://ben1-hmpmy4.duckdns.org/desktop/api",
-  "websocketPathPrefix": "/ws",
-  "websocketPathIp": "127.0.0.1"
+  "apiRootUrl": "http://localhost:3000/files/api",
+  "filesApiRootUrl": "http://localhost:3000/files/api/files"
 }

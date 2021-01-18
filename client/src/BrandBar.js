@@ -55,7 +55,7 @@ function NavItems() {
     <li className="nav-item">
       <Link
         className="nav-link nav-menu-button"
-        to="/files"
+        to="/browse"
       >
         Manage your files
       </Link>
