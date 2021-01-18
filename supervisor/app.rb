@@ -103,6 +103,7 @@ post '/cloudcmds' do
     halt payload
   end
 
+  passwd = Etc.getpwnam(current_user)
   payload = {
     username: current_user,
     password: SecureRandom.alphanumeric(20),
@@ -110,7 +111,7 @@ post '/cloudcmds' do
   }
   config = {
     prefix: 'files',
-    root: '/', # Make me the user's home directory
+    root: passwd.dir,
     oneFilePanel: true,
     keysPanel: false,
     console: false,
@@ -124,7 +125,32 @@ post '/cloudcmds' do
   FileUtils.mkdir_p File.dirname(config_path)
   File.write(config_path, config.to_json)
 
-  # TODO: Create the cloudcmd session
+  # Generate the command
+  cmd = FlightFileManager.config
+                         .cloudcmd_command
+                         .gsub('$config_path', config_path)
+  FlightFileManager.logger.info("Executing Command: #{cmd}")
+
+  # XXX: Stash the PID and use it for persistent sessions
+  Kernel.fork do
+    # XXX: Should SIGTERM be trapped here?
+    # What should happen to the child processes when the server exists?
+    # XXX: Remove the config file path on exit
+
+    # Become the session leader as the correct user
+    Process::Sys.setgid(passwd.gid)
+    Process::Sys.setuid(passwd.uid)
+    Process.setsid
+
+    # Exec into the cloud command
+    # XXX: Where should this log?
+    Kernel.exec({},
+                *cmd.split(' '),
+                unsetenv_others: true,
+                close_others: true,
+                chdir: passwd.dir,
+                [:out, :err] => '/dev/null')
+  end
 
   # Return the payload
   status 201
