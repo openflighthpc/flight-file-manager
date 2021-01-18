@@ -20,14 +20,14 @@ HTTP/2 200 OK
 { "status": "OK" }
 ```
 
-## POST - /cloudcmds
+## POST - /cloudcmd
 
 Create a new cloudcmd session. Return the `port` the cloudcmd server was started on and the `username`/`password` to access it.
 
 A new `cloudcmd` session will not be created if one already exists for the user. Instead a `409 - Conflict` is returned with the existing details.
 
 ```
-POST /cloudcmds
+POST /cloudcmd
 Authorization: Basic <base64 username:password>
 Accepts: application/json
 
