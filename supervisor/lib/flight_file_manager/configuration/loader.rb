@@ -74,7 +74,7 @@ module FlightFileManager
       def from_env_vars
         Configuration::ATTRIBUTES.reduce({}) do |accum, attr|
           if attr[:env_var]
-            env_var = "FLIGHT_SCHEDULER_#{attr[:name].upcase}"
+            env_var = "FLIGHT_FILE_MANAGER_#{attr[:name].upcase}"
             unless ENV[env_var].nil?
               accum[attr[:name]] = ENV[env_var]
             end
