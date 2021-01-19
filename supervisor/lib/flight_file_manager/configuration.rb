@@ -40,7 +40,7 @@ module FlightFileManager
       {
         name: 'port',
         env_var: true,
-        default: 6308
+        default: 920
       },
       {
         name: 'pidfile',
@@ -65,7 +65,7 @@ module FlightFileManager
       {
         name: 'log_level',
         env_var: true,
-        default: ->(_) { ENV['RACK_ENV'] == 'development' ? 'debug' : 'info' }
+        default: 'info'
       },
       {
         name: 'cloudcmd_command',
