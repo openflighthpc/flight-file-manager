@@ -163,6 +163,7 @@ post '/cloudcmd' do
   config = {
     prefix: '/files',
     root: passwd.dir,
+    auth: true,
     oneFilePanel: true,
     keysPanel: false,
     console: false,
