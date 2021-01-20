@@ -1,52 +1,44 @@
-import { useState } from 'react';
+import { useRef } from 'react';
 import classNames from 'classnames';
 
 import ErrorBoundary, { DefaultErrorMessage } from './ErrorBoundary';
-import FileManager from './FileManager';
 import FullscreenButton from './FullscreenButton';
 import Spinner from './Spinner';
 import styles from './FileManager.module.css';
+import useFileManager from './useFileManager';
 
 function FileManagerPage() {
-  const [ loaded, setLoaded ] = useState(false);
-  const [ error, setError ] = useState(false);
-
-  let loadingMessage = null;
-  if (!loaded && !error) {
-    loadingMessage = <Spinner text="Loading file manager..." />;
-  }
-  let errorMessage = null;
-  if (error) {
-    errorMessage = <DefaultErrorMessage />;
-  }
+  const iframeRef = useRef(null);
+  const { terminalState } = useFileManager(iframeRef);
 
   return (
-    <>
-    {loadingMessage}
-    {errorMessage}
-
     <Layout
-      className={classNames({ 'd-none': !loaded, 'd-some': true})}
       onZenChange={ () => {} }
+      terminalState={terminalState}
     >
       <ErrorBoundary>
         <div className={`fullscreen-content ${styles.FileManagerWrapper}`} >
-          <FileManager
-            onLoad={() => setLoaded(true) }
-            onError={() => setError(true) }
+          <iframe
+            ref={iframeRef}
+            className={styles.FileManager}
+            title="OpenFlight File Manager"
           />
         </div>
       </ErrorBoundary>
     </Layout>
-    </>
   );
 }
 
-function Layout({
-  children,
-  className,
-  onZenChange,
-}) {
+function Layout({ children, className, onZenChange, terminalState }) {
+  let loadingMessage = null;
+  if (terminalState === 'initialising') {
+    loadingMessage = <Spinner text="Loading file manager..." />;
+  }
+  let errorMessage = null;
+  if (terminalState === 'failed') {
+    errorMessage = <DefaultErrorMessage />;
+  }
+
   return (
     <div className={classNames("overflow-auto", className)}>
       <div className="row no-gutters">
@@ -67,6 +59,8 @@ function Layout({
               </div>
             </div>
             <div className="card-body p-0">
+              {loadingMessage}
+              {errorMessage}
               {children}
             </div>
           </div>
