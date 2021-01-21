@@ -222,7 +222,9 @@ post '/cloudcmd' do
   timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
   loop do
     break if Process.wait2(pid, Process::WNOHANG)
-    break if File.exists?(port_path)
+    if File.exists?(port_path)
+      break unless File.read(port_path).empty?
+    end
     sleep 1
     if (now = Process.clock_gettime(Process::CLOCK_MONOTONIC)) > timeout
       timeout = now + FlightFileManager.config.launch_timeout
