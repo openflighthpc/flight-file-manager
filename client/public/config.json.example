@@ -1,0 +1,34 @@
+
+{
+  # The human-friendly name of the cluster that we are connecting to.
+  "clusterName": "This deployment needs configuring",
+
+  # The human-friendly description of the cluster that we are connecting to.
+  # This could be used to describe its purpose or the features that it
+  # supports.
+  "clusterDescription": "",
+
+  # The URL of a logo for the cluster if any.
+  "clusterLogo": "",
+
+  # The root URL for the REST API server.
+  #
+  # The relative paths for the REST API server are added to this URL.  To load the
+  # sessions data a request is made to the relative URL `/sessions`, which is
+  # tranformed into the absolute URL `${apiRootUrl}/sessions`.
+  "apiRootUrl": "https://gateway1.my.custer/files/api",
+
+
+  ### Development only settings ###
+
+  #
+  # Setting that are useful only in development and testing.
+  #
+
+  # Settings for constructing the websocket proxy server URL.
+  #
+  # If unset the value will be determined from apiRootUrl above.  You probably
+  # want this to be unset.
+  #
+  #devOnlyWebsocketRootUrl: "ws://localhost:9090"
+}
