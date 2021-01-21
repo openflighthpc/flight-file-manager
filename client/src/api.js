@@ -57,7 +57,7 @@ function useAuthCheck() {
 
 export function useLaunchSession() {
   const request = useFetch(
-    "/start",
+    "/cloudcmd",
     {
       method: 'post',
       headers: {
