@@ -228,7 +228,7 @@ post '/cloudcmd' do
     sleep 1
     if (now = Process.clock_gettime(Process::CLOCK_MONOTONIC)) > timeout
       timeout = now + FlightFileManager.config.launch_timeout
-      Process.kill('SIGTERM', pid)
+      Process.kill(-Signal.list['TERM'], pid)
     end
   end
 
@@ -255,7 +255,7 @@ delete '/cloudcmd' do
   if pid
     begin
       FlightFileManager.logger.info "Shutting down '#{current_user}' cloudcmd server (PID: #{pid})"
-      Process.kill('SIGTERM', pid)
+      Process.kill(-Signal.list['TERM'], pid)
     rescue Errno::ESRCH
       # NOOP - Don't worry if it has already ended
     end
