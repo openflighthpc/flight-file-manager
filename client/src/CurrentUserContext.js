@@ -25,6 +25,7 @@ function Provider({ children }) {
       },
 
       signOut() {
+        window.dispatchEvent(new CustomEvent('signout'));
         setCurrentUser(null);
         doSetTempUser(null);
       },
