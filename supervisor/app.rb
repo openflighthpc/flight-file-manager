@@ -215,10 +215,15 @@ post '/cloudcmd' do
   FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' (PID: #{pid})"
 
   # Wait until the port is written or the daemon exists
+  timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
   loop do
     break if Process.wait2(pid, Process::WNOHANG)
     break if File.exists?(port_path)
     sleep 1
+    if (now = Process.clock_gettime(Process::CLOCK_MONOTONIC)) > timeout
+      timeout = now + FlightFileManager.config.launch_timeout
+      Process.kill('SIGTERM', pid)
+    end
   end
 
   # Do not wait for cloudcmd to exit, also ensures it is still running

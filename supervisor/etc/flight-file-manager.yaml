@@ -35,7 +35,6 @@
 #-------------------------------------------------------------------------------
 # PID File Path
 # The path to where the PID of the supervisor process should be stored
-# The environment variable FLIGHT_FILE_MANAGER_PIDFILE takes precedence
 #
 # The default is relative to the install directory. All overrides should use
 # absolute paths. The behaviour of overrides with relative paths is undefined.
@@ -72,6 +71,15 @@
 # interpreted as a literal string and should not be quoted.
 #-------------------------------------------------------------------------------
 # cloudcmd_command: /path/to/flight-file-manager/libexec/cloudcmd.sh $config_path $port_path
+
+#-------------------------------------------------------------------------------
+# Cloudcmd Launch Timeout
+# Specify how long the cloudcmd process has to write its port. The process will
+# be terminated if it does not return its port within this period.
+#
+# The time is given in seconds
+#-------------------------------------------------------------------------------
+# launch_timeout: 10
 
 #-------------------------------------------------------------------------------
 # Cache Directory

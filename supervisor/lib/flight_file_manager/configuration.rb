@@ -39,7 +39,7 @@ module FlightFileManager
     ATTRIBUTES = [
       {
         name: 'port',
-        env_var: true,
+        env_var: false,
         default: 920
       },
       {
@@ -74,6 +74,11 @@ module FlightFileManager
           path = root.join('libexec/cloudcmd.sh')
           "#{path} $config_path $port_path"
         end
+      },
+      {
+        name: 'launch_timeout',
+        env_var: false,
+        default: 10
       }
     ]
     attr_accessor(*ATTRIBUTES.map { |a| a[:name] })
