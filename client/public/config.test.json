@@ -1,5 +1,4 @@
 {
   "clusterName": "bens-test-cluster",
-  "apiRootUrl": "https://my.cluster.com/files",
-  "filesApiRootUrl": "https://my.cluster.com/files"
+  "apiRootUrl": "https://my.cluster.com/files"
 }

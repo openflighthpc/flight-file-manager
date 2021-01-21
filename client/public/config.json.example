@@ -18,9 +18,6 @@
   # tranformed into the absolute URL `${apiRootUrl}/sessions`.
   "apiRootUrl": "https://gateway1.my.custer/files/api",
 
-  # The root URL for the cloudcmd server.
-  "filesApiRootUrl": "https://gateway1.my.custer/files/api/files",
-
 
   ### Development only settings ###
 
