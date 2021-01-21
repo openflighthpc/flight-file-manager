@@ -46,6 +46,9 @@ error(HttpError) do
   level = (e.is_a?(UnexpectedError) ? :error : :debug)
   LOGGER.send level, e.full_message
   status e.http_status
+  if e.http_status == 401
+    response["WWW-Authenticate"] = 'Basic realm="Cloud Commander"'
+  end
   { errors: [e] }.to_json
 end
 
