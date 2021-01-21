@@ -55,16 +55,17 @@
 #-------------------------------------------------------------------------------
 # Cloudcmd Command
 # Specify the command that will launch the cloudcmd service. The command
-# support must write the port it started on to file descriptor 3. Failure to
-# write the port will prevent users from connecting to the service. The port
-# must not contain non-integer characters including newline.
-#
-# There is a special '$config_path' variable which should be included in the
-# command. This will be substituted for the pre-generated cloudcmd config path
-# containing the username/password.
+# supports two special variables: $config_path and $port_path.
 #
 # The $config_path is the pre-generated cloudcmd config for the particular
 # user and contains the username/password.
+#
+# The $port_path will be an empty path initially. It is the commands
+# responsibility to select a port that cloudcmd will be started on and write it
+# to this path. Failure to do so will prevent the API consumer from connecting
+# to the service.
+# NOTE: The port_path must only contain the port as an integer. It must not
+#       contain a trailing newline.
 #
 # For security reasons, the command is not executed via a subshell. This means
 # all other string interplation/ variables have been disabled. Each argument is

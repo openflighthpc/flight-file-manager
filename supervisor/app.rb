@@ -180,6 +180,7 @@ post '/cloudcmd' do
   cmd = FlightFileManager.config
                          .cloudcmd_command
                          .gsub('$config_path', config_path)
+                         .gsub('$port_path', port_path)
   FlightFileManager.logger.info("Executing Command: #{cmd}")
 
   # Create the log directory
@@ -192,9 +193,8 @@ post '/cloudcmd' do
     # What should happen to the child processes when the server exists?
     # XXX: Remove the config file path on exit
 
-    # Open the required file descriptors before changing user
+    # Open the logging file descriptor before switching user permissions
     log_io = File.open(log_path, 'a')
-    port_io = File.open(port_path, 'w')
 
     # Become the session leader as the correct user
     Process::Sys.setgid(passwd.gid)
@@ -207,8 +207,7 @@ post '/cloudcmd' do
                 unsetenv_others: true,
                 close_others: true,
                 chdir: passwd.dir,
-                [:out, :err] => log_io,
-                3 => port_io)
+                [:out, :err] => log_io)
   end
   FileUtils.mkdir_p File.dirname(pid_path)
   File.write pid_path, pid
