@@ -46,6 +46,9 @@ error(HttpError) do
   level = (e.is_a?(UnexpectedError) ? :error : :debug)
   LOGGER.send level, e.full_message
   status e.http_status
+  if e.http_status == 401
+    response["WWW-Authenticate"] = 'Basic realm="Flight File Manager"'
+  end
   { errors: [e] }.to_json
 end
 
@@ -193,29 +196,43 @@ post '/cloudcmd' do
     # What should happen to the child processes when the server exists?
     # XXX: Remove the config file path on exit
 
+    # Open the logging file descriptor before switching user permissions
+    log_io = File.open(log_path, 'a')
+
+    # Ensure the user has an empty port path file to write to
+    FileUtils.rm_f port_path
+    FileUtils.touch port_path
+    FileUtils.chown(current_user, current_user, port_path)
+
     # Become the session leader as the correct user
+    Process.setsid
     Process::Sys.setgid(passwd.gid)
     Process::Sys.setuid(passwd.uid)
-    Process.setsid
 
     # Exec into the cloud command
-    # XXX: Where should this log?
     Kernel.exec({},
                 *cmd.split(' '),
                 unsetenv_others: true,
                 close_others: true,
                 chdir: passwd.dir,
-                [:out, :err] => log_path)
+                [:out, :err] => log_io)
   end
   FileUtils.mkdir_p File.dirname(pid_path)
   File.write pid_path, pid
   FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' (PID: #{pid})"
 
   # Wait until the port is written or the daemon exists
+  timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
   loop do
     break if Process.wait2(pid, Process::WNOHANG)
-    break if File.exists?(port_path)
+    if File.exists?(port_path)
+      break unless File.read(port_path).empty?
+    end
     sleep 1
+    if (now = Process.clock_gettime(Process::CLOCK_MONOTONIC)) > timeout
+      timeout = now + FlightFileManager.config.launch_timeout
+      Process.kill(-Signal.list['TERM'], pid)
+    end
   end
 
   # Do not wait for cloudcmd to exit, also ensures it is still running
@@ -241,7 +258,7 @@ delete '/cloudcmd' do
   if pid
     begin
       FlightFileManager.logger.info "Shutting down '#{current_user}' cloudcmd server (PID: #{pid})"
-      Process.kill('SIGTERM', pid)
+      Process.kill(-Signal.list['TERM'], pid)
     rescue Errno::ESRCH
       # NOOP - Don't worry if it has already ended
     end
