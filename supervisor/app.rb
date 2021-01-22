@@ -144,8 +144,11 @@ post '/cloudcmd' do
       halt payload
     else
       status 500
+      FlightFileManager.logger.error <<~ERROR.chomp
+        The cloudcmd session for '#{current_user}' is missing its port! (PID: #{read_pid})
+      ERROR
       halt({
-        errors: ["The cloudcmd session for '#{current_user}' is missing its port! (PID: #{read_pid})"]
+        errors: ["An unexpected error has occurred!"]
       }.to_json)
     end
   end
