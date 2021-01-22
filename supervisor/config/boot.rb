@@ -51,7 +51,6 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'flight_file_manager'
 
 # Ensures the config has been loaded
-# XXX: Consider changing to a load method
-FlightFileManager.app.config
+FlightFileManager.load_configuration
 
 require_relative '../app'

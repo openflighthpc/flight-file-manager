@@ -33,14 +33,18 @@ module FlightFileManager
 
   autoload(:Configuration, 'flight_file_manager/configuration')
 
-  def self.app
-    # XXX: Eventually extract this to a Application object when the need arises
-    @app ||= Struct.new(:config).new(
-      Configuration.load(Pathname.new('..').expand_path(__dir__))
-    )
-  end
+  class << self
+    def app
+      # XXX: Eventually extract this to a Application object when the need arises
+      @app ||= Struct.new(:config).new(
+        Configuration.load(Pathname.new('..').expand_path(__dir__))
+      )
+    end
 
-  def self.config
-    app.config
+    def config
+      app.config
+    end
+
+    alias_method :load_configuration, :config
   end
 end
