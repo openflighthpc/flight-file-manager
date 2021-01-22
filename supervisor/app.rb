@@ -96,18 +96,13 @@ helpers do
 
   # XXX: Consider extracting into a CloudCmd object
   def running?
-    if (pid = read_pid) && File.exists?(config_path)
+    if pid = read_pid
       begin
         Process.getpgid(pid)
         true
       rescue Errno::ESRCH
         return false
       end
-    elsif File.exists?(pid_path)
-      status 500
-      halt({
-        errors: ['The internal state is inconsistent']
-      }.to_json)
     else
       false
     end
