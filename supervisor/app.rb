@@ -47,7 +47,7 @@ error(HttpError) do
   LOGGER.send level, e.full_message
   status e.http_status
   if e.http_status == 401
-    response["WWW-Authenticate"] = 'Basic realm="Cloud Commander"'
+    response["WWW-Authenticate"] = 'Basic realm="Flight File Manager"'
   end
   { errors: [e] }.to_json
 end
