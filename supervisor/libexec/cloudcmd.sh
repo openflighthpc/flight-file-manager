@@ -25,8 +25,9 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-config_path="$1"
-port_path="$2"
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+BACKEND="${SCRIPT_DIR}"/../../backend/src/main.js
+NODE=node
+# NODE=.nvm/versions/node/v14.15.4/bin/node
 
-echo -n "$RANDOM" > "$port_path"
-sleep 1000000000000000000000000000
+"${NODE}" "${BACKEND}" "$@"
