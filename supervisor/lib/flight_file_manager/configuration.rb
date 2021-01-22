@@ -71,8 +71,7 @@ module FlightFileManager
         name: 'cloudcmd_command',
         env_var: true,
         default: ->(root) do
-          path = root.join('libexec/cloudcmd.sh')
-          "#{path} $config_path $port_path"
+          root.join('libexec/cloudcmd.sh').to_path
         end
       },
       {
