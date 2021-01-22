@@ -1,0 +1,102 @@
+#==============================================================================
+# Copyright (C) 2021-present Alces Flight Ltd.
+#
+# This file is part of Flight File Manager.
+#
+# This program and the accompanying materials are made available under
+# the terms of the Eclipse Public License 2.0 which is available at
+# <https://www.eclipse.org/legal/epl-2.0>, or alternative license
+# terms made available by Alces Flight Ltd - please direct inquiries
+# about licensing to licensing@alces-flight.com.
+#
+# Flight File Manager is distributed in the hope that it will be useful, but
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+# IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS
+# OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A
+# PARTICULAR PURPOSE. See the Eclipse Public License 2.0 for more
+# details.
+#
+# You should have received a copy of the Eclipse Public License 2.0
+# along with Flight File Manager. If not, see:
+#
+#  https://opensource.org/licenses/EPL-2.0
+#
+# For more information on Flight File Manager, please visit:
+# https://github.com/openflighthpc/flight-file-manager
+#===============================================================================
+
+#-------------------------------------------------------------------------------
+# Supervisor Port
+# The port the supervisor process will be launched on
+# The environment variable FLIGHT_FILE_MANAGER_PORT takes precedence
+#-------------------------------------------------------------------------------
+# port: 920
+
+#-------------------------------------------------------------------------------
+# PID File Path
+# The path to where the PID of the supervisor process should be stored
+# The environment variable FLIGHT_FILE_MANAGER_PIDFILE takes precedence
+#
+# The default is relative to the install directory. All overrides should use
+# absolute paths. The behaviour of overrides with relative paths is undefined.
+#-------------------------------------------------------------------------------
+# pidfile: /path/to/flight-file-manager/var/puma.pid
+
+#-------------------------------------------------------------------------------
+# Pam Authentication Service
+# Specify the pam service which will be used to authenticate the requests.
+# The environment variable FLIGHT_FILE_MANAGER_PAM_SERVICE
+#
+# CAUTION: All authenticated requests must correspond with a linux user. Failure
+#          to do so will cause the cloudcmd process to fail. This should be the
+#          case for any pam service which uses 'pam_unix.so'.
+#-------------------------------------------------------------------------------
+# pam_service: sshd
+
+#-------------------------------------------------------------------------------
+# Cloudcmd Command
+# Specify the command that will launch the cloudcmd service. The command
+# supports two special variables: $config_path and $port_path.
+#
+# The $config_path is the pre-generated cloudcmd config for the particular
+# user and contains the username/password.
+#
+# The $port_path will be an empty path initially. It is the commands
+# responsibility to select a port that cloudcmd will be started on and write it
+# to this path. Failure to do so will prevent the API consumer from connecting
+# to the service.
+# NOTE: The port_path must only contain the port as an integer. It must not
+#       contain a trailing newline.
+#
+# For security reasons, the command is not executed via a subshell. This means
+# all other string interplation/ variables have been disabled. Each argument is
+# interpreted as a literal string and should not be quoted.
+#-------------------------------------------------------------------------------
+# cloudcmd_command: /path/to/flight-file-manager/libexec/cloudcmd.sh $config_path $port_path
+
+#-------------------------------------------------------------------------------
+# Cache Directory
+# Specify the directory that internal runtime data
+# The environment variable FLIGHT_FILE_MANAGER_CACHE_DIR takes precedence
+#
+# The default is relative to the install directory. All overrides should use
+# absolute paths. The behaviour of overrides with relative paths is undefined.
+#-------------------------------------------------------------------------------
+# cache_dir: /path/to/flight-file-manager/var/cache
+
+#-------------------------------------------------------------------------------
+# Log Directory
+# Specify the directory log files are stored within
+# The environment variable FLIGHT_FILE_MANAGER_LOG_DIR takes precedence
+#
+# The default is relative to the install directory. All overrides should use
+# absolute paths. The behaviour of overrides with relative paths is undefined.
+#-------------------------------------------------------------------------------
+# log_dir: /path/to/flight_file_manager/var/log
+
+#-------------------------------------------------------------------------------
+# Log Level
+# Specify the logging level
+# Valid levels are: fatal, error, warn, info, debug
+#-------------------------------------------------------------------------------
+# log_level: info
