@@ -78,7 +78,12 @@ module FlightFileManager
         name: 'launch_timeout',
         env_var: false,
         default: 10
-      }
+      },
+      {
+        name: 'mount_point',
+        env_var: true,
+        default: '/files'
+      },
     ]
     attr_accessor(*ATTRIBUTES.map { |a| a[:name] })
 

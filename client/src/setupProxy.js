@@ -14,32 +14,16 @@ module.exports = function(app) {
     })
   );
 
-  // Proxy some requests that cloudcmd makes itself.  Notably for the CSS.
-  // Perhaps others too.
-  app.use(
-    '/files/backend',
-    createProxyMiddleware({
-      target: 'http://localhost:8000',
-      changeOrigin: false,
-      logLevel: 'debug',
-    })
-  );
-
   // Proxy requests to the cloudcmd backend.
   app.use(
-    '/files/:port/backend',
+    '/files/backend/:user',
     createProxyMiddleware({
-      target: 'http://localhost:9000',
+      target: 'http://localhost:6309',
       changeOrigin: false,
       pathRewrite: {
-        '^/files/[0-9]*/backend': '/files/backend',
+        '^/files/': '/',
       },
       logLevel: 'debug',
-      router: function(req) {
-        return {
-          port: req.params.port,
-        };
-      },
     })
   );
 };

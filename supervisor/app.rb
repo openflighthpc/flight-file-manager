@@ -111,14 +111,15 @@ helpers do
     end
   end
 
-  def url_from_port(port)
-    "http://localhost:3000/files/#{port}/backend"
+  def url_from_port(current_user, port)
+    mount_point = FlightFileManager.config.mount_point
+    "http://localhost:3000#{mount_point}/backend/#{current_user}"
   end
 
-  def build_payload(port)
+  def build_payload(current_user, port)
     {
       port: port,
-      url: url_from_port(port),
+      url: url_from_port(current_user, port),
     }.to_json
   end
 
@@ -163,7 +164,7 @@ post '/cloudcmd' do
         "Found running cloudcmd server for '#{current_user}' pid=#{read_pid} port=#{port}"
       )
       status 200
-      halt build_payload(port)
+      halt build_payload(current_user, port)
     else
       status 500
       FlightFileManager.logger.error(
@@ -178,8 +179,9 @@ post '/cloudcmd' do
   passwd = Etc.getpwnam(current_user)
   credentials = (env['HTTP_AUTHORIZATION'] || '').chomp.split(' ').last
   _, password = Base64.decode64(credentials).split(':', 2)
+  mount_point = FlightFileManager.config.mount_point
   config = {
-    prefix: '/files/backend',
+    prefix: "#{mount_point}/backend/#{current_user}",
     root: passwd.dir,
     auth: true,
     username: current_user,
@@ -266,7 +268,7 @@ post '/cloudcmd' do
 
   # Return the payload
   status 201
-  build_payload(port)
+  build_payload(current_user, port)
 end
 
 delete '/cloudcmd' do

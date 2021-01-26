@@ -26,6 +26,13 @@
 #===============================================================================
 
 #-------------------------------------------------------------------------------
+# Mount point
+# The URL prefix that this service is mounted at on any reverse proxy.
+# The environment variable FLIGHT_FILE_MANAGER_MOUNT_POINT takes precedence.
+#-------------------------------------------------------------------------------
+# mount_point: /files
+
+#-------------------------------------------------------------------------------
 # Supervisor Port
 # The port the supervisor process will be launched on
 # The environment variable FLIGHT_FILE_MANAGER_PORT takes precedence
