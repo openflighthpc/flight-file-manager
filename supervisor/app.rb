@@ -104,10 +104,35 @@ helpers do
         Process.getpgid(pid)
         true
       rescue Errno::ESRCH
-        return false
+        false
       end
     else
       false
+    end
+  end
+
+  def url_from_port(current_user, port)
+    mount_point = FlightFileManager.config.mount_point
+    "http://localhost:3000#{mount_point}/backend/#{current_user}"
+  end
+
+  def build_payload(current_user, port)
+    {
+      port: port,
+      url: url_from_port(current_user, port),
+    }.to_json
+  end
+
+  def redacted_cmd(cmd)
+    last = nil
+    cmd.reduce([]) do |accum, i|
+      if last == '--password'
+        accum << 'REDACTED'
+      else
+        accum << i
+      end
+      last = i
+      accum
     end
   end
 end
@@ -134,22 +159,17 @@ post '/cloudcmd' do
   port_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.port')
   if running?
     if File.exists?(port_path)
-      # XXX: Should the password be reissued to authenticated uses? Or should they be forced
-      # to recreate the session
-      payload = JSON.load(File.read(config_path))
-                    .slice('username', 'password')
-                    .merge(
-                      errors: ['A cloudcmd session already exists!'],
-                      port: File.read(port_path)
-                    )
-                    .to_json
-      status 409
-      halt payload
+      port = File.read(port_path).chomp
+      FlightFileManager.logger.info(
+        "Found running cloudcmd server for '#{current_user}' pid=#{read_pid} port=#{port}"
+      )
+      status 200
+      halt build_payload(current_user, port)
     else
       status 500
-      FlightFileManager.logger.error <<~ERROR.chomp
-        The cloudcmd session for '#{current_user}' is missing its port! (PID: #{read_pid})
-      ERROR
+      FlightFileManager.logger.error(
+        "Running cloudcmd server for '#{current_user}' is missing port file. pid=#{read_pid}"
+      )
       halt({
         errors: ["An unexpected error has occurred!"]
       }.to_json)
@@ -157,21 +177,14 @@ post '/cloudcmd' do
   end
 
   passwd = Etc.getpwnam(current_user)
-  payload = {
-    username: current_user,
-    password: SecureRandom.alphanumeric(20)
-  }
+  credentials = (env['HTTP_AUTHORIZATION'] || '').chomp.split(' ').last
+  _, password = Base64.decode64(credentials).split(':', 2)
+  mount_point = FlightFileManager.config.mount_point
   config = {
-    prefix: '/files',
+    prefix: "#{mount_point}/backend/#{current_user}",
     root: passwd.dir,
     auth: true,
-    oneFilePanel: true,
-    keysPanel: false,
-    console: false,
-    terminal: false,
-    configDialog: false,
-    contact: false,
-    **payload
+    username: current_user,
   }
 
   # Update the config and remove port file
@@ -180,11 +193,15 @@ post '/cloudcmd' do
   FileUtils.rm_f port_path
 
   # Generate the command
-  cmd = FlightFileManager.config
-                         .cloudcmd_command
-                         .gsub('$config_path', config_path)
-                         .gsub('$port_path', port_path)
-  FlightFileManager.logger.info("Executing Command: #{cmd}")
+  cmd = [
+    FlightFileManager.config.cloudcmd_command,
+    '--config', config_path,
+    '--password', password,
+    '--port-path', port_path,
+  ]
+  FlightFileManager.logger.info(
+    "Starting cloudcmd server for '#{current_user}' command=#{redacted_cmd(cmd)}"
+  )
 
   # Create the log directory
   log_path = File.join(FlightFileManager.config.log_dir, 'cloudcmd', "#{current_user}.log")
@@ -211,7 +228,7 @@ post '/cloudcmd' do
 
     # Exec into the cloud command
     Kernel.exec({},
-                *cmd.split(' '),
+                *cmd,
                 unsetenv_others: true,
                 close_others: true,
                 chdir: passwd.dir,
@@ -219,9 +236,10 @@ post '/cloudcmd' do
   end
   FileUtils.mkdir_p File.dirname(pid_path)
   File.write pid_path, pid
-  FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' (PID: #{pid})"
+  FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' pid=#{pid}"
 
-  # Wait until the port is written or the daemon exists
+  # Wait until the port file is written, the daemon exits without writing the
+  # port file, or a timeout is reached.
   timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
   loop do
     break if Process.wait2(pid, Process::WNOHANG)
@@ -235,7 +253,7 @@ post '/cloudcmd' do
     end
   end
 
-  # Do not wait for cloudcmd to exit, also ensures it is still running
+  # Do not wait for cloudcmd to exit, also ensures it is still running.
   begin
     Process.detach(pid)
   rescue Errno::ESRCH
@@ -245,9 +263,12 @@ post '/cloudcmd' do
     })
   end
 
+  port = File.read(port_path).chomp
+  FlightFileManager.logger.info "cloudcmd for '#{current_user}' listening on port=#{port}"
+
   # Return the payload
   status 201
-  payload.merge(port: File.read(port_path)).to_json
+  build_payload(current_user, port)
 end
 
 delete '/cloudcmd' do
@@ -257,7 +278,7 @@ delete '/cloudcmd' do
   # Terminate the existing instance
   if pid
     begin
-      FlightFileManager.logger.info "Shutting down '#{current_user}' cloudcmd server (PID: #{pid})"
+      FlightFileManager.logger.info "Shutting down cloudcmd server for '#{current_user}' pid=#{pid}"
       Process.kill(-Signal.list['TERM'], pid)
     rescue Errno::ESRCH
       # NOOP - Don't worry if it has already ended
@@ -278,11 +299,11 @@ delete '/cloudcmd' do
   end
 
   if finished
-    FlightFileManager.logger.info "'#{current_user}' cloudcmd server has shutdown successfully"
+    FlightFileManager.logger.info "Cloudcmd server for '#{current_user}' has shutdown successfully"
     FileUtils.rm_f pid_path
     status 204
   else
-    FlightFileManager.logger.info "'#{current_user}' cloudcmd server should shutdown"
+    FlightFileManager.logger.info "Cloudcmd server for '#{current_user}' should shutdown"
     status 202
   end
 end

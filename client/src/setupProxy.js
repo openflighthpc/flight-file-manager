@@ -1,27 +1,29 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
-  app.get(
-    '/files/api/ping',
-    (req, res) => {
-      res.send('OK');
-    },
-  );
-
-  app.post(
-    '/files/api/start',
-    (req, res) => {
-      res.send(JSON.stringify({
-        url: `http://localhost:3000/files/api`,
-      }));
-    },
-  );
-
+  // Proxy requests to the supervisor.
   app.use(
-    '/files/api/files',
+    '/files/api/v0',
     createProxyMiddleware({
-      target: 'http://localhost:8000',
+      target: 'http://localhost:6309',
       changeOrigin: false,
+      pathRewrite: {
+        '^/files/api/': '/', // Remove base path.
+      },
+      logLevel: 'debug',
+    })
+  );
+
+  // Proxy requests to the cloudcmd backend.
+  app.use(
+    '/files/backend/:user',
+    createProxyMiddleware({
+      target: 'http://localhost:6309',
+      changeOrigin: false,
+      pathRewrite: {
+        '^/files/': '/',
+      },
+      logLevel: 'debug',
     })
   );
 };

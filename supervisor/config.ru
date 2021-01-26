@@ -36,6 +36,7 @@ configure do
 end
 
 app = Rack::Builder.new do
+  map('/backend') { run BackendProxy.new }
   map('/v0') { run Sinatra::Application }
 end
 

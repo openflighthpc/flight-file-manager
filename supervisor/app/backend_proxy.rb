@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #==============================================================================
 # Copyright (C) 2021-present Alces Flight Ltd.
 #
@@ -27,25 +25,47 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-source "https://rubygems.org"
+class BackendProxy < Rack::Proxy
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+  def rewrite_env(env)
+    script_name_prefix = FlightFileManager.config.mount_point
+    user = current_user(env)
+    port = backend_port_for_user(user)
+    env["HTTP_HOST"] = "localhost:#{port}"
+    env["SCRIPT_NAME"] = "#{script_name_prefix}#{env["SCRIPT_NAME"]}"
+    env
+  end
 
-gem 'activesupport', require: 'active_support'
-gem 'console'
-gem 'rake'
-gem 'rpam-ruby19', require: 'rpam'
-gem 'puma'
-gem 'sinatra'
-gem 'rack-proxy'
+  def rewrite_response(triplet)
+    _status, headers, _body = triplet
+    
+    # Ensure that content length is recalculated, otherwise bad things may
+    # happen.
+    headers["content-length"] = nil
 
-group :development, :test do
-  gem 'pry'
-  gem 'pry-byebug'
-end
+    triplet
+  end
 
-group :test do
-  gem 'rack-test'
-  gem 'rspec'
-  gem 'rspec-collection_matchers'
+  private
+
+  def current_user(env)
+    # credentials = (env['HTTP_AUTHORIZATION'] || '').chomp.split(' ').last
+    # username, _ = Base64.decode64(credentials).split(':', 2)
+    # username
+
+    match = env['PATH_INFO'].match(/^\/([^\/]*)/)
+    username = match[1]
+    username
+  end
+
+  def backend_port_for_user(user)
+    port_path = File.join(FlightFileManager.config.cache_dir, user, 'cloudcmd.port')
+    return nil unless File.exists?(port_path)
+    port = File.read(port_path).chomp
+    if port.empty?
+      nil
+    else
+      port
+    end
+  end
 end

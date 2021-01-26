@@ -54,3 +54,4 @@ require 'flight_file_manager'
 FlightFileManager.load_configuration
 
 require_relative '../app'
+require_relative '../app/backend_proxy'
