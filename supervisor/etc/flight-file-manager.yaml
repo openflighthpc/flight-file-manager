@@ -61,16 +61,19 @@
 
 #-------------------------------------------------------------------------------
 # Cloudcmd Command
-# Specify the command that will launch the cloudcmd service. The command
-# supports two special variables: $config_path and $port_path.
+# Specify the command that will launch the cloudcmd service.
 #
-# The $config_path is the pre-generated cloudcmd config for the particular
-# user and contains the username/password.
+# The command will be called with the options:
 #
-# The $port_path will be an empty file initially. It is the commands
-# responsibility to select a port that cloudcmd will be started on and write it
-# to this path. Failure to do so will prevent the API consumer from connecting
-# to the service.
+#   --config <config_path> --password <password> --port-path <port_path>
+#
+# `config_path` is a minimal pre-generated cloudcmd config for the
+# particular user containing the username, prefix and root.
+#
+# `port_path` will be an empty file initially. It is the commands
+# responsibility to select a port that cloudcmd will be started on and write
+# it to this path. Failure to do so will prevent the API consumer from
+# connecting to the service.
 # NOTE: The port_path must only contain the port as an integer. It must not
 #       contain a trailing newline.
 #
@@ -78,7 +81,7 @@
 # all other string interplation/ variables have been disabled. Each argument is
 # interpreted as a literal string and should not be quoted.
 #-------------------------------------------------------------------------------
-# cloudcmd_command: /path/to/flight-file-manager/libexec/cloudcmd.sh $config_path $port_path
+# cloudcmd_command: /path/to/flight-file-manager/libexec/cloudcmd.sh
 
 #-------------------------------------------------------------------------------
 # Cloudcmd Launch Timeout

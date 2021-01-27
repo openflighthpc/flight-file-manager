@@ -1,4 +1,3 @@
-#!/bin/bash
 #==============================================================================
 # Copyright (C) 2021-present Alces Flight Ltd.
 #
@@ -26,4 +25,9 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-/opt/flight/bin/node /opt/flight/opt/file-manager-api/backend/src/main.js "$@"
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+BACKEND="${SCRIPT_DIR}"/../../backend/src/main.js
+NODE=node
+# NODE=.nvm/versions/node/v14.15.4/bin/node
+
+"${NODE}" "${BACKEND}" "$@"

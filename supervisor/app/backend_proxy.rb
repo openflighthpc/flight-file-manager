@@ -31,6 +31,15 @@ class BackendProxy < Rack::Proxy
     script_name_prefix = FlightFileManager.config.mount_point
     user = current_user(env)
     port = backend_port_for_user(user)
+
+    # 1. Ensure that we're using HTTP and not HTTPS.
+    # 2. Set the correct port.
+    # 3. Add back the prefix that `config.ru` has stripped off and cloudcmd is
+    #    expecting.
+    env["HTTPS"] = "off"
+    env["HTTP_X_FORWARDED_SSL"] = "off"
+    env["HTTP_X_FORWARDED_SCHEME"] = "http"
+
     env["HTTP_HOST"] = "localhost:#{port}"
     env["SCRIPT_NAME"] = "#{script_name_prefix}#{env["SCRIPT_NAME"]}"
     env
