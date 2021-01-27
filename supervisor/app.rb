@@ -112,8 +112,9 @@ helpers do
   end
 
   def url_from_port(current_user, port)
+    # Return a protocol relative URL to the backend server.
     mount_point = FlightFileManager.config.mount_point
-    "http://localhost:3000#{mount_point}/backend/#{current_user}"
+    "//#{request.host}#{mount_point}/backend/#{current_user}"
   end
 
   def build_payload(current_user, port)
