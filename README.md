@@ -1,22 +1,124 @@
 # Flight File Manager
 
-%SUMMARY%
+In-browser file manager for the OpenFlight project.
 
 ## Overview
 
-What is it?
+Flight File Manager allows you to access your HPC environment files via a GUI
+(graphical user interface) running in the comfort of your browser.
 
 ## Installation
 
-How is it installed?
+### From source
+
+XXX TBC
+
+### Installing with Flight Runway
+
+Flight Runway provides a Ruby environment and command-line helpers for
+running openflightHPC tools.  Flight File Manager integrates with Flight
+Runway to provide easier installation and configuration.
+
+To install Flight Runway, see the [Flight Runway installation
+docs](https://github.com/openflighthpc/flight-runway#installation).
+
+These instructions assume that `flight-runway` has been installed from
+the openflightHPC yum repository and that either [system-wide
+integration](https://github.com/openflighthpc/flight-runway#system-wide-integration)
+has been enabled or the
+[`flight-starter`](https://github.com/openflighthpc/flight-starter) tool has
+been installed and the environment activated with the `flight start` command.
+
+ * Enable the Alces Flight RPM repository:
+
+    ```
+    yum install -e0 https://repo.openflighthpc.org/openflight/centos/7/x86_64/openflighthpc-release-2-1.noarch.rpm
+    ```
+
+ * Rebuild your `yum` cache:
+
+    ```
+    yum makecache
+    ```
+    
+ * Install the `flight-file-manager-*` RPMs:
+
+    ```
+    [root@myhost ~]# yum install flight-file-manager-webapp flight-file-manager-api
+    ```
+
+ * Enable HTTPs support
+
+    Flight File Manager is designed to operate over HTTPs connections.  You
+    can enable HTTPs with Let's Encrypt certificates by running the commands
+    below.
+
+    ```
+    [root@myhost ~]# flight www cert-gen --cert-type letsencrypt --domain HOST --email EMAIL
+    [root@myhost ~]# flight www enable-https
+    ```
+
+ * Configure details about your cluster
+
+    Flight File Manager Webapp needs to be configured with some details about
+    the cluster it is providing access to.  This can be done with the `flight
+    service configure` command as described below.  You will be asked to
+    provide values for:
+
+    **Cluster name**: set it to a string that identifies this cluster in a
+    human friendly way.
+
+    **Cluster description**: set it to a string that describes this cluster in
+    a human friendly way.
+
+    **Cluster logo URL**: Optionally, set it to the URL for a logo for this
+    cluster.  Or leave it unset.
+
+    **Hostname or IP address**: set this to the fully qualified
+    hostname for your server.  This name needs to resolve correctly and be the
+    name used for the Let's Encrypt certificate created above. 
+
+    Once you have values for the above, you can configure the webapp by running:
+
+    ```
+    [root@myhost ~]# flight service configure file-manager-webapp
+    ```
+
 
 ## Configuration
 
-Any required or optional configuration?
+The installation section details the configuration that is required for Flight
+File Manager Webapp.
+
+For Flight File Manager API, making changes to the default configuration is
+optional and can be achieved by editing the `flight-file-manager.yaml` file in
+the `etc/` subdirectory of the tool.  [The file](etc/flight-file-manager.yaml)
+is well documented and outlines all the configuration values available.
 
 ## Operation
 
-How do you use it?
+### When installed with Flight Runway
+
+The server can be started by running the following command:
+
+```
+[root@myhost ~]# flight service start file-manager-api
+```
+
+The server can be stopped by running the following command:
+
+```
+[root@myhost ~]# flight service stop file-manager-api
+```
+
+The webapp is accessible by
+opening your browser and visiting the URL for your cluster with path `/files`.
+E.g., if you have installed on a machine called `my.cluster.com` visit the URL
+https://my.cluster.com/files.
+
+Enter your username and password for the cluster.  You can then manage your
+HPC environment's files.
+
 
 # Contributing
 
