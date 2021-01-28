@@ -3,6 +3,7 @@ const cloudcmd = require('cloudcmd');
 const validate = require('cloudcmd/server/validate');
 const showConfig = require('cloudcmd/server/show-config');
 const criton = require('criton');
+const fs = require('fs');
 
 const packageInfo = require('../package.json');
 const startServer = require('./server');
@@ -12,7 +13,7 @@ const { argv } = process;
 const args = require('minimist')(argv.slice(2), {
   string: [
     'config',
-    'password',
+    'password-path',
     'port-path',
     'prefix',
   ],
@@ -22,7 +23,6 @@ const args = require('minimist')(argv.slice(2), {
   alias: {
     v: 'version',
     h: 'help',
-    p: 'password',
     c: 'config',
   },
   unknown: (cmd) => {
@@ -48,9 +48,9 @@ function help() {
   const options = {
     "-h, --help                 ": "display this help and exit",
     "-v, --version              ": "display version and exit",
-    "-p, --password             ": "set password",
     "-c, --config               ": "configuration file path",
     "--show-config              ": "show config values",
+    "--password-path            ": "file to read the password from",
     "--port-path                ": "file to write the port to",
   }
   const usage = 'Usage: backend [options]';
@@ -94,7 +94,8 @@ async function main() {
     columns: config('columns'),
   };
 
-  const p = await getPassword(args.password, config);
+  const rawPass = fs.readFileSync(args['password-path'], { encoding:'utf8' });
+  const p = await getPassword(rawPass, config);
   config('password', p);
   await validateRoot(cloudcmdOptions.root, config);
 

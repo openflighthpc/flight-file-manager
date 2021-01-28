@@ -158,6 +158,7 @@ end
 post '/cloudcmd' do
   config_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
   port_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.port')
+  password_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.password')
   if running?
     if File.exists?(port_path)
       port = File.read(port_path).chomp
@@ -192,12 +193,15 @@ post '/cloudcmd' do
   FileUtils.mkdir_p File.dirname(config_path)
   File.write(config_path, config.to_json)
   FileUtils.rm_f port_path
+  FileUtils.rm_f password_path
+  File.open(password_path, 'w', 0600) { |f| f.write(password) }
+  FileUtils.chown(current_user, current_user, password_path)
 
   # Generate the command
   cmd = [
     FlightFileManager.config.cloudcmd_command,
     '--config', config_path,
-    '--password', password,
+    '--password-path', password_path,
     '--port-path', port_path,
   ]
   FlightFileManager.logger.info(
