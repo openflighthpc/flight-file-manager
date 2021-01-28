@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 
 import useLocalStorage from './useLocalStorage';
+import useCookie from './useCookie';
 
 const initialState = null;
 const Context = React.createContext(initialState);
@@ -12,6 +13,8 @@ function getAuthToken({ username, password }) {
 function Provider({ children }) {
   const [tempUser, doSetTempUser] = useState(null);
   const [currentUser, setCurrentUser] = useLocalStorage('currentUser', initialState);
+  const [_, updateCookie] = useCookie("auth_token", "");
+
   const actions = useMemo(
     () => ({
       setTempUser(username, password) {
@@ -22,12 +25,15 @@ function Provider({ children }) {
       promoteUser(user) {
         setCurrentUser(user);
         doSetTempUser(null);
+        const basicAuthToken = tempUser.authToken;
+        updateCookie(basicAuthToken, 1);
       },
 
       signOut() {
         window.dispatchEvent(new CustomEvent('signout'));
         setCurrentUser(null);
         doSetTempUser(null);
+        updateCookie("");
       },
     }),
     [ setCurrentUser ],

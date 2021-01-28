@@ -36,9 +36,11 @@ class BackendProxy < Rack::Proxy
     # 2. Set the correct port.
     # 3. Add back the prefix that `config.ru` has stripped off and cloudcmd is
     #    expecting.
+    # 4. Add basic auth header.
     env["HTTPS"] = "off"
     env["HTTP_X_FORWARDED_SSL"] = "off"
     env["HTTP_X_FORWARDED_SCHEME"] = "http"
+    env["HTTP_AUTHORIZATION"] = auth_from_cookies(env)
 
     env["HTTP_HOST"] = "localhost:#{port}"
     env["SCRIPT_NAME"] = "#{script_name_prefix}#{env["SCRIPT_NAME"]}"
@@ -57,13 +59,14 @@ class BackendProxy < Rack::Proxy
 
   private
 
-  def current_user(env)
-    # credentials = (env['HTTP_AUTHORIZATION'] || '').chomp.split(' ').last
-    # username, _ = Base64.decode64(credentials).split(':', 2)
-    # username
+  def auth_from_cookies(env)
+    request_cookies = Rack::Utils.parse_cookies(env)
+    request_cookies['auth_token'].chomp
+  end
 
-    match = env['PATH_INFO'].match(/^\/([^\/]*)/)
-    username = match[1]
+  def current_user(env)
+    credentials = auth_from_cookies(env).split(' ').last
+    username, _ = Base64.decode64(credentials).split(':', 2)
     username
   end
 
