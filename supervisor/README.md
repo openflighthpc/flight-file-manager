@@ -1,7 +1,10 @@
-# Flight File Manager Client
+# Flight File Manager Supervisor
 
-Browser client for Flight File Manager.  See [the main README](README.md)
-for more details.
+Supervisor process for Flight File Manager.  The supervisor starts and stops
+Flight File Manager backend processes and proxies requests from the client to
+the backend.
+
+See [the main README](README.md) for more details.
 
 # Contributing
 

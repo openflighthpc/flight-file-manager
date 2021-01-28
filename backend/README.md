@@ -1,7 +1,7 @@
-# Flight File Manager Client
+# Flight File Manager Backend
 
-Browser client for Flight File Manager.  See [the main README](README.md)
-for more details.
+Backend for Flight File Manager.  This serves the file management requests
+from the client.  See [the main README](README.md) for more details.
 
 # Contributing
 
