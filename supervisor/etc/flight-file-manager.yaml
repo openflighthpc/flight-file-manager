@@ -93,14 +93,14 @@
 # launch_timeout: 10
 
 #-------------------------------------------------------------------------------
-# Cache Directory
+# Data Directory
 # Specify the directory that internal runtime data
-# The environment variable FLIGHT_FILE_MANAGER_CACHE_DIR takes precedence
+# The environment variable FLIGHT_FILE_MANAGER_DATA_DIR takes precedence
 #
 # The default is relative to the install directory. All overrides should use
 # absolute paths. The behaviour of overrides with relative paths is undefined.
 #-------------------------------------------------------------------------------
-# cache_dir: /path/to/flight-file-manager/var/cache
+# data_dir: /path/to/flight-file-manager/usr/share
 
 #-------------------------------------------------------------------------------
 # Log Directory
