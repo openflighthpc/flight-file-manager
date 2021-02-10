@@ -70,8 +70,6 @@ class BackendProxy < Rack::Proxy
     username, _ = Base64.decode64(credentials).split(':', 2)
     username
   end
-    end
-  end
 
   def assert_good_origin(env)
     request = Rack::Request.new(env)
