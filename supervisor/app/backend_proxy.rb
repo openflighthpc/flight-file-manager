@@ -29,8 +29,7 @@ class BackendProxy < Rack::Proxy
 
   def rewrite_env(env)
     script_name_prefix = FlightFileManager.config.mount_point
-    user = current_user(env)
-    port = backend_port_for_user(user)
+    port = CloudCmd.new(current_user(env)).port
 
     # 1. Ensure that we're using HTTP and not HTTPS.
     # 2. Set the correct port.
@@ -69,15 +68,6 @@ class BackendProxy < Rack::Proxy
     username, _ = Base64.decode64(credentials).split(':', 2)
     username
   end
-
-  def backend_port_for_user(user)
-    port_path = File.join(FlightFileManager.config.cache_dir, user, 'cloudcmd.port')
-    return nil unless File.exists?(port_path)
-    port = File.read(port_path).chomp
-    if port.empty?
-      nil
-    else
-      port
     end
   end
 end
