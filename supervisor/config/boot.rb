@@ -55,3 +55,4 @@ FlightFileManager.load_configuration
 
 require_relative '../app'
 require_relative '../app/backend_proxy'
+require_relative '../app/cloudcmd'

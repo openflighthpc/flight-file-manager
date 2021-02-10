@@ -37,7 +37,7 @@ end
 
 app = Rack::Builder.new do
   map('/backend') { run BackendProxy.new }
-  map('/v0') { run Sinatra::Application }
+  map('/v0') { run App }
 end
 
 run app

@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import useCookie from './useCookie';
 import { useBeforeunload } from 'react-beforeunload';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import addStylesheetRules from './addStylesheetRules';
 import useEventListener from './useEventListener';
+import { Context as CurrentUserContext } from './CurrentUserContext';
 import { useLaunchSession } from './api';
 
 function handleOnLoad(event, setTerminalState) {
@@ -21,7 +23,13 @@ function handleOnLoad(event, setTerminalState) {
   }
 }
 
+function buildAuthToken(user, apiPassword) {
+  return `Basic ${btoa(`${user.username}:${apiPassword}`)}`;
+}
+
 export default function useFileManager(containerRef) {
+  const [, updateCookie] = useCookie("auth_token", "");
+  const { currentUser } = useContext(CurrentUserContext);
   const { post: launchSession, response } = useLaunchSession();
   const urlRef = useRef(null);
   // Possible states are `initialising`, `connected`, `failed`.
@@ -35,6 +43,7 @@ export default function useFileManager(containerRef) {
 
     launchSession().then((responseBody) => {
       if (response.ok) {
+        updateCookie(buildAuthToken(currentUser, responseBody.password));
         urlRef.current = responseBody.url;
         containerRef.current.onload = (event) => { handleOnLoad(event, setTerminalState); }
         containerRef.current.src = responseBody.url;
@@ -50,6 +59,8 @@ export default function useFileManager(containerRef) {
   // that if another user logs in they will have to enter their own
   // credentials.
   function removeCredentials() {
+    updateCookie("");
+
     if (urlRef.current == null) { return }
     const str = urlRef.current.replace("http://", "http://" + new Date().getTime() + "@");
     const xmlhttp = new XMLHttpRequest();
