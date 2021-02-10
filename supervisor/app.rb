@@ -135,8 +135,6 @@ class App < Sinatra::Base
       })
     end
 
-    FlightFileManager.logger.info "cloudcmd for '#{current_user}' listening on port=#{cloudcmd.port}"
-
     status 201
     build_payload(current_user, cloudcmd.password, cloudcmd.port)
   end

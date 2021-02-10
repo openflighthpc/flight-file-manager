@@ -168,12 +168,22 @@ class CloudCmd
       )
     end
 
+    write_pid(pid)
+    FlightFileManager.logger.info("Created cloudcmd for '#{@user}' pid=#{pid}")
+    wait_for_port_to_be_written
+    FlightFileManager.logger.info("cloudcmd for '#{@user}' listening on port=#{port}")
+
+    pid
+  end
+
+  def write_pid(pid)
     FileUtils.mkdir_p(File.dirname(pid_path))
     File.write(pid_path, pid)
-    FlightFileManager.logger.info("Created cloudcmd for '#{@user}' pid=#{pid}")
+  end
 
-    # Wait until the port file is written, the daemon exits without writing the
-    # port file, or a timeout is reached.
+  # Wait until the port file is written, the daemon exits without writing the
+  # port file, or a timeout is reached.
+  def wait_for_port_to_be_written
     timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
     loop do
       break if Process.wait2(pid, Process::WNOHANG)
@@ -186,8 +196,6 @@ class CloudCmd
         Process.kill(-Signal.list['TERM'], pid)
       end
     end
-
-    pid
   end
 
   def cleanup
