@@ -28,6 +28,8 @@
 class BackendProxy < Rack::Proxy
 
   def rewrite_env(env)
+    assert_good_origin(env)
+
     script_name_prefix = FlightFileManager.config.mount_point
     port = CloudCmd.new(current_user(env)).port
 
@@ -68,6 +70,16 @@ class BackendProxy < Rack::Proxy
     username, _ = Base64.decode64(credentials).split(':', 2)
     username
   end
+    end
+  end
+
+  def assert_good_origin(env)
+    request = Rack::Request.new(env)
+    referer_uri = URI.parse(request.referer)
+    target = request.authority
+
+    unless [referer_uri.host, "#{referer_uri.host}:#{referer_uri.port}"].include?(target)
+      raise "Invalid referer #{request.referer}"
     end
   end
 end
