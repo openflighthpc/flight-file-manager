@@ -234,7 +234,7 @@ class CloudCmd
   end
 
   def data_dir
-    File.join(FlightFileManager.config.cache_dir, @user)
+    File.join(FlightFileManager.config.data_dir, @user)
   end
 
   def redacted_cmd(cmd)
