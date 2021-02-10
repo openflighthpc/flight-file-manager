@@ -28,9 +28,6 @@
 #===============================================================================
 
 module FlightFileManager
-  # Injects the logger into the core module
-  extend Console
-
   autoload(:Configuration, 'flight_file_manager/configuration')
 
   class << self
@@ -43,6 +40,10 @@ module FlightFileManager
 
     def config
       app.config
+    end
+
+    def logger
+      @logger ||= Logger.new($stdout, level: config.log_level.to_sym)
     end
 
     alias_method :load_configuration, :config

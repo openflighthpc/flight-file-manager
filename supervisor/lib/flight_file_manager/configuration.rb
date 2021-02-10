@@ -98,10 +98,5 @@ module FlightFileManager
         Loader.new(root, paths).load
       end
     end
-
-    def log_level=(level)
-      @log_level = level
-      FlightFileManager.logger.send("#{@log_level}!")
-    end
   end
 end
