@@ -28,9 +28,8 @@
 #===============================================================================
 
 class CloudCmd
-  def initialize(user, auth_header)
+  def initialize(user)
     @user = user
-    @auth_header = auth_header
   end
 
   def run
@@ -124,9 +123,17 @@ class CloudCmd
   end
 
   def generate_password
-    credentials = (@auth_header || '').chomp.split(' ').last
-    _, password = Base64.decode64(credentials).split(':', 2)
-    password
+    if File.executable?('/usr/bin/apg')
+      begin
+        Timeout.timeout(5) do
+          `/usr/bin/apg -n1 -M Ncl -m 8 -x 8`.chomp
+        end
+      rescue Timeout::Error
+        SecureRandom.urlsafe_base64[0..7].tr('-_','fl')
+      end
+    else
+      SecureRandom.urlsafe_base64[0..7].tr('-_','fl')
+    end
   end
 
   def run_subprocess

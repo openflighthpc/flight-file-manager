@@ -107,7 +107,7 @@ class App < Sinatra::Base
   end
 
   post '/cloudcmd' do
-    cloudcmd = CloudCmd.new(current_user, env['HTTP_AUTHORIZATION'])
+    cloudcmd = CloudCmd.new(current_user)
     if cloudcmd.broken?
       # XXX Kill and launch perhaps?
       FlightFileManager.logger.error(
@@ -140,7 +140,7 @@ class App < Sinatra::Base
   end
 
   delete '/cloudcmd' do
-    cloudcmd = CloudCmd.new(current_user, env['HTTP_AUTHORIZATION'])
+    cloudcmd = CloudCmd.new(current_user)
     if !cloudcmd.running?
       status 204
       halt
