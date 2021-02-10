@@ -117,9 +117,9 @@ helpers do
     "//#{request.host}:#{request.port}#{mount_point}/backend/#{current_user}"
   end
 
-  def build_payload(current_user, port)
+  def build_payload(current_user, password, port)
     {
-      port: port,
+      password: password,
       url: url_from_port(current_user, port),
     }.to_json
   end
@@ -162,11 +162,12 @@ post '/cloudcmd' do
   if running?
     if File.exists?(port_path)
       port = File.read(port_path).chomp
+      password = File.read(password_path).chomp
       FlightFileManager.logger.info(
         "Found running cloudcmd server for '#{current_user}' pid=#{read_pid} port=#{port}"
       )
       status 200
-      halt build_payload(current_user, port)
+      halt build_payload(current_user, password, port)
     else
       status 500
       FlightFileManager.logger.error(
@@ -273,7 +274,7 @@ post '/cloudcmd' do
 
   # Return the payload
   status 201
-  build_payload(current_user, port)
+  build_payload(current_user, password, port)
 end
 
 delete '/cloudcmd' do
