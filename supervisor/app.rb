@@ -114,7 +114,7 @@ helpers do
   def url_from_port(current_user, port)
     # Return a protocol relative URL to the backend server.
     mount_point = FlightFileManager.config.mount_point
-    "//#{request.host}#{mount_point}/backend/#{current_user}"
+    "//#{request.host}:#{request.port}#{mount_point}/backend/#{current_user}"
   end
 
   def build_payload(current_user, port)
