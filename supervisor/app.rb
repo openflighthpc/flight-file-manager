@@ -83,6 +83,41 @@ class App < Sinatra::Base
       File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
     end
 
+    def port_path
+      File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.port')
+    end
+
+    def password_path
+      File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.password')
+    end
+
+    def log_path
+      File.join(FlightFileManager.config.log_dir, 'cloudcmd', "#{current_user}.log")
+    end
+
+    def read_port
+      if File.exists?(port_path)
+        port = File.read(port_path).chomp
+        begin
+          Integer(port)
+        rescue TypeError, ArgumentError
+          nil
+        else
+          port
+        end
+      else
+        nil
+      end
+    end
+
+    def read_password
+      if File.exists?(password_path)
+        File.read(password_path).chomp
+      else
+        nil
+      end
+    end
+
     def read_pid
       if File.exists?(pid_path)
         pid = File.read(pid_path).to_i
@@ -113,6 +148,10 @@ class App < Sinatra::Base
       end
     end
 
+    def broken?
+      running? && read_port.nil?
+    end
+
     def url_from_port(current_user, port)
       # Return a protocol relative URL to the backend server.
       mount_point = FlightFileManager.config.mount_point
@@ -138,6 +177,106 @@ class App < Sinatra::Base
         accum
       end
     end
+
+    def cloudcmd_config
+      passwd = Etc.getpwnam(current_user)
+      mount_point = FlightFileManager.config.mount_point
+      {
+        prefix: "#{mount_point}/backend/#{current_user}",
+        root: passwd.dir,
+        auth: true,
+        username: current_user,
+      }
+    end
+
+    def generate_password(auth_header)
+      credentials = (auth_header || '').chomp.split(' ').last
+      _, password = Base64.decode64(credentials).split(':', 2)
+      password
+    end
+
+    def prepare_cloudcmd(config, password)
+      # Update the config and remove port file
+      FileUtils.mkdir_p File.dirname(config_path)
+      File.write(config_path, config.to_json)
+      FileUtils.rm_f port_path
+      FileUtils.rm_f password_path
+      File.open(password_path, 'w', 0600) { |f| f.write(password) }
+      FileUtils.chown(current_user, current_user, password_path)
+      FileUtils.mkdir_p File.dirname(log_path)
+    end
+
+    def launch_cloudcmd
+      # Generate the command
+      cmd = [
+        FlightFileManager.config.cloudcmd_command,
+        '--config', config_path,
+        '--password-path', password_path,
+        '--port-path', port_path,
+      ]
+      FlightFileManager.logger.info(
+        "Starting cloudcmd server for '#{current_user}' command=#{redacted_cmd(cmd)}"
+      )
+
+      passwd = Etc.getpwnam(current_user)
+      pid = Kernel.fork do
+        # XXX: Should SIGTERM be trapped here?
+        # What should happen to the child processes when the server exists?
+        # XXX: Remove the config file path on exit
+
+        # Open the logging file descriptor before switching user permissions
+        log_io = File.open(log_path, 'a')
+
+        # Ensure the user has an empty port path file to write to
+        FileUtils.rm_f port_path
+        FileUtils.touch port_path
+        FileUtils.chown(current_user, current_user, port_path)
+
+        # Become the session leader as the correct user
+        Process.setsid
+        Process::Sys.setgid(passwd.gid)
+        Process::Sys.setuid(passwd.uid)
+
+        # Exec into the cloud command
+        # XXX HOME, PATH, USER, LOGNAME etc..
+        # env = {
+        #   'HOME' => passwd.dir,
+        #   'USER' => current_user,
+        #   'LOGNAME' => current_user,
+        #   'PATH' => '/usr/sbin:/usr/bin:/sbin:/bin:libexec',
+        # }
+        Kernel.exec(
+          {},
+          *cmd,
+          unsetenv_others: true,
+          close_others: true,
+          chdir: passwd.dir,
+          [:out, :err] => log_io,
+        )
+      end
+
+      FileUtils.mkdir_p File.dirname(pid_path)
+      File.write pid_path, pid
+      FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' pid=#{pid}"
+
+      # Wait until the port file is written, the daemon exits without writing the
+      # port file, or a timeout is reached.
+      timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
+      loop do
+        break if Process.wait2(pid, Process::WNOHANG)
+        if File.exists?(port_path)
+          break unless File.read(port_path).empty?
+        end
+        sleep 1
+        if (now = Process.clock_gettime(Process::CLOCK_MONOTONIC)) > timeout
+          timeout = now + FlightFileManager.config.launch_timeout
+          Process.kill(-Signal.list['TERM'], pid)
+        end
+      end
+
+      pid
+    end
+
   end
 
   # Validates the user's credentials from the authorization header
@@ -158,110 +297,27 @@ class App < Sinatra::Base
   end
 
   post '/cloudcmd' do
-    config_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.json')
-    port_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.port')
-    password_path = File.join(FlightFileManager.config.cache_dir, current_user, 'cloudcmd.password')
-    if running?
-      if File.exists?(port_path)
-        port = File.read(port_path).chomp
-        password = File.read(password_path).chomp
-        FlightFileManager.logger.info(
-          "Found running cloudcmd server for '#{current_user}' pid=#{read_pid} port=#{port}"
-        )
-        status 200
-        halt build_payload(current_user, password, port)
-      else
-        status 500
-        FlightFileManager.logger.error(
-          "Running cloudcmd server for '#{current_user}' is missing port file. pid=#{read_pid}"
-        )
-        halt({
-          errors: ["An unexpected error has occurred!"]
-        }.to_json)
-      end
+    if broken?
+      # XXX Kill and launch perhaps?
+      FlightFileManager.logger.error(
+        "Running cloudcmd server for '#{current_user}' is missing port file. pid=#{read_pid}"
+      )
+      status 500
+      halt({
+        errors: ["An unexpected error has occurred!"]
+      }.to_json)
+    elsif running?
+      FlightFileManager.logger.info(
+        "Found running cloudcmd server for '#{current_user}' pid=#{read_pid} port=#{read_port}"
+      )
+      status 200
+      halt build_payload(current_user, read_password, read_port)
     end
 
-    passwd = Etc.getpwnam(current_user)
-    credentials = (env['HTTP_AUTHORIZATION'] || '').chomp.split(' ').last
-    _, password = Base64.decode64(credentials).split(':', 2)
-    mount_point = FlightFileManager.config.mount_point
-    config = {
-      prefix: "#{mount_point}/backend/#{current_user}",
-      root: passwd.dir,
-      auth: true,
-      username: current_user,
-    }
+    password = generate_password(env['HTTP_AUTHORIZATION'])
+    prepare_cloudcmd(cloudcmd_config, password)
 
-    # Update the config and remove port file
-    FileUtils.mkdir_p File.dirname(config_path)
-    File.write(config_path, config.to_json)
-    FileUtils.rm_f port_path
-    FileUtils.rm_f password_path
-    File.open(password_path, 'w', 0600) { |f| f.write(password) }
-    FileUtils.chown(current_user, current_user, password_path)
-
-    # Generate the command
-    cmd = [
-      FlightFileManager.config.cloudcmd_command,
-      '--config', config_path,
-      '--password-path', password_path,
-      '--port-path', port_path,
-    ]
-    FlightFileManager.logger.info(
-      "Starting cloudcmd server for '#{current_user}' command=#{redacted_cmd(cmd)}"
-    )
-
-    # Create the log directory
-    log_path = File.join(FlightFileManager.config.log_dir, 'cloudcmd', "#{current_user}.log")
-    FileUtils.mkdir_p File.dirname(log_path)
-
-    # XXX: Stash the PID and use it for persistent sessions
-    pid = Kernel.fork do
-      # XXX: Should SIGTERM be trapped here?
-      # What should happen to the child processes when the server exists?
-      # XXX: Remove the config file path on exit
-
-      # Open the logging file descriptor before switching user permissions
-      log_io = File.open(log_path, 'a')
-
-      # Ensure the user has an empty port path file to write to
-      FileUtils.rm_f port_path
-      FileUtils.touch port_path
-      FileUtils.chown(current_user, current_user, port_path)
-
-      # Become the session leader as the correct user
-      Process.setsid
-      Process::Sys.setgid(passwd.gid)
-      Process::Sys.setuid(passwd.uid)
-
-      # Exec into the cloud command
-      Kernel.exec({},
-                  *cmd,
-                  unsetenv_others: true,
-                  close_others: true,
-                  chdir: passwd.dir,
-                  [:out, :err] => log_io)
-    end
-    FileUtils.mkdir_p File.dirname(pid_path)
-    File.write pid_path, pid
-    FlightFileManager.logger.info "Created cloudcmd for '#{current_user}' pid=#{pid}"
-
-    # Wait until the port file is written, the daemon exits without writing the
-    # port file, or a timeout is reached.
-    timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
-    loop do
-      break if Process.wait2(pid, Process::WNOHANG)
-      if File.exists?(port_path)
-        break unless File.read(port_path).empty?
-      end
-      sleep 1
-      if (now = Process.clock_gettime(Process::CLOCK_MONOTONIC)) > timeout
-        timeout = now + FlightFileManager.config.launch_timeout
-        Process.kill(-Signal.list['TERM'], pid)
-      end
-    end
-
-    # Do not wait for cloudcmd to exit, also ensures it is still running.
+    pid = launch_cloudcmd
     begin
       Process.detach(pid)
     rescue Errno::ESRCH
@@ -271,12 +327,10 @@ class App < Sinatra::Base
       })
     end
 
-    port = File.read(port_path).chomp
-    FlightFileManager.logger.info "cloudcmd for '#{current_user}' listening on port=#{port}"
+    FlightFileManager.logger.info "cloudcmd for '#{current_user}' listening on port=#{read_port}"
 
-    # Return the payload
     status 201
-    build_payload(current_user, password, port)
+    build_payload(current_user, password, read_port)
   end
 
   delete '/cloudcmd' do
