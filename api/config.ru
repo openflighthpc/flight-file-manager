@@ -27,6 +27,7 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
+require 'sinatra'
 require_relative 'config/boot'
 
 configure do
