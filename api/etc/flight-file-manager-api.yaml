@@ -26,42 +26,34 @@
 #===============================================================================
 
 #-------------------------------------------------------------------------------
+# Bind Address
+# The address the api will be launched on
+# The environment variable flight_FILE_MANAGER_API_bind takes precedence
+#-------------------------------------------------------------------------------
+# bind_address: tcp://127.0.0.1:920
+
+#-------------------------------------------------------------------------------
 # Mount point
 # The URL prefix that this service is mounted at on any reverse proxy.
-# The environment variable FLIGHT_FILE_MANAGER_MOUNT_POINT takes precedence.
+# The environment variable flight_FILE_MANAGER_API_mount_point takes precedence.
 #-------------------------------------------------------------------------------
 # mount_point: /files
 
 #-------------------------------------------------------------------------------
-# Supervisor Port
-# The port the supervisor process will be launched on
-# The environment variable FLIGHT_FILE_MANAGER_PORT takes precedence
-#-------------------------------------------------------------------------------
-# port: 920
-
-#-------------------------------------------------------------------------------
-# PID File Path
-# The path to where the PID of the supervisor process should be stored
+# Cloudcmd Launch Timeout
+# Specify how long the cloudcmd process has to write its port. The process will
+# be terminated if it does not return its port within this period.
+# The environment variable flight_FILE_MANAGER_API_launch_timeout
 #
-# The default is relative to the install directory. All overrides should use
-# absolute paths. The behaviour of overrides with relative paths is undefined.
+# The time is given in seconds
 #-------------------------------------------------------------------------------
-# pidfile: /path/to/flight-file-manager/var/puma.pid
-
-#-------------------------------------------------------------------------------
-# Pam Authentication Service
-# Specify the pam service which will be used to authenticate the requests.
-# The environment variable FLIGHT_FILE_MANAGER_PAM_SERVICE
-#
-# CAUTION: All authenticated requests must correspond with a linux user. Failure
-#          to do so will cause the cloudcmd process to fail. This should be the
-#          case for any pam service which uses 'pam_unix.so'.
-#-------------------------------------------------------------------------------
-# pam_service: sshd
+# launch_timeout: 10
 
 #-------------------------------------------------------------------------------
 # Cloudcmd Command
 # Specify the command that will launch the cloudcmd service.
+# The environment variable flight_FILE_MANAGER_API_cloudcmd_command takes
+# precedence.
 #
 # The command will be called with the options:
 #
@@ -80,41 +72,50 @@
 # For security reasons, the command is not executed via a subshell. This means
 # all other string interplation/ variables have been disabled. Each argument is
 # interpreted as a literal string and should not be quoted.
+#
+# Relative paths are expanded from the install directory.
 #-------------------------------------------------------------------------------
-# cloudcmd_command: /path/to/flight-file-manager/libexec/cloudcmd.sh
+# cloudcmd_command: libexec/cloudcmd.sh
 
 #-------------------------------------------------------------------------------
-# Cloudcmd Launch Timeout
-# Specify how long the cloudcmd process has to write its port. The process will
-# be terminated if it does not return its port within this period.
+# Shared Secret Path
+# The path to where the authentication shared secert is stored
+# The environment variable flight_FILE_MANAGER_API_shared_secret_path takes
+# precedence.
 #
-# The time is given in seconds
+# Relative paths are expanded from the install directory.
 #-------------------------------------------------------------------------------
-# launch_timeout: 10
+# shared_secret_path: etc/shared-secret.conf
 
 #-------------------------------------------------------------------------------
 # Data Directory
 # Specify the directory that internal runtime data
-# The environment variable FLIGHT_FILE_MANAGER_DATA_DIR takes precedence
+# The environment variable flight_FILE_MANAGER_API_data_dir takes precedence
 #
-# The default is relative to the install directory. All overrides should use
-# absolute paths. The behaviour of overrides with relative paths is undefined.
+# Relative paths are expanded from the install directory.
 #-------------------------------------------------------------------------------
-# data_dir: /path/to/flight-file-manager/usr/share
+# data_dir: usr/share
 
 #-------------------------------------------------------------------------------
 # Log Directory
 # Specify the directory log files are stored within
-# The environment variable FLIGHT_FILE_MANAGER_LOG_DIR takes precedence
+# The environment variable flight_FILE_MANAGER_API_log_dir takes precedence
 #
-# The default is relative to the install directory. All overrides should use
-# absolute paths. The behaviour of overrides with relative paths is undefined.
+# Relative paths are expanded from the install directory.
 #-------------------------------------------------------------------------------
 # log_dir: /path/to/flight_file_manager/var/log
 
 #-------------------------------------------------------------------------------
 # Log Level
 # Specify the logging level
+# The environment variable flight_FILE_MANAGER_API_log_level
 # Valid levels are: fatal, error, warn, info, debug
 #-------------------------------------------------------------------------------
 # log_level: info
+
+#-------------------------------------------------------------------------------
+# SSO Cookie Name
+# Specify the name to use for the sso cookie
+# The environment variable flight_FILE_MANAGER_API_sso_cookie_name
+#-------------------------------------------------------------------------------
+# sso_cookie_name: flight_login

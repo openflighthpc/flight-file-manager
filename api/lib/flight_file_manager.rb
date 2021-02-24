@@ -34,7 +34,7 @@ module FlightFileManager
     def app
       # XXX: Eventually extract this to a Application object when the need arises
       @app ||= Struct.new(:config).new(
-        Configuration.load(Pathname.new('..').expand_path(__dir__))
+        Configuration.load
       )
     end
 
@@ -45,7 +45,5 @@ module FlightFileManager
     def logger
       @logger ||= Logger.new($stdout, level: config.log_level.to_sym)
     end
-
-    alias_method :load_configuration, :config
   end
 end

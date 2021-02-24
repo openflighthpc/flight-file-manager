@@ -51,7 +51,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'flight_file_manager'
 
 # Ensures the config has been loaded
-FlightFileManager.load_configuration
+FlightFileManager.config.auth_decoder
 
 require_relative '../app'
 require_relative '../app/backend_proxy'

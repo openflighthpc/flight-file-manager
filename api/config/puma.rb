@@ -29,7 +29,6 @@
 
 require_relative 'boot.rb'
 
-port FlightFileManager.app.config.port
+bind FlightFileManager.app.config.bind_address
 log_requests
-pidfile FlightFileManager.app.config.pidfile
-
+tag FlightFileManager.config.class.application_name

@@ -25,5 +25,5 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-port: 6309
+bind_address: tcp://0.0.0.0:6309
 log_level: debug
