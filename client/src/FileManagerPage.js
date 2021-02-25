@@ -1,9 +1,13 @@
 import { useRef } from 'react';
 import classNames from 'classnames';
 
-import ErrorBoundary, { DefaultErrorMessage } from './ErrorBoundary';
-import FullscreenButton from './FullscreenButton';
-import Spinner from './Spinner';
+import {
+  DefaultErrorMessage,
+  ErrorBoundary,
+  FullscreenButton,
+  Spinner,
+} from 'flight-webapp-components';
+
 import styles from './FileManager.module.css';
 import useFileManager from './useFileManager';
 

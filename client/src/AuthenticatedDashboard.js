@@ -1,22 +1,16 @@
 import { Link } from "react-router-dom";
 
+import { DashboardLogo } from 'flight-webapp-components';
+
 import { CardFooter } from './CardParts';
-import Logo from './png_trans_logo.png';
 
 function AuthenticatedDashboard() {
   return (
     <div>
-      <img
-        src={Logo}
-        alt="OpenflightHPC Logo"
-        className="center"
-        width="100%"
-      >
-      </img>
-
+      <DashboardLogo />
       <div className="card-deck">
-        <div className="card">
-          <div className="card-body fa-background fa-background-desktop">
+        <div className="card" style={{ minHeight: "225px" }} >
+          <div className="card-body fa-background fa-background-files-o">
             <h5 className="card-title text-center">
               Manage your compute environment files
             </h5>
@@ -30,7 +24,7 @@ function AuthenticatedDashboard() {
               className="btn btn-success btn-block"
               to="/browse"
             >
-              <i className="fa fa-file mr-1"></i>
+              <i className="fa fa-files-o mr-1"></i>
               <span>Manage files</span>
             </Link>
           </CardFooter>
