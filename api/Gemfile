@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #==============================================================================
 # Copyright (C) 2021-present Alces Flight Ltd.
 #
@@ -25,5 +27,26 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-port: 6309
-log_level: debug
+source "https://rubygems.org"
+
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+
+gem 'activesupport', require: 'active_support'
+gem 'console'
+gem 'flight_auth', github: "openflighthpc/flight_auth", branch: "297cb7241b820d334e5d593c4e237a81b83a9995"
+gem 'flight_configuration', github: 'openflighthpc/flight_configuration', branch: '24928260e542768f13cc513a3a08af69f690dfbc'
+gem 'rake'
+gem 'puma'
+gem 'sinatra', require: 'sinatra/base'
+gem 'rack-proxy'
+
+group :development, :test do
+  gem 'pry'
+  gem 'pry-byebug'
+end
+
+group :test do
+  gem 'rack-test'
+  gem 'rspec'
+  gem 'rspec-collection_matchers'
+end

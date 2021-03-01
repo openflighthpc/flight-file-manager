@@ -1,3 +1,19 @@
+GIT
+  remote: https://github.com/openflighthpc/flight_auth
+  revision: 297cb7241b820d334e5d593c4e237a81b83a9995
+  branch: 297cb7241b820d334e5d593c4e237a81b83a9995
+  specs:
+    flight_auth (0.1.0)
+      jwt (~> 2.2)
+      slop (~> 4.8)
+
+GIT
+  remote: https://github.com/openflighthpc/flight_configuration
+  revision: 24928260e542768f13cc513a3a08af69f690dfbc
+  branch: 24928260e542768f13cc513a3a08af69f690dfbc
+  specs:
+    flight_configuration (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -16,6 +32,7 @@ GEM
     fiber-local (1.0.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
+    jwt (2.2.2)
     method_source (1.0.0)
     minitest (5.14.2)
     mustermann (1.1.1)
@@ -37,7 +54,6 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (13.0.3)
-    rpam-ruby19 (1.2.1)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -59,6 +75,7 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.1.0)
       tilt (~> 2.0)
+    slop (4.8.2)
     thread_safe (0.3.6)
     tilt (2.0.10)
     tzinfo (1.2.7)
@@ -71,13 +88,14 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   console
+  flight_auth!
+  flight_configuration!
   pry
   pry-byebug
   puma
   rack-proxy
   rack-test
   rake
-  rpam-ruby19
   rspec
   rspec-collection_matchers
   sinatra

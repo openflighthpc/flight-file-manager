@@ -29,38 +29,41 @@
 
 module FlightFileManager
   class Configuration
-    autoload(:Loader, 'flight_file_manager/configuration/loader')
+    extend FlightConfiguration::RackDSL
 
-    PRODUCTION_PATH = 'etc/flight-file-manager.yaml'
-    PATH_GENERATOR = ->(env) { "etc/flight-file-manager.#{env}.yaml" }
+    root_path File.expand_path('../..', __dir__)
+    application_name 'flight-file-manager-api'
 
     class ConfigError < StandardError; end
 
-    ATTRIBUTES = [
+    [
       {
-        name: 'port',
-        env_var: false,
-        default: 920
+        name: 'bind_address',
+        env_var: true,
+        default: "tcp://127.0.0.1:920"
       },
       {
-        name: 'pidfile',
+        name: 'shared_secret_path',
         env_var: true,
-        default: ->(root) { root.join('var/puma.pid') }
+        default: 'etc/shared-secret.conf',
+        transform: relative_to(root_path)
       },
       {
-        name: 'pam_service',
+        name: 'sso_cookie_name',
         env_var: true,
-        default: 'login'
+        default: 'flight_login'
       },
       {
         name: 'data_dir',
         env_var: true,
-        default: ->(root) { root.join('usr/share') }
+        default: 'usr/share',
+        transform: relative_to(root_path)
       },
       {
         name: 'log_dir',
         env_var: true,
-        default: ->(root) { root.join('var/log') }
+        default: 'var/log',
+        transform: relative_to(root_path)
       },
       {
         name: 'log_level',
@@ -70,13 +73,12 @@ module FlightFileManager
       {
         name: 'cloudcmd_command',
         env_var: true,
-        default: ->(root) do
-          root.join('libexec/cloudcmd.sh').to_path
-        end
+        default: 'libexec/cloudcmd.sh',
+        transform: relative_to(root_path)
       },
       {
         name: 'launch_timeout',
-        env_var: false,
+        env_var: true,
         default: 10
       },
       {
@@ -84,19 +86,10 @@ module FlightFileManager
         env_var: true,
         default: '/files'
       },
-    ]
-    attr_accessor(*ATTRIBUTES.map { |a| a[:name] })
+    ].each { |opts| attribute(opts[:name], **opts) }
 
-    def self.load(root)
-      if ENV['RACK_ENV'] == 'production'
-        Loader.new(root, root.join(PRODUCTION_PATH)).load
-      else
-        paths = [
-          root.join(PATH_GENERATOR.call(ENV['RACK_ENV'])),
-          root.join(PATH_GENERATOR.call("#{ENV['RACK_ENV']}.local")),
-        ]
-        Loader.new(root, paths).load
-      end
+    def auth_decoder
+      @auth_decoder ||= FlightAuth::Builder.new(shared_secret_path)
     end
   end
 end

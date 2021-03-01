@@ -92,12 +92,13 @@ class App < Sinatra::Base
   # Validates the user's credentials from the authorization header
   before do
     next if env['REQUEST_METHOD'] == 'OPTIONS'
-    parts = (env['HTTP_AUTHORIZATION'] || '').chomp.split(' ')
-    raise Unauthorized unless parts.length == 2 && parts.first == 'Basic'
-    username, password = Base64.decode64(parts.last).split(':', 2)
+    auth = FlightFileManager.config.auth_decoder.decode(
+      request.cookies[FlightFileManager.app.config.sso_cookie_name],
+      env['HTTP_AUTHORIZATION']
+    )
+    raise Unauthorized unless auth.valid?
+    username = auth.username
     raise RootForbidden if username == 'root'
-    raise Unauthorized unless username && password
-    raise Unauthorized unless PamAuth.valid?(username, password)
     self.current_user = username
   end
 

@@ -27,17 +27,23 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-require_relative 'config/boot'
+module FlightFileManager
+  autoload(:Configuration, 'flight_file_manager/configuration')
 
-configure do
-  LOGGER = FlightFileManager.logger
-  enable :logging, :dump_errors
-  set :raise_errors, true
+  class << self
+    def app
+      # XXX: Eventually extract this to a Application object when the need arises
+      @app ||= Struct.new(:config).new(
+        Configuration.load
+      )
+    end
+
+    def config
+      app.config
+    end
+
+    def logger
+      @logger ||= Logger.new($stdout, level: config.log_level.to_sym)
+    end
+  end
 end
-
-app = Rack::Builder.new do
-  map('/backend') { run BackendProxy.new }
-  map('/v0') { run App }
-end
-
-run app

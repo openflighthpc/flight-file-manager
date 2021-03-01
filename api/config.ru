@@ -27,9 +27,18 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-require_relative 'boot.rb'
+require 'sinatra'
+require_relative 'config/boot'
 
-port FlightFileManager.app.config.port
-log_requests
-pidfile FlightFileManager.app.config.pidfile
+configure do
+  LOGGER = FlightFileManager.logger
+  enable :logging, :dump_errors
+  set :raise_errors, true
+end
 
+app = Rack::Builder.new do
+  map('/backend') { run BackendProxy.new }
+  map('/v0') { run App }
+end
+
+run app

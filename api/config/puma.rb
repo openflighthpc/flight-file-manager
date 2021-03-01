@@ -27,25 +27,8 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-source "https://rubygems.org"
+require_relative 'boot.rb'
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-
-gem 'activesupport', require: 'active_support'
-gem 'console'
-gem 'rake'
-gem 'rpam-ruby19', require: 'rpam'
-gem 'puma'
-gem 'sinatra'
-gem 'rack-proxy'
-
-group :development, :test do
-  gem 'pry'
-  gem 'pry-byebug'
-end
-
-group :test do
-  gem 'rack-test'
-  gem 'rspec'
-  gem 'rspec-collection_matchers'
-end
+bind FlightFileManager.app.config.bind_address
+log_requests
+tag FlightFileManager.config.class.application_name
