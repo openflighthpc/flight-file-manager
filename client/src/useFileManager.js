@@ -2,9 +2,12 @@ import useCookie from './useCookie';
 import { useBeforeunload } from 'react-beforeunload';
 import { useContext, useEffect, useRef, useState } from 'react';
 
+import {
+  CurrentUserContext,
+  useEventListener,
+} from 'flight-webapp-components';
+
 import addStylesheetRules from './addStylesheetRules';
-import useEventListener from './useEventListener';
-import { Context as CurrentUserContext } from './CurrentUserContext';
 import { useLaunchSession } from './api';
 
 function handleOnLoad(event, setTerminalState) {

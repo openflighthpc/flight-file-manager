@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import './fullscreen.css';
+import 'flight-webapp-components/dist/styles/page-transitions.css'
+import 'flight-webapp-components/dist/styles/flight-webapp-components.css'
+import 'flight-webapp-components/dist/styles/fullscreen.css'
+import 'flight-webapp-components/dist/styles/fa-background.css'
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import shareSessionStorage from './shareSessionStorage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -17,4 +19,3 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals(console.log);
-shareSessionStorage();
