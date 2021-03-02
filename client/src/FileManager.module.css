@@ -1,6 +1,6 @@
 .FileManagerWrapper {
     width: 100%;
-    height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 0px );
+    height: calc( 100vh - 108px - 60px - 24px - 56px - 2px - 10px );
 }
 .FileManager {
     width: 100%;
