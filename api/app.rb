@@ -87,6 +87,31 @@ class App < Sinatra::Base
         url: url_from_port(current_user, port),
       }.to_json
     end
+
+    def set_cloudcmd_cookie(current_user, password)
+      credentials = Base64.encode64("#{current_user}:#{password}")
+
+      response.set_cookie(
+        FlightFileManager.app.config.cloudcmd_cookie_name,
+        domain: FlightFileManager.app.config.cloudcmd_cookie_domain,
+        http_only: true,
+        path: FlightFileManager.app.config.cloudcmd_cookie_path,
+        same_site: :strict,
+        secure: request.scheme == 'https',
+        value: credentials,
+      )
+    end
+
+    def delete_cloudcmd_cookie
+      response.delete_cookie(
+        FlightFileManager.app.config.cloudcmd_cookie_name,
+        domain: FlightFileManager.app.config.cloudcmd_cookie_domain,
+        http_only: true,
+        path: FlightFileManager.app.config.cloudcmd_cookie_path,
+        same_site: :strict,
+        secure: request.scheme == 'https',
+      )
+    end
   end
 
   # Validates the user's credentials from the authorization header
@@ -115,6 +140,7 @@ class App < Sinatra::Base
         "Running cloudcmd server for '#{current_user}' is missing port file. pid=#{cloudcmd.pid}"
       )
       status 500
+      delete_cloudcmd_cookie
       halt({
         errors: ["An unexpected error has occurred!"]
       }.to_json)
@@ -123,6 +149,7 @@ class App < Sinatra::Base
         "Found running cloudcmd server for '#{current_user}' pid=#{cloudcmd.pid} port=#{cloudcmd.port}"
       )
       status 200
+      set_cloudcmd_cookie(current_user, cloudcmd.password)
       halt build_payload(current_user, cloudcmd.password, cloudcmd.port)
     end
 
@@ -137,6 +164,7 @@ class App < Sinatra::Base
     end
 
     status 201
+    set_cloudcmd_cookie(current_user, cloudcmd.password)
     build_payload(current_user, cloudcmd.password, cloudcmd.port)
   end
 
@@ -147,6 +175,7 @@ class App < Sinatra::Base
       halt
     end
     cloudcmd.kill
+    delete_cloudcmd_cookie
     if !cloudcmd.running?
       FlightFileManager.logger.info "Cloudcmd server for '#{current_user}' has shutdown successfully"
       status 204
