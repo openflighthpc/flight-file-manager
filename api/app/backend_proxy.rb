@@ -41,7 +41,7 @@ class BackendProxy < Rack::Proxy
     env["HTTPS"] = "off"
     env["HTTP_X_FORWARDED_SSL"] = "off"
     env["HTTP_X_FORWARDED_SCHEME"] = "http"
-    env["HTTP_AUTHORIZATION"] = auth_from_cookies(env)
+    env["HTTP_AUTHORIZATION"] = "Basic #{credentials_from_cookies(env)}"
 
     env["HTTP_HOST"] = "localhost:#{port}"
     env["SCRIPT_NAME"] = "#{script_name_prefix}#{env["SCRIPT_NAME"]}"
@@ -60,22 +60,32 @@ class BackendProxy < Rack::Proxy
 
   private
 
-  def auth_from_cookies(env)
+  def credentials_from_cookies(env)
     request_cookies = Rack::Utils.parse_cookies(env)
-    request_cookies['auth_token'].chomp
+    request_cookies[FlightFileManager.app.config.cloudcmd_cookie_name].chomp
   end
 
   def current_user(env)
-    credentials = auth_from_cookies(env).split(' ').last
+    credentials = credentials_from_cookies(env)
     username, _ = Base64.decode64(credentials).split(':', 2)
     username
   end
 
   def assert_good_origin(env)
     request = Rack::Request.new(env)
+
+    # Work around Firefox sometimes not including the referer/origin header.
+    # But only for GET requests.
+    if request.referer.nil?
+      if request.request_method == 'GET' 
+        return
+      else
+        raise "Invalid referer #{request.referer}"
+      end
+    end
+
     referer_uri = URI.parse(request.referer)
     target = request.authority
-
     unless [referer_uri.host, "#{referer_uri.host}:#{referer_uri.port}"].include?(target)
       raise "Invalid referer #{request.referer}"
     end

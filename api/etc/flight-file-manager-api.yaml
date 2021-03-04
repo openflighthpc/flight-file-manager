@@ -78,6 +78,30 @@
 # cloudcmd_command: libexec/cloudcmd.sh
 
 #-------------------------------------------------------------------------------
+# Cloudcmd cookie name
+# Specify the name to use for the cloudcmd cookie
+# The environment variable flight_FILE_MANAGER_API_cloudcmd_cookie_name takes
+# precedence
+#-------------------------------------------------------------------------------
+# cloudcmd_cookie_name: flight_file_manager_backend
+
+#-------------------------------------------------------------------------------
+# Cloudcmd cookie domain
+# Specify the domain to use for the cloudcmd cookie
+# The environment variable flight_FILE_MANAGER_API_cloudcmd_cookie_domain
+# takes precedence
+#-------------------------------------------------------------------------------
+# cloudcmd_cookie_domain:
+
+#-------------------------------------------------------------------------------
+# Cloudcmd cookie path
+# Specify the path to use for the cloudcmd cookie
+# The environment variable flight_FILE_MANAGER_API_cloudcmd_cookie_path takes
+# precedence
+#-------------------------------------------------------------------------------
+# cloudcmd_cookie_path: /files/backend
+
+#-------------------------------------------------------------------------------
 # Shared Secret Path
 # The path to where the authentication shared secert is stored
 # The environment variable flight_FILE_MANAGER_API_shared_secret_path takes

@@ -77,6 +77,20 @@ module FlightFileManager
         transform: relative_to(root_path)
       },
       {
+        name: 'cloudcmd_cookie_name',
+        env_var: true,
+        default: 'flight_file_manager_backend',
+      },
+      {
+        name: 'cloudcmd_cookie_domain',
+        env_var: true,
+      },
+      {
+        name: 'cloudcmd_cookie_path',
+        env_var: true,
+        default: '/files/backend',
+      },
+      {
         name: 'launch_timeout',
         env_var: true,
         default: 10
