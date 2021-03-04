@@ -66,12 +66,6 @@ class App < Sinatra::Base
     content_type 'application/json'
   end
 
-  class PamAuth
-    def self.valid?(username, password)
-      Rpam.auth(username, password, service: FlightFileManager.config.pam_service)
-    end
-  end
-
   helpers do
     attr_accessor :current_user
 
