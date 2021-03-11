@@ -7,7 +7,9 @@ function handleOnLoad(event, setTerminalState) {
   const doc = event.target.contentDocument;
   if (doc && doc.body.querySelector('.fm .files')) {
     addStylesheetRules(doc, [
-      ['.fm',               ['height', '100%'], ['margin-top', '0.5em']],
+      ['html',              ['height', 'calc( 100vh - 75px )']],
+      ['body',              ['height', '100%']],
+      ['.fm',               ['height', '100%'],  ['margin-top', '0.5em']],
       ['.fm .panel-single', ['border', 'none'], ['margin', '1px']],
       ['.fm .files',        ['height', '100%'], ['margin-top', '0.25em']],
       ['.fm .fm-header',    ['text-transform', 'capitalize']],

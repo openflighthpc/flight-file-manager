@@ -44,7 +44,7 @@ function Layout({ children, className, onZenChange, terminalState }) {
   }
 
   return (
-    <div className={classNames("overflow-auto", className)}>
+    <div className={classNames("overflow-hidden", className)}>
       <div className="row no-gutters">
         <div className="col">
           <div className="card border-primary">
