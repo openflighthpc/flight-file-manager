@@ -22,9 +22,7 @@ HTTP/2 200 OK
 
 ## POST - /cloudcmd
 
-Create a new cloudcmd session. Return the `port` the cloudcmd server was started on and the `username`/`password` to access it.
-
-A new `cloudcmd` session will not be created if one already exists for the user. Instead a `409 - Conflict` is returned with the existing details.
+Create a new cloudcmd session. Return the `port` the cloudcmd server was started on and the `password` to access it.
 
 ```
 POST /cloudcmd
@@ -34,24 +32,21 @@ Accepts: application/json
 HTTP/2 201 CREATE
 {
   "port": <integer>,
-  "username": <string>,
   "password": <string>
 }
+```
 
-HTTP/2 409 CONFLICT
-{
-  "port": <integer>,
-  "username": <string>,
-  "password": <string>,
-  "errors": [
-    <conflict-message>
-  ]
-}
+The request MAY specify which directory the file manager should be open at with the `dir` query argument. This SHOULD be a relative path from the user's home directory. It SHOULD NOT use the special file path modifiers (e.g. `.`, `..`, `~`, and etc).
+
+```
+POST /cloudcmd?dir=<relative-path>
+Authorization: Basic <base64 username:password>
+Accepts: application/json
 ```
 
 ## DELETE - /cloudcmd
 
-Destroy an existing cloudcmd session. It SHOULD return `201 - ACCEPTED` or `204 - NO CONTENT` under normal operations. It SHALL return `204 - NO CONTENT` if the session is successfully terminated. It SHOULD return `204 - NO CONTENT` if there is no actively running session. It SHALL return `201 - ACCEPTED` when there is a pre-existing `cloudcmd` session which SHOULD exit after the response has been issued.
+Destroy an existing cloudcmd session. It SHOULD return `201 - ACCEPTED` or `204 - NO CONTENT` under normal operations. It SHALL return `204 - NO CONTENT` if the session has successfully terminated. It SHOULD return `204 - NO CONTENT` if there is no actively running session. It SHALL return `201 - ACCEPTED` when there is a pre-existing `cloudcmd` session which SHOULD exit after the response has been issued.
 
 ```
 DELETE /cloudcmd

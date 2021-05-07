@@ -69,16 +69,16 @@ class App < Sinatra::Base
   helpers do
     attr_accessor :current_user
 
-    def url_from_port(current_user, port)
-      # Return a protocol relative URL to the backend server.
+    def build_payload(current_user, password, port, dir)
       mount_point = FlightFileManager.config.mount_point
-      "//#{request.host}:#{request.port}#{mount_point}/backend/#{current_user}"
-    end
-
-    def build_payload(current_user, password, port)
+      url_path = if dir
+                   File.join(mount_point, 'backend', current_user, 'fs', dir)
+                 else
+                   File.join(mount_point, 'backend', current_user)
+                 end
       {
         password: password,
-        url: url_from_port(current_user, port),
+        url: "//#{request.host}:#{request.port}#{url_path}"
       }.to_json
     end
 
@@ -127,6 +127,10 @@ class App < Sinatra::Base
   end
 
   post '/cloudcmd' do
+    # NOTE: The directory *SHOULD* be a relative path as 'cloudcmd' will open it relative
+    # to its root_path (which is the users home directory)
+    dir = params["dir"]
+
     cloudcmd = CloudCmd.new(current_user)
     if cloudcmd.broken?
       # XXX Kill and launch perhaps?
@@ -144,7 +148,7 @@ class App < Sinatra::Base
       )
       status 200
       set_cloudcmd_cookie(current_user, cloudcmd.password)
-      halt build_payload(current_user, cloudcmd.password, cloudcmd.port)
+      halt build_payload(current_user, cloudcmd.password, cloudcmd.port, dir)
     end
 
     cloudcmd.run
@@ -159,7 +163,7 @@ class App < Sinatra::Base
 
     status 201
     set_cloudcmd_cookie(current_user, cloudcmd.password)
-    build_payload(current_user, cloudcmd.password, cloudcmd.port)
+    build_payload(current_user, cloudcmd.password, cloudcmd.port, dir)
   end
 
   delete '/cloudcmd' do
