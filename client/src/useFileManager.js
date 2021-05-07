@@ -35,6 +35,10 @@ export default function useFileManager(containerRef) {
         urlRef.current = responseBody.url;
         containerRef.current.onload = (event) => { handleOnLoad(event, setTerminalState); }
         containerRef.current.src = responseBody.url;
+        // NOTE: useHistory is intentionally not used as it triggers a page reload.
+        //       This requires either the API or client to remember the previously
+        //       submitted directory. Either option causes undesirable behaviour
+        window.history.replaceState(null, "", `${process.env.REACT_APP_MOUNT_PATH}/browse`);
       }
     });
 
