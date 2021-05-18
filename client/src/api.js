@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
 import useFetch from 'use-http';
-import { useLocation } from "react-router-dom";
 
 import { CurrentUserContext } from 'flight-webapp-components';
 
@@ -56,8 +55,7 @@ function useAuthCheck() {
     });
 }
 
-export function useLaunchSession() {
-  const dir = new URLSearchParams(useLocation().search).get('dir')
+export function useLaunchSession(dir) {
   var path
   if (dir) {
     path = `/cloudcmd?dir=${dir}`;
