@@ -99,14 +99,17 @@ class CloudCmd
     end
   end
 
+  def root_dir
+    @root_dir ||= Etc.getpwnam(@user).dir
+  end
+
   private
 
   def cloudcmd_config
-    passwd = Etc.getpwnam(@user)
     mount_point = FlightFileManager.config.mount_point
     {
       prefix: "#{mount_point}/backend/#{@user}",
-      root: passwd.dir,
+      root: root_dir,
       auth: true,
       username: @user,
     }

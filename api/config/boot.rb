@@ -44,6 +44,7 @@ end
 
 # Shared activesupport libraries
 require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/object/blank'
 
 lib = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)

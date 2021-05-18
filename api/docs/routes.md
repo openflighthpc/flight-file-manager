@@ -22,7 +22,10 @@ HTTP/2 200 OK
 
 ## POST - /cloudcmd
 
-Create a new cloudcmd session. Return the `port` the cloudcmd server was started on and the `password` to access it.
+Create a new cloudcmd session. Returns the `password` to access the cloudcmd session and the `url` fragment where it is being
+hosted.
+
+NOTE: The `url` fragment does not contain the hypertext protocol used to access the service. It will need to be prefixed with either `http:` or `https:` before accessing the service.
 
 ```
 POST /cloudcmd
@@ -31,18 +34,23 @@ Accepts: application/json
 
 HTTP/2 201 CREATE
 {
-  "port": <integer>,
-  "password": <string>
+  "password": <string>,
+  "url": <string>
 }
 ```
 
-The request MAY specify which directory the file manager should be open at with the `dir` query argument. This SHOULD be a relative path from the user's home directory. It SHOULD NOT use the special file path modifiers (e.g. `.`, `..`, `~`, and etc).
+The request MAY specify which directory the file manager should be open at with the `dir` query argument. The `dir` MUST be one of the following:
+1. An absolute path to the user's home directory or sub-directories,
+2. A relative path from the user's home directory that meets the first condition when expanded.
+
+`422 Unprocessable Entity` SHALL be returned if the directory is invalid.
 
 ```
 POST /cloudcmd?dir=<relative-path>
 Authorization: Basic <base64 username:password>
 Accepts: application/json
 ```
+
 
 ## DELETE - /cloudcmd
 
