@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import addStylesheetRules from './addStylesheetRules';
 import { useLaunchSession } from './api';
-import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom"
 
 function handleOnLoad(event, setTerminalState) {
@@ -24,9 +23,9 @@ function handleOnLoad(event, setTerminalState) {
 }
 
 export default function useFileManager(containerRef) {
-  const dir = new URLSearchParams(useLocation().search).get('dir')
   const history = useHistory();
-  const { post: launchSession, response } = useLaunchSession(dir);
+  const dirRef = useRef(new URLSearchParams(history.location.search).get('dir'));
+  const { post: launchSession, response } = useLaunchSession(dirRef.current);
   const urlRef = useRef(null);
   // Possible states are `initialising`, `connected`, `failed`.
   const [ terminalState, setTerminalState ] = useState('initialising');
@@ -39,18 +38,23 @@ export default function useFileManager(containerRef) {
         urlRef.current = responseBody.url;
         containerRef.current.onload = (event) => { handleOnLoad(event, setTerminalState); }
         containerRef.current.src = responseBody.url;
-        // NOTE: useHistory is intentionally not used as it triggers a page reload
-        window.history.replaceState(null, "", `${process.env.REACT_APP_MOUNT_PATH}/browse`);
 
-      // Trigger a page reload without the directory on error
-      // This *should* navigate the user to their cloudcmd root directory
-      } else if (dir) {
-        history.replace('/browse');
+      } else if (dirRef.current) {
+        // The directory we used was no good.  Let's try the default directory
+        // instead.  The `history.replace()` below will cause the component to
+        // re-render.
+        dirRef.current = null;
+        // XXX Display an error message that the directory could not be found.
+        // Perhaps a useToast toast.
 
-      // XXX: What should happen if the error persists? Currently it just hangs
       } else {
+        // XXX: What should happen if the error persists? Currently it just hangs.
         // NOOP - ¯\_(ツ)_/¯
       }
+
+      // In all cases clear the query string.  This causes the component to
+      // rerender if the query string has changed.
+      history.replace({ query: '' });
     });
 
     // We're expecting `response` to change and don't want to re-run the hook
