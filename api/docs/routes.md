@@ -39,18 +39,17 @@ HTTP/2 201 CREATE
 }
 ```
 
-The request MAY specify which directory the file manager should be open at with the `dir` query argument. The `dir` MUST be one of the following:
+The request MAY specify which directory the file manager should be opened at with the `dir` query argument. The `dir` MUST be one of the following:
 1. An absolute path to the user's home directory or sub-directories,
 2. A relative path from the user's home directory that meets the first condition when expanded.
 
 `422 Unprocessable Entity` SHALL be returned if the directory is invalid.
 
 ```
-POST /cloudcmd?dir=<relative-path>
+POST /cloudcmd?dir=<path>
 Authorization: Basic <base64 username:password>
 Accepts: application/json
 ```
-
 
 ## DELETE - /cloudcmd
 

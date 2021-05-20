@@ -147,7 +147,7 @@ class App < Sinatra::Base
 
       # Confirm the path is within cloudcmd's root_dir
       rel_path = abs_path.relative_path_from(cloudcmd.root_dir).to_s
-      if /\A..\/.*/.match?(rel_path)
+      if /\A\.\.(\/.*)?\Z/.match?(rel_path)
         status 422
         halt({
           pointer: 'query.dir',
