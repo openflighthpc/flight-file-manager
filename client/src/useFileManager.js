@@ -22,10 +22,20 @@ function handleOnLoad(event, setTerminalState) {
   }
 }
 
-export default function useFileManager(containerRef) {
+function useInitialDirectory() {
   const history = useHistory();
   const dirRef = useRef(new URLSearchParams(history.location.search).get('dir'));
-  const { post: launchSession, response } = useLaunchSession(dirRef.current);
+
+  return {
+    dir: dirRef.current,
+    setDirToDefault: () => { dirRef.current = null },
+    clearSearchParams: () => history.replace({ query: '' }),
+  };
+}
+
+export default function useFileManager(containerRef) {
+  const { dir, setDirToDefault, clearSearchParams } = useInitialDirectory();
+  const { post: launchSession, response } = useLaunchSession(dir);
   const urlRef = useRef(null);
   // Possible states are `initialising`, `connected`, `failed`.
   const [ terminalState, setTerminalState ] = useState('initialising');
@@ -39,11 +49,11 @@ export default function useFileManager(containerRef) {
         containerRef.current.onload = (event) => { handleOnLoad(event, setTerminalState); }
         containerRef.current.src = responseBody.url;
 
-      } else if (dirRef.current) {
+      } else if (dir) {
         // The directory we used was no good.  Let's try the default directory
         // instead.  The `history.replace()` below will cause the component to
         // re-render.
-        dirRef.current = null;
+        setDirToDefault()
         // XXX Display an error message that the directory could not be found.
         // Perhaps a useToast toast.
 
@@ -54,7 +64,7 @@ export default function useFileManager(containerRef) {
 
       // In all cases clear the query string.  This causes the component to
       // rerender if the query string has changed.
-      history.replace({ query: '' });
+      clearSearchParams();
     });
 
     // We're expecting `response` to change and don't want to re-run the hook
