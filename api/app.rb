@@ -77,9 +77,11 @@ class App < Sinatra::Base
                  else
                    File.join(mount_point, 'backend', current_user)
                  end
+      port = request.env['X_REAL_PORT']
+      port = request.port if port.nil? || port == ""
       {
         password: password,
-        url: "//#{request.host}:#{request.port}#{url_path}"
+        url: "//#{request.host}:#{port}#{url_path}"
       }.to_json
     end
 
