@@ -30,6 +30,7 @@
 require 'sinatra/base'
 require 'securerandom'
 require_relative 'app/errors'
+require 'pathname'
 
 class App < Sinatra::Base
   configure do
@@ -69,16 +70,18 @@ class App < Sinatra::Base
   helpers do
     attr_accessor :current_user
 
-    def url_from_port(current_user, port)
-      # Return a protocol relative URL to the backend server.
+    def build_payload(current_user, password, port, dir)
       mount_point = FlightFileManager.config.mount_point
-      "//#{request.host}:#{request.port}#{mount_point}/backend/#{current_user}"
-    end
-
-    def build_payload(current_user, password, port)
+      url_path = if dir
+                   File.join(mount_point, 'backend', current_user, 'fs', dir)
+                 else
+                   File.join(mount_point, 'backend', current_user)
+                 end
+      port = request.env['HTTP_X_REAL_PORT']
+      port = request.port if port.nil? || port == ""
       {
         password: password,
-        url: url_from_port(current_user, port),
+        url: "//#{request.host}:#{port}#{url_path}"
       }.to_json
     end
 
@@ -128,6 +131,47 @@ class App < Sinatra::Base
 
   post '/cloudcmd' do
     cloudcmd = CloudCmd.new(current_user)
+
+    dir = if params["dir"].present?
+      # Resolve the provided directory into an absolute path, when required
+      # NOTE: expand_path does not modify the path if it is already absolute
+      abs_path = Pathname.new(params["dir"]).expand_path(cloudcmd.root_dir)
+
+      # Attempt to resolve symlinks and any .. sections
+      # NOTE: realpath will error if the file doesn't exist, in this case cleanpath
+      #       is used instead. This is done to prevent the dir query being used to
+      #       poll the file system.
+      abs_path, missing = if abs_path.directory?
+                            [abs_path.realpath, false]
+                          else
+                            [abs_path.cleanpath, true]
+                          end
+
+      # Confirm the path is within cloudcmd's root_dir
+      rel_path = abs_path.relative_path_from(cloudcmd.root_dir).to_s
+      if /\A\.\.(\/.*)?\Z/.match?(rel_path)
+        status 422
+        halt({
+          pointer: 'query.dir',
+          error: "The provided directory is outside the root directory!"
+        }.to_json)
+      end
+
+      # Error if the path isn't a directory
+      if missing
+        status 422
+        halt({
+          pointer: 'query.dir',
+          error: "The provided directory does not exist!"
+        }.to_json)
+      end
+
+      # Return the relative path
+      rel_path
+    else
+      nil
+    end
+
     if cloudcmd.broken?
       # XXX Kill and launch perhaps?
       FlightFileManager.logger.error(
@@ -144,7 +188,7 @@ class App < Sinatra::Base
       )
       status 200
       set_cloudcmd_cookie(current_user, cloudcmd.password)
-      halt build_payload(current_user, cloudcmd.password, cloudcmd.port)
+      halt build_payload(current_user, cloudcmd.password, cloudcmd.port, dir)
     end
 
     cloudcmd.run
@@ -159,7 +203,7 @@ class App < Sinatra::Base
 
     status 201
     set_cloudcmd_cookie(current_user, cloudcmd.password)
-    build_payload(current_user, cloudcmd.password, cloudcmd.port)
+    build_payload(current_user, cloudcmd.password, cloudcmd.port, dir)
   end
 
   delete '/cloudcmd' do

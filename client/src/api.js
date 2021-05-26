@@ -55,9 +55,16 @@ function useAuthCheck() {
     });
 }
 
-export function useLaunchSession() {
+export function useLaunchSession(dir) {
+  var path
+  if (dir) {
+    path = `/cloudcmd?dir=${dir}`;
+  } else {
+    path = "/cloudcmd";
+  }
+
   const request = useFetch(
-    "/cloudcmd",
+    path,
     {
       method: 'post',
       headers: {

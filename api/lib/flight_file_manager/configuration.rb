@@ -56,7 +56,7 @@ module FlightFileManager
       {
         name: 'data_dir',
         env_var: true,
-        default: 'usr/share',
+        default: 'var/lib',
         transform: relative_to(root_path)
       },
       {
