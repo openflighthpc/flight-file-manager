@@ -27,7 +27,8 @@
 
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 BACKEND="${SCRIPT_DIR}"/../../backend/src/main.js
-NODE=node
-# NODE=.nvm/versions/node/v14.15.4/bin/node
+#NODE=node
+#NODE=.nvm/versions/node/v14.15.4/bin/node
+NODE=/opt/flight/bin/node
 
 "${NODE}" "${BACKEND}" "$@"

@@ -1,6 +1,3 @@
 {
-  "clusterName": "File Manager Test",
-  "clusterDescription": "A description of this cluster.",
-  "clusterLogo": "https://s3.eu-west-2.amazonaws.com/alces-flight-center/logos/Alces_flight_logo_horiz.png",
-  "apiRootUrl": "/files/api/v0"
+  "apiRootUrl": "/dev/files/api/v0"
 }
