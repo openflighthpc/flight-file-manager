@@ -22,10 +22,8 @@ HTTP/2 200 OK
 
 ## POST - /cloudcmd
 
-Create a new cloudcmd session. Returns the `password` to access the cloudcmd session and the `url` fragment where it is being
-hosted.
+Create a new cloudcmd session. Returns the `password` to access the cloudcmd session and the protocol relative `url` to where it is being hosted.
 
-NOTE: The `url` fragment does not contain the hypertext protocol used to access the service. It will need to be prefixed with either `http:` or `https:` before accessing the service.
 
 ```
 POST /cloudcmd
