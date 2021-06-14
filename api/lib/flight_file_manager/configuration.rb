@@ -31,6 +31,8 @@ module FlightFileManager
   class Configuration
     extend FlightConfiguration::DSL
 
+    RC = Dotenv.parse(File.join(Flight.root, 'etc/web-suite.rc'))
+
     application_name 'file-manager-api'
 
     class ConfigError < StandardError; end
@@ -83,6 +85,7 @@ module FlightFileManager
       {
         name: 'cloudcmd_cookie_domain',
         env_var: true,
+        default: ->() { RC['flight_WEB_SUITE_domain'] }
       },
       {
         name: 'cloudcmd_cookie_path',
