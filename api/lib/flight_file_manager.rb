@@ -27,6 +27,8 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
+require 'flight'
+
 module FlightFileManager
   autoload(:Configuration, 'flight_file_manager/configuration')
 

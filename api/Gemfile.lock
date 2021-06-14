@@ -29,6 +29,7 @@ GEM
     console (1.10.1)
       fiber-local
     diff-lcs (1.4.4)
+    dotenv (2.7.6)
     fiber-local (1.0.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
@@ -88,6 +89,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   console
+  dotenv
   flight_auth!
   flight_configuration!
   pry

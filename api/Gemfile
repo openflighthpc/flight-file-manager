@@ -35,6 +35,7 @@ gem 'activesupport', require: 'active_support'
 gem 'console'
 gem 'flight_auth', github: "openflighthpc/flight_auth", branch: "297cb7241b820d334e5d593c4e237a81b83a9995"
 gem 'flight_configuration', github: 'openflighthpc/flight_configuration', branch: '0.3.0'
+gem 'dotenv'
 gem 'rake'
 gem 'puma'
 gem 'sinatra', require: 'sinatra/base'
