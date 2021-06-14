@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 #==============================================================================
 # Copyright (C) 2021-present Alces Flight Ltd.
@@ -27,22 +26,28 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-if ENV['RACK_ENV'] == 'production'
-  raise 'The generate-token script is a development only tool!'
+module Flight
+  class << self
+    def config
+      @config ||= FlightFileManager::Configuration.load
+    end
+
+    def root
+      @root ||= if env.production? && ENV["flight_ROOT"].present?
+        File.expand_path(ENV["flight_ROOT"])
+      else
+        File.expand_path('..', __dir__)
+      end
+    end
+
+    def env
+      @env ||= ActiveSupport::StringInquirer.new(
+        ENV['RACK_ENV'].presence || "production"
+      )
+    end
+
+    def logger
+      @logger ||= Logger.new($stdout, level: config.log_level.to_sym)
+    end
+  end
 end
-
-ENV['RACK_ENV'] ||= 'development'
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
-
-require 'rubygems'
-require 'bundler'
-Bundler.require(:default)
-
-lib = File.expand_path('../lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-
-require 'active_support/core_ext/hash/keys'
-require 'flight_file_manager'
-
-FlightAuth::CLI.new(Flight.config.shared_secret_path, 'file-manager-api-dev')
-               .run(*ARGV)

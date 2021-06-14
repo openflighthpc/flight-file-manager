@@ -45,14 +45,18 @@ end
 # Shared activesupport libraries
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/object/blank'
+require 'active_support/string_inquirer'
+require 'active_support/core_ext/module/delegation'
 
 lib = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
+require 'flight'
+
 require 'flight_file_manager'
 
 # Ensures the config has been loaded
-FlightFileManager.config.auth_decoder
+Flight.config.auth_decoder
 
 require_relative '../app'
 require_relative '../app/backend_proxy'

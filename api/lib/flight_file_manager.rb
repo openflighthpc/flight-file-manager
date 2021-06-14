@@ -31,19 +31,6 @@ module FlightFileManager
   autoload(:Configuration, 'flight_file_manager/configuration')
 
   class << self
-    def app
-      # XXX: Eventually extract this to a Application object when the need arises
-      @app ||= Struct.new(:config).new(
-        Configuration.load
-      )
-    end
-
-    def config
-      app.config
-    end
-
-    def logger
-      @logger ||= Logger.new($stdout, level: config.log_level.to_sym)
-    end
+    delegate :config, :logger, to: Flight
   end
 end

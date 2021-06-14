@@ -29,10 +29,9 @@
 
 module FlightFileManager
   class Configuration
-    extend FlightConfiguration::RackDSL
+    extend FlightConfiguration::DSL
 
-    root_path File.expand_path('../..', __dir__)
-    application_name 'flight-file-manager-api'
+    application_name 'file-manager-api'
 
     class ConfigError < StandardError; end
 
