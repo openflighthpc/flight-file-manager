@@ -57,13 +57,13 @@ module FlightFileManager
       {
         name: 'data_dir',
         env_var: true,
-        default: 'var/lib',
+        default: 'var/lib/file-manager-api',
         transform: relative_to(root_path)
       },
       {
         name: 'log_dir',
         env_var: true,
-        default: 'var/log',
+        default: 'var/log/file-manager-api',
         transform: relative_to(root_path)
       },
       {
@@ -74,7 +74,7 @@ module FlightFileManager
       {
         name: 'cloudcmd_command',
         env_var: true,
-        default: 'libexec/cloudcmd.sh',
+        default: 'libexec/file-manager-api/cloudcmd.sh',
         transform: relative_to(root_path)
       },
       {

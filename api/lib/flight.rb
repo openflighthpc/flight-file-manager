@@ -26,6 +26,9 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
+require 'active_support/core_ext/object/blank'
+require 'active_support/string_inquirer'
+
 module Flight
   class << self
     def config
