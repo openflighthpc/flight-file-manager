@@ -1,139 +1,139 @@
-.icon-help::before {
+.fm .icon-help::before {
     font-family : 'Fontello';
     content     : '\e801  ';
 }
 
-.icon-rename::before {
+.fm .icon-rename::before {
     font-family : 'Fontello';
     content     : '\e802  ';
 }
 
-.icon-view::before {
+.fm .icon-view::before {
     font-family : 'Fontello';
     content     : '\e803  ';
 }
 
-.icon-edit::before {
+.fm .icon-edit::before {
     font-family : 'Fontello';
     content     : '\e804  ';
 }
 
-.icon-copy::before {
+.fm .icon-copy::before {
     font-family : 'Fontello';
     content     : '\e805  ';
 }
 
-.icon-move::before {
+.fm .icon-move::before {
     font-family : 'Fontello';
     content     : '\e806  ';
 }
 
-.icon-directory {
+.fm .icon-directory {
     font-family : 'Fontello';
     content     : '\e807  ';
 }
 
-.icon-delete::before {
+.fm .icon-delete::before {
     font-family : 'Fontello';
     content     : '\e808  ';
 }
 
-.icon-menu::before {
+.fm .icon-menu::before {
     font-family : 'Fontello';
     content     : '\e809  ';
 }
 
-.icon-config::before {
+.fm .icon-config::before {
     font-family : 'Fontello';
     content     : '\e80a  ';
 }
 
-.icon-console::before {
+.fm .icon-console::before {
     font-family : 'Fontello';
     content     : '\e80b  ';
 }
 
-.icon-contact::before {
+.fm .icon-contact::before {
     font-family : 'Fontello';
     content     : '\e80c  ';
 }
 
-.icon-file::before, {
+.fm .icon-file::before, {
     font-family : 'Fontello';
     content     : '\e80d  ';
 }
 
-.icon-upload-to-cloud::before {
+.fm .icon-upload-to-cloud::before {
     font-family : 'Fontello';
     content     : '\e80e  ';
 }
 
-.icon-upload-from-cloud::before {
+.fm .icon-upload-from-cloud::before {
     font-family : 'Fontello';
     content     : '\e80f  ';
 }
 
-.icon-download::before {
+.fm .icon-download::before {
     font-family : 'Fontello';
     content     : '\e810  ';
 }
 
-.icon-new::before {
+.fm .icon-new::before {
     font-family : 'Fontello';
     content     : '\e811  ';
 }
 
-.icon-unselect-all::before {
+.fm .icon-unselect-all::before {
     font-family : 'Fontello';
     content     : '\e812  ';
 }
 
-.icon-pack::before {
+.fm .icon-pack::before {
     font-family : 'Fontello';
     content     : '\e813  ';
 }
 
-.icon-extract::before {
+.fm .icon-extract::before {
     font-family : 'Fontello';
     content     : '\e814  ';
 }
 
-.icon-copy-to-clipboard::before {
+.fm .icon-copy-to-clipboard::before {
     font-family : 'Fontello';
     content     : '\e815  ';
 }
 
-.icon-refresh::before {
+.fm .icon-refresh::before {
     font-family : 'Fontello';
     content     : '\e816  ';
 }
 
-.icon-cut::before {
+.fm .icon-cut::before {
     font-family : 'Fontello';
     content     : '\e817  ';
 }
 
-.icon-paste::before {
+.fm .icon-paste::before {
     font-family : 'Fontello';
     content     : '\e818  ';
 }
 
-.icon-upload::before {
+.fm .icon-upload::before {
     font-family : 'Fontello';
     content     : '\e819  ';
 }
 
-.icon-log-out::before {
+.fm .icon-log-out::before {
     font-family : 'Fontello';
     content     : '\e81a  ';
 }
 
-.icon-terminal::before {
+.fm .icon-terminal::before {
     font-family : 'Fontello';
     content     : '\e81b  ';
 }
 
-.icon-user-menu::before {
+.fm .icon-user-menu::before {
     font-family : 'Fontello';
     content     : '\e81c  ';
 }

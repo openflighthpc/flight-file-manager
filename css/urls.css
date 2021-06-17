@@ -33,35 +33,35 @@
     font-weight     : 400;
 }
 
-.directory {
+.fm .directory {
     background-image: url(../img/directory.png);
 }
 
-.directory-link {
+.fm .directory-link {
     background-image: url(../img/directory-link.png);
 }
 
-.file {
+.fm .file {
     background-image: url(../img/file.png);
 }
 
-.file-link {
+.fm .file-link {
     background-image: url(../img/file-link.png);
 }
 
-.archive {
+.fm .archive {
     background-image: url(../img/archive.png);
 }
 
-.archive-link {
+.fm .archive-link {
     background-image: url(../img/archive-link.png);
 }
 
-.loading-svg {
+.fm .loading-svg {
     background: url(../img/spinner.svg);
 }
 
-.loading-gif {
+.fm .loading-gif {
     background: url(../img/spinner.gif);
 }
 

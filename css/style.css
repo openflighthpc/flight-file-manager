@@ -3,31 +3,31 @@
     --color-transparent: rgba(49, 123, 249, 0.4);
 }
 
-html {
-    height           : 94%;
-}
+/* html { */
+/*     height           : 94%; */
+/* } */
 
-body {
-    width               : 100%;
-    height              : 95%;
-    overflow            : hidden;
-    background-color    : white;
-}
+/* body { */
+/*     width               : 100%; */
+/*     height              : 95%; */
+/*     overflow            : hidden; */
+/*     background-color    : white; */
+/* } */
 
-body, pre, code {
+.fm pre, .fm code {
     font-family     : 'Droid Sans Mono', 'Ubuntu Mono', 'Consolas', monospace;
     font-size       : 16px;
 }
 
-.hidden {
+.fm .hidden {
     visibility: hidden;
 }
 
-.none {
+.fm .none {
     display: none;
 }
 
-.fm, .keyspanel {
+.fm, .fm .keyspanel {
     cursor              : default;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-select : none;
@@ -37,7 +37,7 @@ body, pre, code {
     user-select         : none;
 }
 
-.links {
+.fm .links {
     -webkit-user-select : initial;
     -moz-user-select    : initial;
     -ms-user-select     : initial;
@@ -45,35 +45,35 @@ body, pre, code {
     user-select         : text;
 }
 
-.panel, .cmd-button {
+.fm .panel, .fm .cmd-button {
     border: 1px solid;
     border-color: var(--color-transparent);
 }
 
-.icon {
+.fm .icon {
     margin-left : 0.5%;
     cursor: default;
 }
 
-.icon:hover {
+.fm .icon:hover {
     cursor: default;
 }
 
-.path-icon {
+.fm .path-icon {
     position: relative;
     color: #222;
 }
 
-.path-icon:active {
+.fm .path-icon:active {
     top: 1px;
 }
 
-.path-icon:hover {
+.fm .path-icon:hover {
     color : #06e;
     cursor: pointer;
 }
 
-.error::before {
+.fm .error::before {
     font-family : 'Fontello';
     font-size   : 14px;
     color       : rgb(222, 41, 41);
@@ -81,7 +81,7 @@ body, pre, code {
     content     : '\e800';
 }
 
-.loading {
+.fm .loading {
     position        : relative;
     display         : inline-block;
     width           : 16px;
@@ -89,7 +89,7 @@ body, pre, code {
     vertical-align  : middle;
 }
 
-.loading::after {
+.fm .loading::after {
     position    : relative;
     bottom      : 5px;
     left        : 16px;
@@ -98,7 +98,7 @@ body, pre, code {
     content     : attr(data-progress);
 }
 
-.cmd-button {
+.fm .cmd-button {
     width: 5%;
     height: 30px;
     margin: 20px 2px 0;
@@ -107,35 +107,35 @@ body, pre, code {
     transition: ease 0.1s;
 }
 
-.cmd-button:hover {
+.fm .cmd-button:hover {
     border: 1px solid;
     transition: ease 0.5s;
 }
 
-.cmd-button:active {
+.fm .cmd-button:active {
     color: white;
     background-color: var(--color);
     transition: ease 0.1s;
 }
 
-.cmd-button:focus {
+.fm .cmd-button:focus {
     outline: 0;
 }
 
-a {
+.fm a {
     text-decoration: none;
 }
 
-a:hover, a:active {
+.fm a:hover, .fm a:active {
     color: #06e;
     text-decoration: none;
 }
 
-.links a {
+.fm .links a {
     color: red;
 }
 
-.mini-icon {
+.fm .mini-icon {
     position: relative;
     top: 2px;
     /* отступ перед картинкой
@@ -155,70 +155,70 @@ a:hover, a:active {
     margin: 26px auto 0;
 }
 
-.fm-header {
+.fm .fm-header {
     font-weight: bold;
 }
 
-.panel-left {
+.fm .panel-left {
     float: left;
 }
 
-.current-file {
+.fm .current-file {
     box-shadow: 0 0 0 1px var(--color-transparent) inset;
 }
 
-.cut-file {
+.fm .cut-file {
     opacity: 0.7;
 }
 
-.selected-file, .selected-file .name > a {
+.fm .selected-file, .fm .selected-file .fm .name > a {
     color: rgb(254, 159, 224);
 }
 
-.panel-right {
+.fm .panel-right {
     float: right;
 }
 
-.panel {
+.fm .panel {
     width: 46%;
     height: 98%;
     padding: 1%;
 }
 
-.panel-single {
+.fm .panel-single {
     width: 98%;
 }
 
-.selected-panel {
+.fm .selected-panel {
     border-color: rgba(254, 159, 224, .40);
 }
 
-.keyspanel {
+.fm .keyspanel {
     text-align: center;
 }
 
-.name {
+.fm .name {
     float: left;
     width: 26%;
 }
 
-.name a:hover {
+.fm .name a:hover {
     cursor: default;
 }
 
-.size {
+.fm .size {
     float: left;
     width: 12%;
     margin-right: 27px;
     text-align: right;
 }
 
-.date {
+.fm .date {
     float: left;
     width: 19%;
 }
 
-.owner {
+.fm .owner {
     display         : inline-block;
     width           : 13%;
     /* when inline-block
@@ -229,18 +229,18 @@ a:hover, a:active {
     vertical-align  : top;
 }
 
-.mode {
+.fm .mode {
     float: right;
     width: 18%;
 }
 
-.reduce-text {
+.fm .reduce-text {
     overflow        : hidden;
     text-overflow   : ellipsis;
     white-space     : nowrap;
 }
 
-.files {
+.fm .files {
     height: 95%;
     padding: 0;
     margin: 0;
@@ -249,7 +249,7 @@ a:hover, a:active {
     -webkit-overflow-scrolling: touch;
 }
 
-.files li {
+.fm .files li {
     overflow: hidden;
 }
 

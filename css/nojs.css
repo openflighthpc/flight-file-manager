@@ -1,8 +1,8 @@
-.path-icon, .keyspanel {
+.fm .path-icon, .fm .keyspanel {
     display: none;
 }
 
-.links {
+.fm .links {
     margin-left: 16px;
 }
 
@@ -10,14 +10,14 @@
     height: 100%;
 }
 
-.panel-right {
+.fm .panel-right {
     display: none;
 }
 
-.panel-left {
+.fm .panel-left {
     width: 98%;
 }
 
-.name a:hover {
+.fm .name a:hover {
     cursor: pointer;
 }
