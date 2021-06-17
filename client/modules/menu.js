@@ -125,7 +125,6 @@ function getMenuData(isAuth) {
         'Upload': () => {
             CloudCmd.Upload.show();
         },
-        'Upload From Cloud': uploadFromCloud,
         '(Un)Select All': DOM.toggleAllSelectedFiles,
     };
     
@@ -160,7 +159,6 @@ function getFileMenuData() {
             CloudCmd.Operation.show('extract');
         },
         'Download': preDownload,
-        'Upload To Cloud': uploadTo('Cloud'),
         'Cut': () => {
             isCurrent(Buffer.cut, alertNoFiles);
         },
