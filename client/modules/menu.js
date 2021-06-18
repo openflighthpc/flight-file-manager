@@ -115,30 +115,17 @@ function getOptions({type}) {
     return options;
 }
 
-function getMenuData(isAuth) {
-    const menu = {
-        'Paste': Buffer.paste,
+function getNewMenuItems() {
+    return {
         'New': {
             File: DOM.promptNewFile,
             Directory: DOM.promptNewDir,
         },
-        'Upload': () => {
-            CloudCmd.Upload.show();
-        },
-        '(Un)Select All': DOM.toggleAllSelectedFiles,
     };
-    
-    if (isAuth)
-        menu['Log Out'] = CloudCmd.logOut;
-    
-    return menu;
 }
 
-function getFileMenuData() {
-    const isAuth = CloudCmd.config('auth');
-    
-    const menuBottom = getMenuData(isAuth);
-    const menuTop = {
+function getFileOperationMenuItems() {
+  return {
         'View': () => {
             CloudCmd.View.show();
         },
@@ -152,25 +139,86 @@ function getFileMenuData() {
         'Delete': () => {
             CloudCmd.Operation.show('delete');
         },
+  };
+}
+
+function getCopyPasteMenuItems(isFileMenu) {
+  let cutCopy = {};
+  if (isFileMenu) {
+    cutCopy = {
+      'Cut': () => {
+        isCurrent(Buffer.cut, alertNoFiles);
+      },
+      'Copy': () => {
+        isCurrent(Buffer.copy, alertNoFiles);
+      },
+    };
+  }
+
+  return {
+    ...cutCopy,
+    'Paste': Buffer.paste,
+  };
+}
+
+function getUploadDownloadMenuItems(isFileMenu) {
+  let download = {};
+  if (isFileMenu) {
+    download = {
+      'Download': preDownload,
+    };
+  }
+
+  return {
+    'Upload': () => {
+      CloudCmd.Upload.show();
+    },
+    ...download,
+  };
+}
+
+function getPackExtractMenuItems() {
+  return {
         'Pack': () => {
             CloudCmd.Operation.show('pack');
         },
         'Extract': () => {
             CloudCmd.Operation.show('extract');
         },
-        'Download': preDownload,
-        'Cut': () => {
-            isCurrent(Buffer.cut, alertNoFiles);
-        },
-        'Copy': () => {
-            isCurrent(Buffer.copy, alertNoFiles);
-        },
+  };
+}
+
+function getSelectionMenuItems() {
+  return {
+    '(Un)Select All': DOM.toggleAllSelectedFiles,
+  };
+}
+
+function getMenuData(isAuth) {
+    const menu = {
+      ...getNewMenuItems(),
+      ...getCopyPasteMenuItems(false),
+      ...getUploadDownloadMenuItems(false),
+      ...getSelectionMenuItems(),
     };
     
+    if (isAuth)
+        menu['Log Out'] = CloudCmd.logOut;
+    
+    return menu;
+}
+
+function getFileMenuData() {
+    const isAuth = CloudCmd.config('auth');
+
     const menuDataFile = {
-        ...menuTop,
-        ...menuBottom,
-    };
+      ...getNewMenuItems(),
+      ...getFileOperationMenuItems(),
+      ...getCopyPasteMenuItems(true),
+      ...getUploadDownloadMenuItems(true),
+      ...getPackExtractMenuItems(),
+      ...getSelectionMenuItems(),
+    }
     
     return {
         isAuth,
