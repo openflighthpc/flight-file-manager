@@ -302,6 +302,7 @@ function uploadFromCloud() {
     });
 }
 
+module.exports.preDownload = preDownload;
 function preDownload() {
     download(config('packer'));
 }
