@@ -46,7 +46,7 @@ module Flight
 
     def env
       @env ||= ActiveSupport::StringInquirer.new(
-        ENV['RACK_ENV'].presence || "production"
+        ENV['RACK_ENV'].presence || "development"
       )
     end
 
