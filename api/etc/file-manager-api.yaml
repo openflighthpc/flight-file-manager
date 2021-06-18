@@ -73,12 +73,8 @@
 # all other string interpolation/ variables have been disabled. Each argument is
 # interpreted as a literal string and should not be quoted.
 #
-#>>path<<
-# The path maybe absolute or relative. In production, relative paths will be
-# expanded from flight_ROOT (when set).
-#
-# In non-production environment (or when flight_ROOT is unset), relative
-# paths will be expanded from the install directory.
+# Relative paths are expanded from flight_ROOT (or the install directory,
+# if flight_ROOT is unset).
 #-------------------------------------------------------------------------------
 # cloudcmd_command: libexec/file-manager-api/cloudcmd.sh
 
@@ -126,12 +122,8 @@
 # Specify the directory that internal runtime data
 # The environment variable flight_FILE_MANAGER_API_data_dir takes precedence
 #
-#>>path<<
-# The path maybe absolute or relative. In production, relative paths will be
-# expanded from flight_ROOT (when set).
-#
-# In non-production environment (or when flight_ROOT is unset), relative
-# paths will be expanded from the install directory.
+# Relative paths are expanded from flight_ROOT (or the install directory,
+# if flight_ROOT is unset).
 #-------------------------------------------------------------------------------
 # data_dir: var/lib/file-manager-api
 
@@ -140,12 +132,8 @@
 # Specify the directory log files are stored within
 # The environment variable flight_FILE_MANAGER_API_log_dir takes precedence
 #
-#>>path<<
-# The path maybe absolute or relative. In production, relative paths will be
-# expanded from flight_ROOT (when set).
-#
-# In non-production environment (or when flight_ROOT is unset), relative
-# paths will be expanded from the install directory.
+# Relative paths are expanded from flight_ROOT (or the install directory,
+# if flight_ROOT is unset).
 #-------------------------------------------------------------------------------
 # log_dir: var/log/file-manager-api
 
