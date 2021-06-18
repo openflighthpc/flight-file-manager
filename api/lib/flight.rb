@@ -34,6 +34,7 @@ module Flight
     def config
       @config ||= FlightFileManager::Configuration.load
     end
+    alias_method :load_configuration, :config
 
     def root
       @root ||= if env.production? && ENV["flight_ROOT"].present?

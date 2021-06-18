@@ -27,9 +27,12 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
+require 'active_model'
+
 module FlightFileManager
   class Configuration
     extend FlightConfiguration::DSL
+    include ActiveModel::Validations
 
     RC = Dotenv.parse(File.join(Flight.root, 'etc/web-suite.rc'))
 
@@ -103,6 +106,13 @@ module FlightFileManager
         default: '/files'
       },
     ].each { |opts| attribute(opts[:name], **opts) }
+
+    # Ensure the shared_secret_path exists and isn't empty
+    validate do
+      unless File.exists?(shared_secret_path) && File.stat(shared_secret_path).size?
+        errors.add(:shared_secret_path, :missing, message: "does not exist or is empty: #{shared_secret_path}")
+      end
+    end
 
     def auth_decoder
       @auth_decoder ||= FlightAuth::Builder.new(shared_secret_path)

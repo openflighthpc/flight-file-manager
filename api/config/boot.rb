@@ -63,8 +63,7 @@ Bundler.require(:default, :development) if Flight.env.development?
 
 require 'flight_file_manager'
 
-# Ensures the config has been loaded
-Flight.config.auth_decoder
+Flight.load_configuration
 
 require_relative '../app'
 require_relative '../app/backend_proxy'
