@@ -88,7 +88,7 @@ module FlightFileManager
       {
         name: 'cloudcmd_cookie_domain',
         env_var: true,
-        default: ->() { RC['flight_WEB_SUITE_domain'] }
+        default: RC['flight_WEB_SUITE_domain']
       },
       {
         name: 'cloudcmd_cookie_path',
