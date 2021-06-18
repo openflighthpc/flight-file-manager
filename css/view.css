@@ -1,28 +1,28 @@
-.fm .view {
+.view {
     font-size: 16px;
     white-space: pre;
     height: 100%;
     overflow: auto;
 }
 
-.fm .view:focus {
+.view:focus {
     outline: 0;
 }
 
-.fm .view::selection {
+.view::selection {
     text-shadow: none;
     background: #b3d4fc;
 }
 
-.fm .view-overlay {
+.view-overlay {
     display     : block;
     background  : rgba(255, 255, 255, 0.1);
 }
 
-.fm .media, .fm video {
+.media, video {
     width: 100%;
 }
 
-.fm audio {
+audio {
     margin-top: 10px;
 }
