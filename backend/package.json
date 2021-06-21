@@ -8,7 +8,7 @@
   "license": "EPL-2.0",
   "private": false,
   "dependencies": {
-    "cloudcmd": "15.4.2",
+    "cloudcmd": "openflighthpc/cloudcmd#flight-cloudcmd",
     "express": "^4.17.1",
     "socket.io": "^3.0.5",
     "tryrequire": "^3.0.0"
@@ -18,8 +18,5 @@
   },
   "devDependencies": {
     "morgan": "^1.10.0"
-  },
-  "resolutions": {
-    "restafary": "9.1.0"
   }
 }
