@@ -17,7 +17,11 @@ async function registerSW(prefix) {
     if (!isHTTPS && !isLocalhost)
         return;
     
-    return await navigator.serviceWorker.register(`${prefix}/sw.js`);
+    try {
+        return await navigator.serviceWorker.register(`${prefix}/sw.js`);
+    } catch (e) {
+        console.log('cloudcmd: sw: install failed:', e);
+    }
 }
 async function unregisterSW(prefix) {
     const reg = await registerSW(prefix);

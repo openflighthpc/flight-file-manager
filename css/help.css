@@ -1,12 +1,12 @@
-.help {
+.fm .help {
     margin          : 25px;
     white-space     : normal;
 }
 
-.help li {
+.fm .help li {
     list-style-type : disc;
 }
 
-.help img {
+.fm .help img {
     max-width       : 100%;
 }
