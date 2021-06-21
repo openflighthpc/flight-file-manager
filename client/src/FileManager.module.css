@@ -7,3 +7,28 @@
     height: 100%;
     border: none;
 }
+
+.ButtonGroup :first-child {
+    border-left-color: transparent;
+}
+.ButtonGroup :last-child {
+    border-right-color: transparent;
+}
+.ButtonGroup > *, .ButtonGroup > *:disabled {
+    border-left: 1px solid var(--gray);
+    border-right: 1px solid var(--gray);
+}
+.ButtonGroup > *:disabled {
+    background-color: var(--gray);
+    border-color: var(--gray);
+    opacity: .5;
+}
+.iconRename i::before {
+    font-family : 'Fontello';
+    content     : '\e802  ';
+
+    font-style: normal;
+    display: inline-block;
+    width: 14px;
+}
+

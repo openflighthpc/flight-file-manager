@@ -1,5 +1,5 @@
 import mkDebug from 'debug';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from "react-router-dom"
 
 import { loadConfig, loadCSS, loadScript } from './utils';
@@ -24,6 +24,9 @@ export default function useFileManager() {
   const sessionRef = useRef(null);
   // Holds the cloudcmd config returned by the backend.
   const configRef = useRef(null);
+  const [ currentAbsDir, setCurrentAbsDir ] = useState(null);
+  const [ isFileSelected, setIsFileSelected ] = useState(null);
+  const [ isRootDir, setIsRootDir ] = useState(null);
 
   // Possible states are:
   // * `launching`: waiting on API to launch the cloudcmd process.
@@ -34,6 +37,24 @@ export default function useFileManager() {
   // * `failed`: something went wrong.
   const [ state, setState ] = useState('launching');
 
+  const currentFileListener = useCallback(() => {
+    setTimeout(() => {
+      const Info = window.DOM.CurrentInfo;
+      debug('current-file changed. absPath=%s path=%s isFile=%s isRootDir=%s',
+        sessionRef.current.root + Info.dirPath + Info.name,
+        Info.dirPath + Info.name,
+        !Info.isDir,
+        Info.dirPath === '/',
+      );
+      if (sessionRef.current.root === '/') {
+        setCurrentAbsDir(Info.dirPath);
+      } else {
+        setCurrentAbsDir(sessionRef.current.root + Info.dirPath);
+      }
+      setIsFileSelected(!Info.isDir);
+      setIsRootDir(Info.dirPath === '/');
+    }, 0);
+  }, []);
 
   useEffect(() => {
     debug('Launching session');
@@ -99,7 +120,42 @@ export default function useFileManager() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
+  function goToParentDir() { if (state === 'connected') { window.CloudCmd.goToParentDir(); } };
+  function promptNewFile() { if (state === 'connected') { window.DOM.promptNewFile(); } };
+  function promptNewDir()  { if (state === 'connected') { window.DOM.promptNewDir(); } };
+  function view()          { if (state === 'connected') { window.CloudCmd.View.show(); } };
+  function edit()          { if (state === 'connected') { window.CloudCmd.EditFile.show(); } };
+  function rename()        { if (state === 'connected') { window.DOM.renameCurrent(); } };
+  function del()           { if (state === 'connected') { window.CloudCmd.Operation.show('delete'); } };
+  function cut()           { if (state === 'connected') { window.DOM.Buffer.cut(); } };
+  function copy()          { if (state === 'connected') { window.DOM.Buffer.copy(); } };
+  function paste()         { if (state === 'connected') { window.DOM.Buffer.paste(); } };
+  function upload()        { if (state === 'connected') { window.CloudCmd.Upload.show(); } };
+  function download()      { if (state === 'connected') { window.CloudCmd.execFromModule('Menu', 'preDownload'); } };
+  function pack()          { if (state === 'connected') { window.CloudCmd.Operation.show('pack'); } };
+  function extract()       { if (state === 'connected') { window.CloudCmd.Operation.show('extract'); } };
+  function toggleAllSelectedFiles() { if (state === 'connected') { window.DOM.toggleAllSelectedFiles(); } };
+
   return {
-    terminalState: state,
+    goToParentDir: useCallback(goToParentDir, [state]),
+    promptNewFile: useCallback(promptNewFile, [state]),
+    promptNewDir:  useCallback(promptNewDir,  [state]),
+    view:          useCallback(view,          [state]),
+    edit:          useCallback(edit,          [state]),
+    rename:        useCallback(rename,        [state]),
+    del:           useCallback(del,           [state]),
+    cut:           useCallback(cut,           [state]),
+    copy:          useCallback(copy,          [state]),
+    paste:         useCallback(paste,         [state]),
+    upload:        useCallback(upload,        [state]),
+    download:      useCallback(download,      [state]),
+    pack:          useCallback(pack,          [state]),
+    extract:       useCallback(extract,       [state]),
+    toggleAllSelectedFiles: useCallback(toggleAllSelectedFiles, [state]),
+
+    currentAbsDir,
+    isFileSelected,
+    isRootDir,
+    state,
   };
 }
