@@ -1,0 +1,67 @@
+.flight.fm {
+    height: calc( 100vh - 250px );
+    margin-top: 0;
+    line-height: normal;
+}
+html:fullscreen .flight.fm,
+body.zen-mode .flight.fm {
+    height: calc( 100% );
+}
+
+.flight.fm .panel-single {
+    border: none;
+    margin: 1px;
+}
+
+.flight.fm .files {
+    margin-top: 0.25em;
+    height: calc(100% - 3em);
+}
+
+.flight.fm .fm-header {
+    text-transform: capitalize;
+}
+
+.flight.fm, .flight.fm pre, .flight.fm code, .modal-main {
+    font-family     : 'Droid Sans Mono', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size       : 16px;
+}
+
+.flight.fm label {
+    display: revert;
+}
+
+.fm > .menu,
+.modal-main .view > * > .menu {
+    position: fixed;
+}
+
+.modal-main {
+    z-index: 999 !important;
+    filter: drop-shadow(0 0 0.75rem var(--dark));
+
+    top: 160px !important;
+    left: 10px !important;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 250px) !important;
+}
+body.zen-mode .modal-main {
+    top: 60px !important;
+    height: calc( 100% - 100px ) !important;
+}
+
+.modal-main .media,
+.modal-main video {
+    max-height: calc( 100vh - 250px - 25px );
+}
+body.zen-mode .modal-main .media,
+body.zen-mode .modal-main video {
+    max-height: calc( 100vh - 150px );
+}
+
+.modal-main .modal-image {
+    max-height: calc( 100vh - 250px );
+}
+body.zen-mode .modal-main .modal-image {
+    max-height: calc( 100vh - 150px ) !important;
+}

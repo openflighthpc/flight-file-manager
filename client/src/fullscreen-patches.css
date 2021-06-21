@@ -1,0 +1,7 @@
+html:fullscreen .fullscreen-content,
+body.zen-mode .fullscreen-content {
+    /* Subtract card header, card border, #main top and bottom margins.
+     * extra to make things nicer. */
+    /* Subtract an additional 7px to account for the larger toolbar */
+    height: calc( 100vh - 56px - 2px - 10px - 10px - 16px - 7px);
+}
