@@ -99,11 +99,13 @@ class CloudCmd
     end
   end
 
-  def root_dir
-    @root_dir ||= Etc.getpwnam(@user).dir
+  def default_dir
+    @default_dir ||= Etc.getpwnam(@user).dir
   end
 
-  private
+  def root_dir
+    '/'
+  end
 
   def cloudcmd_config
     mount_point = FlightFileManager.config.mount_point
@@ -114,6 +116,8 @@ class CloudCmd
       username: @user,
     }
   end
+
+  private
 
   def prepare
     FileUtils.mkdir_p(File.dirname(config_path))

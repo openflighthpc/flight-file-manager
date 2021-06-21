@@ -1,78 +1,105 @@
+import mkDebug from 'debug';
 import { useEffect, useRef, useState } from 'react';
-
-import addStylesheetRules from './addStylesheetRules';
-import { useLaunchSession } from './api';
 import { useHistory } from "react-router-dom"
 
-function handleOnLoad(event, setTerminalState) {
-  const doc = event.target.contentDocument;
-  if (doc && doc.body.querySelector('.fm .files')) {
-    addStylesheetRules(doc, [
-      ['html',              ['height', 'calc( 100vh - 75px )']],
-      ['body',              ['height', '100%']],
-      ['.fm',               ['height', '100%'],  ['margin-top', '0.5em']],
-      ['.fm .panel-single', ['border', 'none'], ['margin', '1px']],
-      ['.fm .files',        ['height', '100%'], ['margin-top', '0.25em']],
-      ['.fm .fm-header',    ['text-transform', 'capitalize']],
-    ]);
+import { loadConfig, loadCSS, loadScript } from './utils';
+import { useLaunchSession } from './api';
 
-    setTerminalState('connected');
-  } else {
-    setTerminalState('failed');
-  }
-}
+const debug = mkDebug('flight:fm:useFileManager');
 
-function useInitialDirectory() {
+function useRequestedDirectory() {
   const history = useHistory();
   const dirRef = useRef(new URLSearchParams(history.location.search).get('dir'));
 
   return {
-    dir: dirRef.current,
-    setDirToDefault: () => { dirRef.current = null },
+    requestedDir: dirRef.current,
     clearSearchParams: () => history.replace({ query: '' }),
   };
 }
 
-export default function useFileManager(containerRef) {
-  const { dir, setDirToDefault, clearSearchParams } = useInitialDirectory();
-  const { post: launchSession, response } = useLaunchSession(dir);
-  const urlRef = useRef(null);
-  // Possible states are `initialising`, `connected`, `failed`.
-  const [ terminalState, setTerminalState ] = useState('initialising');
+export default function useFileManager() {
+  const { requestedDir, clearSearchParams } = useRequestedDirectory();
+  const { post: launchSession, response } = useLaunchSession(requestedDir);
+  // Holds details about the session returned by the API.
+  const sessionRef = useRef(null);
+  // Holds the cloudcmd config returned by the backend.
+  const configRef = useRef(null);
+
+  // Possible states are:
+  // * `launching`: waiting on API to launch the cloudcmd process.
+  // * `retrieving`: retrieving asssets from cloudcmd process.
+  // * `retrieved`: asssets retrieved.
+  // * `connecting`: connecting to cloudcmd process.
+  // * `connected`: file manager process is connected.
+  // * `failed`: something went wrong.
+  const [ state, setState ] = useState('launching');
+
 
   useEffect(() => {
-    if (containerRef.current == null) { return; }
-
+    debug('Launching session');
     launchSession().then((responseBody) => {
       if (response.ok) {
-        urlRef.current = responseBody.url;
-        containerRef.current.onload = (event) => { handleOnLoad(event, setTerminalState); }
-        containerRef.current.src = responseBody.url;
-
-      } else if (dir) {
-        // The directory we used was no good.  Let's try the default directory
-        // instead.  The `history.replace()` below will cause the component to
-        // re-render.
-        setDirToDefault()
-        // XXX Display an error message that the directory could not be found.
-        // Perhaps a useToast toast.
-
+        // CloudCmd session has been launched, we can now retrieve the
+        // javascript, css and config.
+        sessionRef.current = {
+          url: responseBody.url,
+          dir: responseBody.dir,
+        };
+        debug('Retrieving assets %s', sessionRef.current.url);
+        setState('retrieving');
+        const url = sessionRef.current.url;
+        Promise.all([
+          loadConfig(`${url}/api/v1/config`),
+          loadScript(`${url}/dist/cloudcmd.common.js`),
+          loadScript(`${url}/dist/cloudcmd.js`),
+          loadCSS(`${url}/dist/cloudcmd.css`),
+        ]).then(([config, ...rest]) => {
+          configRef.current = config;
+          debug('Assets retrieved');
+          setState('retrieved');
+        });
       } else {
-        // XXX: What should happen if the error persists? Currently it just hangs.
-        // NOOP - ¯\_(ツ)_/¯
+        setState('failed');
       }
-
-      // In all cases clear the query string.  This causes the component to
-      // rerender if the query string has changed.
-      clearSearchParams();
     });
-
     // We're expecting `response` to change and don't want to re-run the hook
     // when it does.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [containerRef, launchSession]);
+  }, [launchSession]);
+
+  useEffect(() => {
+    if (state === 'retrieved') {
+      const onConnected = () => {
+        const dir = sessionRef.current.dir || '/';
+        debug('Loading directory %s', dir);
+        window.CloudCmd.addListener('current-file', currentFileListener);
+        window.CloudCmd.loadDir({path: dir});
+        // XXX Add this in properly.
+        // .then(() => {
+        //   if (true) {
+        //     window.DOM.setCurrentByName('stuff.md');
+        //     setTimeout(() => window.CloudCmd.View.show(), 0)
+        //   }
+        // });
+        setState('connected');
+        clearSearchParams();
+      };
+
+      if (typeof window.CloudCmd === 'function') {
+        debug('Connecting to backend %o', configRef.current);
+        setState('connecting');
+        window.CloudCmd(configRef.current).then(() => {
+          onConnected();
+        });
+      } else {
+        debug('Already connected to backend');
+        onConnected();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   return {
-    terminalState,
+    terminalState: state,
   };
 }

@@ -8,12 +8,12 @@ import {
   Spinner,
 } from 'flight-webapp-components';
 
+import CloudCmdSkeleton from './CloudCmdSkeleton';
 import styles from './FileManager.module.css';
 import useFileManager from './useFileManager';
 
 function FileManagerPage() {
-  const iframeRef = useRef(null);
-  const { terminalState } = useFileManager(iframeRef);
+  const { terminalState } = useFileManager();
 
   return (
     <Layout
@@ -22,11 +22,7 @@ function FileManagerPage() {
     >
       <ErrorBoundary>
         <div className={`fullscreen-content ${styles.FileManagerWrapper}`} >
-          <iframe
-            ref={iframeRef}
-            className={styles.FileManager}
-            title="OpenFlight File Manager"
-          />
+          <CloudCmdSkeleton />
         </div>
       </ErrorBoundary>
     </Layout>
