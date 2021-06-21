@@ -202,9 +202,6 @@ function getMenuData(isAuth) {
       ...getSelectionMenuItems(),
     };
     
-    if (isAuth)
-        menu['Log Out'] = CloudCmd.logOut;
-    
     return menu;
 }
 
