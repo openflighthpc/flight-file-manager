@@ -31,7 +31,9 @@ class BackendProxy < Rack::Proxy
     assert_good_origin(env)
 
     script_name_prefix = FlightFileManager.config.mount_point
-    port = CloudCmd.new(current_user(env)).port
+    user = current_user(env)
+    raise "Invalid credentials" if user.nil?
+    port = CloudCmd.new(user).port
 
     # 1. Ensure that we're using HTTP and not HTTPS.
     # 2. Set the correct port.
@@ -62,11 +64,12 @@ class BackendProxy < Rack::Proxy
 
   def credentials_from_cookies(env)
     request_cookies = Rack::Utils.parse_cookies(env)
-    request_cookies[FlightFileManager.app.config.cloudcmd_cookie_name].chomp
+    request_cookies[FlightFileManager.app.config.cloudcmd_cookie_name]&.chomp
   end
 
   def current_user(env)
     credentials = credentials_from_cookies(env)
+    return nil if credentials.nil?
     username, _ = Base64.decode64(credentials).split(':', 2)
     username
   end
