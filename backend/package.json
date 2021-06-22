@@ -6,9 +6,8 @@
   "repository": "https://github.com/openflighthpc/flight-file-manager/backend",
   "author": "Alces Flight",
   "license": "EPL-2.0",
-  "private": false,
+  "private": true,
   "dependencies": {
-    "cloudcmd": "openflighthpc/cloudcmd#flight-cloudcmd",
     "express": "^4.17.1",
     "socket.io": "^3.0.5",
     "tryrequire": "^3.0.0"
@@ -16,6 +15,9 @@
   "scripts": {
     "start": "node ./src/main.js"
   },
+  "workspaces": [
+    "lib/cloudcmd"
+  ],
   "devDependencies": {
     "morgan": "^1.10.0"
   }
