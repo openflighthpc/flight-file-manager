@@ -1,0 +1,23 @@
+.fm .cloudcmd-user-menu {
+    font-size: 16px;
+    font-family: 'Droid Sans Mono', 'Ubuntu Mono', 'Consolas', monospace;
+}
+
+.fm .cloudcmd-user-menu:focus {
+    outline: 0;
+}
+
+.fm .cloudcmd-user-menu > option:checked {
+    box-shadow: 20px -20px 0 2px var(--color) inset;
+}
+
+.fm .cloudcmd-user-menu-button {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    padding: 2px;
+    -webkit-appearance: none;
+    border: 0;
+    overflow: auto;
+}
+
