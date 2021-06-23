@@ -1,0 +1,23 @@
+.fm .path-icon, .fm .keyspanel {
+    display: none;
+}
+
+.fm .links {
+    margin-left: 16px;
+}
+
+.fm {
+    height: 100%;
+}
+
+.fm .panel-right {
+    display: none;
+}
+
+.fm .panel-left {
+    width: 98%;
+}
+
+.fm .name a:hover {
+    cursor: pointer;
+}

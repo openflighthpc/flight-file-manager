@@ -1,0 +1,43 @@
+{
+    "ignore": [
+        "html",
+        "fixture*",
+        "app.json",
+        "fontello.json"
+    ],
+    "match": {
+        "route.spec.js": {
+            "tape/convert-ok-to-match": "off"
+        },
+        "*.js": {
+            "convert-esm-to-commonjs": "on"
+        },
+        "*.md": {
+            "convert-commonjs-to-esm": "on"
+        },
+        ".webpack": {
+            "webpack": "on"
+        },
+        "server": {
+            "remove-process-exit": "on"
+        },
+        "server/{server,exit}.js": {
+            "remove-process-exit": "off"
+        },
+        "server/{server,exit,terminal,distribute/log}.js": {
+            "remove-console": "off"
+        },
+        "client/{client,cloudcmd,load-module}.js": {
+            "remove-console": "off"
+        },
+        "test/common/cloudfunc.js": {
+            "remove-console": "off"
+        },
+        "storage.js": {
+            "remove-useless-async": "off"
+        },
+        "docker.yml": {
+            "github/set-node-versions": "off"
+        }
+    }
+}
