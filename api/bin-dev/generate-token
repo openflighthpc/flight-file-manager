@@ -44,5 +44,5 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'active_support/core_ext/hash/keys'
 require 'flight_file_manager'
 
-FlightAuth::CLI.new(FlightFileManager.config.shared_secret_path, 'file-manager-api-dev')
+FlightAuth::CLI.new(Flight.config.shared_secret_path, 'file-manager-api-dev')
                .run(*ARGV)

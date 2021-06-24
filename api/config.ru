@@ -31,7 +31,7 @@ require 'sinatra'
 require_relative 'config/boot'
 
 configure do
-  LOGGER = FlightFileManager.logger
+  LOGGER = Flight.logger
   enable :logging, :dump_errors
   set :raise_errors, true
 end

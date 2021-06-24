@@ -39,7 +39,7 @@ class CloudCmd
   end
 
   def kill
-    FlightFileManager.logger.info "Shutting down cloudcmd server for '#{@user}' pid=#{pid}"
+    Flight.logger.info "Shutting down cloudcmd server for '#{@user}' pid=#{pid}"
     begin
       Process.kill(-Signal.list['TERM'], pid)
     rescue Errno::ESRCH
@@ -108,7 +108,7 @@ class CloudCmd
   end
 
   def cloudcmd_config
-    mount_point = FlightFileManager.config.mount_point
+    mount_point = Flight.config.mount_point
     {
       prefix: "#{mount_point}/backend/#{@user}",
       root: root_dir,
@@ -145,12 +145,12 @@ class CloudCmd
 
   def run_subprocess
     cmd = [
-      FlightFileManager.config.cloudcmd_command,
+      Flight.config.cloudcmd_command,
       '--config', config_path,
       '--password-path', password_path,
       '--port-path', port_path,
     ]
-    FlightFileManager.logger.info(
+    Flight.logger.info(
       "Starting cloudcmd server for '#{@user}' command=#{redacted_cmd(cmd)}"
     )
 
@@ -183,9 +183,9 @@ class CloudCmd
     end
 
     write_pid(pid)
-    FlightFileManager.logger.info("Created cloudcmd for '#{@user}' pid=#{pid}")
+    Flight.logger.info("Created cloudcmd for '#{@user}' pid=#{pid}")
     wait_for_port_to_be_written
-    FlightFileManager.logger.info("cloudcmd for '#{@user}' listening on port=#{port}")
+    Flight.logger.info("cloudcmd for '#{@user}' listening on port=#{port}")
 
     pid
   end
@@ -198,7 +198,7 @@ class CloudCmd
   # Wait until the port file is written, the daemon exits without writing the
   # port file, or a timeout is reached.
   def wait_for_port_to_be_written
-    timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + FlightFileManager.config.launch_timeout
+    timeout = Process.clock_gettime(Process::CLOCK_MONOTONIC) + Flight.config.launch_timeout
     loop do
       break if Process.wait2(pid, Process::WNOHANG)
       if File.exists?(port_path)
@@ -206,7 +206,7 @@ class CloudCmd
       end
       sleep 1
       if (now = Process.clock_gettime(Process::CLOCK_MONOTONIC)) > timeout
-        timeout = now + FlightFileManager.config.launch_timeout
+        timeout = now + Flight.config.launch_timeout
         Process.kill(-Signal.list['TERM'], pid)
       end
     end
@@ -221,7 +221,7 @@ class CloudCmd
   end
 
   def log_path
-    File.join(FlightFileManager.config.log_dir, 'cloudcmd', "#{@user}.log")
+    File.join(Flight.config.log_dir, 'cloudcmd', "#{@user}.log")
   end
 
   def password_path
@@ -241,7 +241,7 @@ class CloudCmd
   end
 
   def data_dir
-    File.join(FlightFileManager.config.data_dir, @user)
+    File.join(Flight.config.data_dir, @user)
   end
 
   def redacted_cmd(cmd)

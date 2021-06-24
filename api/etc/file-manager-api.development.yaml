@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #==============================================================================
 # Copyright (C) 2021-present Alces Flight Ltd.
 #
@@ -27,12 +25,12 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-require 'flight'
-
-module FlightFileManager
-  autoload(:Configuration, 'flight_file_manager/configuration')
-
-  class << self
-    delegate :config, :logger, to: Flight
-  end
-end
+bind_address: tcp://0.0.0.0:6309
+cloudcmd_cookie_domain: flight.lvh.me
+cloudcmd_cookie_name: flight_file_manager_backend_dev
+cloudcmd_cookie_path: /dev/files/backend
+cloudcmd_command: libexec/cloudcmd.sh
+log_level: debug
+mount_point: /dev/files
+data_dir: var/lib
+log_dir: var/log

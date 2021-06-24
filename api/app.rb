@@ -86,7 +86,7 @@ class App < Sinatra::Base
     end
 
     def build_payload(current_user, cloudcmd)
-      mount_point = FlightFileManager.config.mount_point
+      mount_point = Flight.config.mount_point
       url_path = File.join(mount_point, 'backend', current_user)
       port = request.env['HTTP_X_REAL_PORT']
       port = request.port if port.nil? || port == ""
@@ -102,10 +102,10 @@ class App < Sinatra::Base
       credentials = Base64.encode64("#{current_user}:#{password}")
 
       response.set_cookie(
-        FlightFileManager.app.config.cloudcmd_cookie_name,
-        domain: FlightFileManager.app.config.cloudcmd_cookie_domain,
+        Flight.config.cloudcmd_cookie_name,
+        domain: Flight.config.cloudcmd_cookie_domain,
         http_only: true,
-        path: FlightFileManager.app.config.cloudcmd_cookie_path,
+        path: Flight.config.cloudcmd_cookie_path,
         same_site: :strict,
         secure: request.scheme == 'https',
         value: credentials,
@@ -114,10 +114,10 @@ class App < Sinatra::Base
 
     def delete_cloudcmd_cookie
       response.delete_cookie(
-        FlightFileManager.app.config.cloudcmd_cookie_name,
-        domain: FlightFileManager.app.config.cloudcmd_cookie_domain,
+        Flight.config.cloudcmd_cookie_name,
+        domain: Flight.config.cloudcmd_cookie_domain,
         http_only: true,
-        path: FlightFileManager.app.config.cloudcmd_cookie_path,
+        path: Flight.config.cloudcmd_cookie_path,
         same_site: :strict,
         secure: request.scheme == 'https',
       )
@@ -127,8 +127,8 @@ class App < Sinatra::Base
   # Validates the user's credentials from the authorization header
   before do
     next if env['REQUEST_METHOD'] == 'OPTIONS'
-    auth = FlightFileManager.config.auth_decoder.decode(
-      request.cookies[FlightFileManager.app.config.sso_cookie_name],
+    auth = Flight.config.auth_decoder.decode(
+      request.cookies[Flight.config.sso_cookie_name],
       env['HTTP_AUTHORIZATION']
     )
     raise Unauthorized unless auth.valid?
@@ -147,7 +147,7 @@ class App < Sinatra::Base
 
     if cloudcmd.broken?
       # XXX Kill and launch perhaps?
-      FlightFileManager.logger.error(
+      Flight.logger.error(
         "Running cloudcmd server for '#{current_user}' is missing port file. pid=#{cloudcmd.pid}"
       )
       status 500
@@ -156,7 +156,7 @@ class App < Sinatra::Base
         errors: ["An unexpected error has occurred!"]
       }.to_json)
     elsif cloudcmd.running?
-      FlightFileManager.logger.info(
+      Flight.logger.info(
         "Found running cloudcmd server for '#{current_user}' pid=#{cloudcmd.pid} port=#{cloudcmd.port}"
       )
       status 200
@@ -188,10 +188,10 @@ class App < Sinatra::Base
     cloudcmd.kill
     delete_cloudcmd_cookie
     if !cloudcmd.running?
-      FlightFileManager.logger.info "Cloudcmd server for '#{current_user}' has shutdown successfully"
+      Flight.logger.info "Cloudcmd server for '#{current_user}' has shutdown successfully"
       status 204
     else
-      FlightFileManager.logger.info "Cloudcmd server for '#{current_user}' should shutdown"
+      Flight.logger.info "Cloudcmd server for '#{current_user}' should shutdown"
       status 202
     end
   end

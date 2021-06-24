@@ -29,6 +29,6 @@
 
 require_relative 'boot.rb'
 
-bind FlightFileManager.app.config.bind_address
+bind Flight.config.bind_address
 log_requests
-tag FlightFileManager.config.class.application_name
+tag Flight.config.class.application_name

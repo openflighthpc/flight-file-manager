@@ -27,12 +27,16 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
+require 'active_model'
+
 module FlightFileManager
   class Configuration
-    extend FlightConfiguration::RackDSL
+    extend FlightConfiguration::DSL
+    include ActiveModel::Validations
 
-    root_path File.expand_path('../..', __dir__)
-    application_name 'flight-file-manager-api'
+    RC = Dotenv.parse(File.join(Flight.root, 'etc/web-suite.rc'))
+
+    application_name 'file-manager-api'
 
     class ConfigError < StandardError; end
 
@@ -56,13 +60,13 @@ module FlightFileManager
       {
         name: 'data_dir',
         env_var: true,
-        default: 'var/lib',
+        default: 'var/lib/file-manager-api',
         transform: relative_to(root_path)
       },
       {
         name: 'log_dir',
         env_var: true,
-        default: 'var/log',
+        default: 'var/log/file-manager-api',
         transform: relative_to(root_path)
       },
       {
@@ -73,7 +77,7 @@ module FlightFileManager
       {
         name: 'cloudcmd_command',
         env_var: true,
-        default: 'libexec/cloudcmd.sh',
+        default: 'libexec/file-manager-api/cloudcmd.sh',
         transform: relative_to(root_path)
       },
       {
@@ -84,6 +88,7 @@ module FlightFileManager
       {
         name: 'cloudcmd_cookie_domain',
         env_var: true,
+        default: RC['flight_WEB_SUITE_domain']
       },
       {
         name: 'cloudcmd_cookie_path',
@@ -101,6 +106,13 @@ module FlightFileManager
         default: '/files'
       },
     ].each { |opts| attribute(opts[:name], **opts) }
+
+    # Ensure the shared_secret_path exists and isn't empty
+    validate do
+      unless File.exists?(shared_secret_path) && File.stat(shared_secret_path).size?
+        errors.add(:shared_secret_path, :missing, message: "does not exist or is empty: #{shared_secret_path}")
+      end
+    end
 
     def auth_decoder
       @auth_decoder ||= FlightAuth::Builder.new(shared_secret_path)

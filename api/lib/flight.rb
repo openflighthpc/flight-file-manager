@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #==============================================================================
 # Copyright (C) 2021-present Alces Flight Ltd.
 #
@@ -25,9 +26,32 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-bind_address: tcp://0.0.0.0:6309
-cloudcmd_cookie_domain: flight.lvh.me
-cloudcmd_cookie_name: flight_file_manager_backend_dev
-cloudcmd_cookie_path: /dev/files/backend
-log_level: debug
-mount_point: /dev/files
+require 'active_support/core_ext/object/blank'
+require 'active_support/string_inquirer'
+
+module Flight
+  class << self
+    def config
+      @config ||= FlightFileManager::Configuration.load
+    end
+    alias_method :load_configuration, :config
+
+    def root
+      @root ||= if env.production? && ENV["flight_ROOT"].present?
+        File.expand_path(ENV["flight_ROOT"])
+      else
+        File.expand_path('..', __dir__)
+      end
+    end
+
+    def env
+      @env ||= ActiveSupport::StringInquirer.new(
+        ENV['RACK_ENV'].presence || "development"
+      )
+    end
+
+    def logger
+      @logger ||= Logger.new($stdout, level: config.log_level.to_sym)
+    end
+  end
+end
