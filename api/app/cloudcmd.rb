@@ -168,9 +168,12 @@ class CloudCmd
       FileUtils.touch port_path
       FileUtils.chown(@user, @user, port_path)
 
+      # Calls to both `Process.groups=` and `Process.gid=` are needed to
+      # fully remove the parent process's group.
       Process.setsid
-      Process::Sys.setgid(passwd.gid)
-      Process::Sys.setuid(passwd.uid)
+      Process.groups = [passwd.gid]
+      Process.gid = passwd.gid
+      Process.uid = passwd.uid
 
       Kernel.exec(
         {},
