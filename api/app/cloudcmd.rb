@@ -172,7 +172,7 @@ class CloudCmd
       # and 2) add all groups for user.
       Process.groups = []
       Process.gid = passwd.gid
-      Process.initgroups(user, passwd.gid)
+      Process.initgroups(@user, passwd.gid)
       Process.uid = passwd.uid
       Process.setsid
 
