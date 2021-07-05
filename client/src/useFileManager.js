@@ -40,16 +40,16 @@ export default function useFileManager() {
   const currentFileListener = useCallback(() => {
     setTimeout(() => {
       const Info = window.DOM.CurrentInfo;
-      debug('current-file changed. absPath=%s path=%s isFile=%s isRootDir=%s',
-        sessionRef.current.root + Info.dirPath + Info.name,
+      debug('current-file changed: root=%s path=%s isFile=%s isRootDir=%s',
+        configRef.current.root,
         Info.dirPath + Info.name,
         !Info.isDir,
         Info.dirPath === '/',
       );
-      if (sessionRef.current.root === '/') {
+      if (configRef.current.root === '/') {
         setCurrentAbsDir(Info.dirPath);
       } else {
-        setCurrentAbsDir(sessionRef.current.root + Info.dirPath);
+        setCurrentAbsDir(configRef.current.root + Info.dirPath);
       }
       setIsFileSelected(!Info.isDir);
       setIsRootDir(Info.dirPath === '/');
