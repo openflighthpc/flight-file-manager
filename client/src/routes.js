@@ -1,6 +1,7 @@
 import Dashboard from './Dashboard';
 import FileManagerPage from './FileManagerPage';
 import UnconfiguredDashboard from './UnconfiguredDashboard';
+import NotFoundDashboard from './NotFoundDashboard';
 
 const routes = [
   {
@@ -15,6 +16,11 @@ const routes = [
     name: 'Home',
     Component: Dashboard,
     sideNav: true,
+  },
+  {
+    name: 'Not found',
+    Component: NotFoundDashboard,
+    sideNav: true
   },
 ]
 
