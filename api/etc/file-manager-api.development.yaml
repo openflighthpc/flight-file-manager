@@ -29,7 +29,7 @@ bind_address: tcp://0.0.0.0:6309
 cloudcmd_cookie_domain: flight.lvh.me
 cloudcmd_cookie_name: flight_file_manager_backend_dev
 cloudcmd_cookie_path: /dev/files/backend
-cloudcmd_command: libexec/cloudcmd.sh
+cloudcmd_command: libexec/cloudcmd.development.sh
 log_level: debug
 mount_point: /dev/files
 data_dir: var/lib
