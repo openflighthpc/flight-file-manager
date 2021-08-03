@@ -164,10 +164,10 @@ class App < Sinatra::Base
       halt build_payload(current_user, cloudcmd)
     end
 
+    # Start the process
     cloudcmd.run
-    begin
-      Process.detach(cloudcmd.pid)
-    rescue Errno::ESRCH
+
+    unless cloudcmd.running?
       status 500
       halt({
         errors: ['Failed to create cloudcmd process']
