@@ -70,6 +70,10 @@ class App < Sinatra::Base
   helpers do
     attr_accessor :current_user
 
+    def current_cloudcmd
+      @current_cloudcmd ||= CloudCmd.instances[current_user] || CloudCmd.new(current_user)
+    end
+
     def dir_and_file(cloudcmd)
       if params["dir"].present?
         path = Pathname.new(params["dir"]).expand_path(cloudcmd.default_dir)
@@ -112,7 +116,8 @@ class App < Sinatra::Base
       )
     end
 
-    def delete_cloudcmd_cookie
+    def delete_cloudcmd_cache
+      CloudCmd.instances.delete(current_user)
       response.delete_cookie(
         Flight.config.cloudcmd_cookie_name,
         domain: Flight.config.cloudcmd_cookie_domain,
@@ -143,7 +148,8 @@ class App < Sinatra::Base
   end
 
   post '/cloudcmd' do
-    cloudcmd = CloudCmd.new(current_user)
+    # Attempt to fetch the existing session
+    cloudcmd = current_cloudcmd
 
     if cloudcmd.broken?
       # XXX Kill and launch perhaps?
@@ -151,7 +157,7 @@ class App < Sinatra::Base
         "Running cloudcmd server for '#{current_user}' is missing port file. pid=#{cloudcmd.pid}"
       )
       status 500
-      delete_cloudcmd_cookie
+      delete_cloudcmd_cache
       halt({
         errors: ["An unexpected error has occurred!"]
       }.to_json)
@@ -167,11 +173,15 @@ class App < Sinatra::Base
     # Start the process
     cloudcmd.run
 
-    unless cloudcmd.running?
+    if cloudcmd.running?
+      # Cache the cloudcmd session
+      CloudCmd.instances[current_user] ||= cloudcmd
+    else
+      # Error due to an error
       status 500
       halt({
         errors: ['Failed to create cloudcmd process']
-      })
+      }.to_json)
     end
 
     status 201
@@ -180,13 +190,13 @@ class App < Sinatra::Base
   end
 
   delete '/cloudcmd' do
-    cloudcmd = CloudCmd.new(current_user)
+    cloudcmd = current_cloudcmd
     if !cloudcmd.running?
       status 204
       halt
     end
     cloudcmd.kill
-    delete_cloudcmd_cookie
+    delete_cloudcmd_cache
     if !cloudcmd.running?
       Flight.logger.info "Cloudcmd server for '#{current_user}' has shutdown successfully"
       status 204

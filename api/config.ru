@@ -43,6 +43,14 @@ configure do
   set :raise_errors, true
 end
 
+at_exit do
+  # No really - kill sessions
+  at_exit { CloudCmd.kill_instances('KILL') }
+
+  # Terminate sessions
+  CloudCmd.kill_instances('TERM')
+end
+
 app = Rack::Builder.new do
   map('/backend') { run BackendProxy.new }
   map('/v0') { run App }
