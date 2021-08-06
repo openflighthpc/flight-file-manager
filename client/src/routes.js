@@ -1,7 +1,8 @@
+import { NotFound } from 'flight-webapp-components';
+
 import Dashboard from './Dashboard';
 import FileManagerPage from './FileManagerPage';
 import UnconfiguredDashboard from './UnconfiguredDashboard';
-import NotFoundDashboard from './NotFoundDashboard';
 
 const routes = [
   {
@@ -19,7 +20,7 @@ const routes = [
   },
   {
     name: 'Not found',
-    Component: NotFoundDashboard,
+    Component: NotFound,
     sideNav: true
   },
 ]
