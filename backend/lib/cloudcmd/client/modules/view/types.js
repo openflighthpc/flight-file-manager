@@ -39,24 +39,6 @@ module.exports.getType = async (path) => {
 };
 
 // TODO: Update to use full path
-module.exports.isImage = isImage;
-function isImage(name) {
-    const images = [
-        'jp(e|g|eg)',
-        'gif',
-        'png',
-        'bmp',
-        'webp',
-        'svg',
-        'ico',
-    ];
-
-    return images
-        .map(getRegExp)
-        .some(testRegExp(name));
-}
-
-// TODO: Update to use full path
 function isMedia(name) {
     return isAudio(name) || isVideo(name);
 }

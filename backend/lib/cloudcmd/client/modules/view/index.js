@@ -16,7 +16,6 @@ const createElement = require('@cloudcmd/create-element');
 const {time} = require('../../../common/util');
 const {FS} = require('../../../common/cloudfunc');
 const {
-    isImage,
     isAudio,
     getType,
 } = require('./types');
@@ -246,7 +245,7 @@ function hide() {
 }
 
 function viewImage(path, prefixURL) {
-    const isSupportedImage = (a) => isImage(a) || a === path;
+    const isSupportedImage = (a) => a === path;
     const makeTitle = (path) => {
         return {
             href: `${prefixURL}${path}`,
