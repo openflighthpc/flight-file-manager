@@ -6,6 +6,7 @@ const DIR_COMMON = DIR + '../common/';
 
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
 
 const cloudfunc = require(DIR_COMMON + 'cloudfunc');
 const authentication = require(DIR + 'auth');
@@ -34,7 +35,10 @@ const dword = require('dword');
 const deepword = require('deepword');
 const nomine = require('nomine');
 const fileop = require('@cloudcmd/fileop');
-const FileType = require('file-type');
+
+const mmm = require('mmmagic');
+const magicMime = new mmm.Magic(mmm.MAGIC_MIME_TYPE)
+const detectFile = util.promisify(magicMime.detectFile.bind(magicMime));
 
 const isDev = process.env.NODE_ENV === 'development';
 const getDist = (isDev) => isDev ? 'dist-dev' : 'dist';
@@ -265,10 +269,9 @@ function cloudcmd({modules, config}) {
             const stat = await fs.promises.stat(path);
             if (stat.isFile()) {
               // Attempt to use magic numbers to set the Content-Type
-              const magic_type = await FileType.fromFile(path);
-              if (magic_type) {
-                setContentType(magic_type.mime);
-                next();
+              const mime = await detectFile(path)
+              if (mime) {
+                setContentType(mime);
               }
             }
           }
