@@ -15,10 +15,7 @@ const createElement = require('@cloudcmd/create-element');
 
 const {time} = require('../../../common/util');
 const {FS} = require('../../../common/cloudfunc');
-const {
-    isAudio,
-    getType,
-} = require('./types');
+const { getType } = require('./types');
 
 const Files = require('../../dom/files');
 const Events = require('../../dom/events');
@@ -292,8 +289,7 @@ async function getMediaElement(src) {
     if (!TemplateAudio)
         TemplateAudio = template;
     
-    const is = isAudio(name);
-    const type = is ? 'audio' : 'video';
+    const type = await getType(name);
     
     const innerHTML = rendy(TemplateAudio, {
         src,

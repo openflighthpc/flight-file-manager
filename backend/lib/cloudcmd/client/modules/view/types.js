@@ -38,12 +38,6 @@ module.exports.getType = async (path) => {
     }
 };
 
-// TODO: Update to use full path
-module.exports.isAudio = isAudio;
-function isAudio(name) {
-    return /\.(mp3|ogg|m4a)$/i.test(name);
-}
-
 async function fetchMimeType(path) {
     const {headers} = await fetch(path, {
         method: 'HEAD',
