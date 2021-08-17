@@ -39,34 +39,9 @@ module.exports.getType = async (path) => {
 };
 
 // TODO: Update to use full path
-function isMedia(name) {
-    return isAudio(name) || isVideo(name);
-}
-
-// TODO: Update to use full path
 module.exports.isAudio = isAudio;
 function isAudio(name) {
     return /\.(mp3|ogg|m4a)$/i.test(name);
-}
-
-// TODO: Update to use full path
-function isVideo(name) {
-    return /\.(mp4|avi|webm)$/i.test(name);
-}
-
-// TODO: Remove entirely
-module.exports._detectType = detectType;
-async function detectType(path) {
-    const {headers} = await fetch(path, {
-        method: 'HEAD',
-    });
-    
-    for (const [name, value] of headers) {
-        if (name === 'content-type')
-            return `.${value.split('/').pop()}`;
-    }
-    
-    return '';
 }
 
 async function fetchMimeType(path) {
