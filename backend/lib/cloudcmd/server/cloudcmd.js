@@ -34,6 +34,7 @@ const dword = require('dword');
 const deepword = require('deepword');
 const nomine = require('nomine');
 const fileop = require('@cloudcmd/fileop');
+const FileType = require('file-type');
 
 const isDev = process.env.NODE_ENV === 'development';
 const getDist = (isDev) => isDev ? 'dist-dev' : 'dist';
@@ -186,7 +187,9 @@ function cloudcmd({modules, config}) {
     
     const dropbox = config('dropbox');
     const dropboxToken = config('dropboxToken');
-    
+
+    const restafaryPrefix = cloudfunc.apiURL + '/fs';
+
     const funcs = clean([
         config('console') && konsole({
             online,
@@ -237,12 +240,41 @@ function cloudcmd({modules, config}) {
             root,
             token: dropboxToken,
         }),
-        
-        restafary({
-            prefix: cloudfunc.apiURL + '/fs',
-            root,
-        }),
-        
+        async function(req, res, next) {
+          // Helper function which prevents the Content-Type being updated
+          // This prevents "restafary" inferring the header from the file
+          // extension after it has been set.
+          //
+          // NOTE: This may result in the header being wrong on 404. However
+          //       trying to correct the header after the restafary response
+          //       has been issued, proved to be difficult.
+          const setContentType = function(type) {
+            res.setHeader('Content-Type', type);
+            const oldSetHeader = res.setHeader;
+            res.setHeader = function(key, value) {
+              if ( key !== 'Content-Type' ) {
+                return oldSetHeader.apply(res, arguments);
+              }
+            }
+          }
+
+          // Attempt to determine the Content-Type up front for HEAD/GET file API requests
+          const regex = RegExp(`^${restafaryPrefix}`)
+          if (req.url.match(regex) && ['GET', 'HEAD'].includes(req.method)) {
+            const path = ponse.getPathName(req.url).replace(regex, '');
+            const stat = await fs.promises.stat(path);
+            if (stat.isFile()) {
+              // Attempt to use magic numbers to set the Content-Type
+              const magic_type = await FileType.fromFile(path);
+              if (magic_type) {
+                setContentType(magic_type.mime);
+                next();
+              }
+            }
+          }
+          next();
+        },
+        restafary({ prefix: restafaryPrefix, root }),
         userMenu({
             menuName: '.cloudcmd.menu.js',
         }),
