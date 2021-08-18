@@ -15,7 +15,8 @@
 /log
 /vendor
 tags
-etc/flight-file-manager-api.*.local.yaml
+etc/file-manager-api.local.yaml
+etc/file-manager-api.*.local.yaml
 usr
 etc/shared-secret.conf
 .env.development.local
