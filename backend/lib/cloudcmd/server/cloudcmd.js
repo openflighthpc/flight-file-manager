@@ -269,7 +269,8 @@ function cloudcmd({modules, config}) {
             const stat = await fs.promises.stat(path);
             if (stat.isFile()) {
               // Attempt to use magic numbers to set the Content-Type
-              const mime = await detectFile(path)
+              const realPath = await fs.promises.realpath(path);
+              const mime = await detectFile(realPath)
               if (mime) {
                 setContentType(mime);
               }
