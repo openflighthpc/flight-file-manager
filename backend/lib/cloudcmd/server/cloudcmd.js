@@ -263,19 +263,26 @@ function cloudcmd({modules, config}) {
           }
 
           // Attempt to determine the Content-Type up front for HEAD/GET file API requests
-          const regex = RegExp(`^${restafaryPrefix}`)
-          if (req.url.match(regex) && ['GET', 'HEAD'].includes(req.method)) {
-            const path = ponse.getPathName(req.url).replace(regex, '');
-            const stat = await fs.promises.stat(path);
-            if (stat.isFile()) {
-              // Attempt to use magic numbers to set the Content-Type
-              const realPath = await fs.promises.realpath(path);
-              const mime = await detectFile(realPath)
-              if (mime) {
-                setContentType(mime);
+          try {
+            const regex = RegExp(`^${restafaryPrefix}`)
+            if (req.url.match(regex) && ['GET', 'HEAD'].includes(req.method)) {
+              const path = ponse.getPathName(req.url).replace(regex, '');
+              const stat = await fs.promises.stat(path);
+              if (stat.isFile()) {
+                // Attempt to use magic numbers to set the Content-Type
+                const realPath = await fs.promises.realpath(path);
+                const mime = await detectFile(realPath)
+                if (mime) {
+                  setContentType(mime);
+                }
               }
             }
+          } catch(err) {
+            // NOOP: The file might not exist OR could be a broken symlink
+            //       Regardless, we don't care here. It is restafary's problem now
           }
+
+          // Run restafary
           next();
         },
         restafary({ prefix: restafaryPrefix, root }),
