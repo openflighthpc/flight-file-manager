@@ -249,9 +249,9 @@ function cloudcmd({modules, config}) {
           // This prevents "restafary" inferring the header from the file
           // extension after it has been set.
           //
-          // NOTE: This may result in the header being wrong on 404. However
-          //       trying to correct the header after the restafary response
-          //       has been issued, proved to be difficult.
+          // NOTE: This may result in the header being wrong on non-404 errors.
+          //       However trying to correct the header after the restafary
+          //       response has been issued, proved to be difficult.
           const setContentType = function(type) {
             res.setHeader('Content-Type', type);
             const oldSetHeader = res.setHeader;
@@ -262,7 +262,7 @@ function cloudcmd({modules, config}) {
             }
           }
 
-          // Attempt to determine the Content-Type up front for HEAD/GET file API requests
+          // Attempt to determine the Content-Type upfront for HEAD/GET file API requests
           try {
             const regex = RegExp(`^${restafaryPrefix}`)
             if (req.url.match(regex) && ['GET', 'HEAD'].includes(req.method)) {
@@ -277,13 +277,22 @@ function cloudcmd({modules, config}) {
                 }
               }
             }
-          } catch(err) {
-            // NOOP: The file might not exist OR could be a broken symlink
-            //       Regardless, we don't care here. It is restafary's problem now
-          }
 
-          // Run restafary
-          next();
+            // Run restafary as the file exists OR it is an unrelated request
+            next();
+          } catch(err) {
+            // The file probably doesn't exist because BUT it could be a broken symlink
+            // restafary does not like broken symlinks and will crash cloudcmd
+            //
+            // Issuing the 404 protects restafary
+            if (req.url === "GET") {
+              const params = { request: req, response: res };
+              ponse.sendError(err, params);
+            } else {
+              res.status(404);
+              res.end();
+            }
+          }
         },
         restafary({ prefix: restafaryPrefix, root }),
         userMenu({

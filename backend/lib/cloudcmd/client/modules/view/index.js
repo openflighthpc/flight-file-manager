@@ -125,7 +125,7 @@ async function show(data, options = {}) {
     
     switch(type) {
     default:
-        Dialog.alert(`Cannot open file!\n(${type})`);
+        Dialog.alert(`Cannot open file!\n(${type || "unknown"})`);
         hide();
         Images.hide();
         return;
