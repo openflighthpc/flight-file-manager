@@ -1,3 +1,8 @@
+beta
+
+fix:
+- (view) detect all media types using MIME type
+
 2021.06.08, v15.9.5
 
 fix:

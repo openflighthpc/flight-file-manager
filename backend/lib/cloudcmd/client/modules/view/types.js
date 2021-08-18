@@ -5,73 +5,51 @@ const currify = require('currify');
 const testRegExp = currify((name, reg) => reg.test(name));
 const getRegExp = (ext) => RegExp(`\\.${ext}$`, 'i');
 
+const textRegexp = /^text\//g;
+const imageRegexp = /^image\//g;
+const audioRegexp = /^audio\//g;
+const videoRegexp = /^video\//g;
+
 const isPDF = (a) => /\.pdf$/i.test(a);
 const isHTML = (a) => /\.html$/.test(a);
 const isMarkdown = (a) => /.\.md$/.test(a);
 
 module.exports.getType = async (path) => {
-    const ext = extname(path);
-    
-    if (!ext)
-        path = await detectType(path);
-    
-    if (isPDF(path))
-        return 'pdf';
-    
-    if (isImage(path))
-        return 'image';
-    
-    if (isMedia(path))
-        return 'media';
-    
-    if (isHTML(path))
+    const mime = await fetchMimeType(path);
+
+    if (mime.match(textRegexp)) {
+      if (mime === "text/html") {
         return 'html';
-    
-    if (isMarkdown(path))
+      } else if (mime === "text/markdown") {
         return 'markdown';
+      } else {
+        return 'text';
+      }
+    } else if (mime.match(imageRegexp)) {
+      return 'image';
+    } else if (mime === "application/pdf") {
+      return 'pdf';
+    } else if (mime.match(audioRegexp)) {
+      // Returns media due to legacy implementation
+      return 'media';
+    } else if (mime.match(videoRegexp)) {
+      // Returns media due to legacy implementation
+      return 'media';
+    } else {
+      // Otherwise return the raw MIME type
+      return mime;
+    }
 };
 
-module.exports.isImage = isImage;
-function isImage(name) {
-    const images = [
-        'jp(e|g|eg)',
-        'gif',
-        'png',
-        'bmp',
-        'webp',
-        'svg',
-        'ico',
-    ];
-    
-    return images
-        .map(getRegExp)
-        .some(testRegExp(name));
-}
-
-function isMedia(name) {
-    return isAudio(name) || isVideo(name);
-}
-
-module.exports.isAudio = isAudio;
-function isAudio(name) {
-    return /\.(mp3|ogg|m4a)$/i.test(name);
-}
-
-function isVideo(name) {
-    return /\.(mp4|avi|webm)$/i.test(name);
-}
-
-module.exports._detectType = detectType;
-async function detectType(path) {
+async function fetchMimeType(path) {
     const {headers} = await fetch(path, {
         method: 'HEAD',
     });
     
     for (const [name, value] of headers) {
         if (name === 'content-type')
-            return `.${value.split('/').pop()}`;
+            return value;
     }
     
     return '';
 }
-

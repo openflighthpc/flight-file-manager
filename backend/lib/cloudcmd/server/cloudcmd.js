@@ -6,6 +6,7 @@ const DIR_COMMON = DIR + '../common/';
 
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
 
 const cloudfunc = require(DIR_COMMON + 'cloudfunc');
 const authentication = require(DIR + 'auth');
@@ -34,6 +35,10 @@ const dword = require('dword');
 const deepword = require('deepword');
 const nomine = require('nomine');
 const fileop = require('@cloudcmd/fileop');
+
+const mmm = require('mmmagic');
+const magicMime = new mmm.Magic(mmm.MAGIC_MIME_TYPE)
+const detectFile = util.promisify(magicMime.detectFile.bind(magicMime));
 
 const isDev = process.env.NODE_ENV === 'development';
 const getDist = (isDev) => isDev ? 'dist-dev' : 'dist';
@@ -186,7 +191,9 @@ function cloudcmd({modules, config}) {
     
     const dropbox = config('dropbox');
     const dropboxToken = config('dropboxToken');
-    
+
+    const restafaryPrefix = cloudfunc.apiURL + '/fs';
+
     const funcs = clean([
         config('console') && konsole({
             online,
@@ -237,12 +244,53 @@ function cloudcmd({modules, config}) {
             root,
             token: dropboxToken,
         }),
-        
-        restafary({
-            prefix: cloudfunc.apiURL + '/fs',
-            root,
-        }),
-        
+        async function(req, res, next) {
+          // Attempt to determine the Content-Type upfront for HEAD/GET file API requests
+          try {
+            const regex = RegExp(`^${restafaryPrefix}`)
+            if (req.url.match(regex) && ['GET', 'HEAD'].includes(req.method)) {
+              const path = ponse.getPathName(req.url).replace(regex, '');
+              const stat = await fs.promises.stat(path);
+              if (stat.isFile()) {
+                // Attempt to use magic numbers to set the Content-Type
+                const realPath = await fs.promises.realpath(path);
+                const mime = await detectFile(realPath)
+                if (mime) {
+                  // Set the new MIME type
+                  res.setHeader('Content-Type', mime);
+
+                  // Redefine res.setHeader to prevent restafary updating the Content-Type
+                  // from the file extension
+                  //
+                  // This may result in non-404 errors having the wrong Content-Type. But
+                  // correcting the header after restafary runs proved to be difficult
+                  const oldSetHeader = res.setHeader;
+                  res.setHeader = function(key, value) {
+                    if ( key !== 'Content-Type' ) {
+                      return oldSetHeader.apply(res, arguments);
+                    }
+                  }
+                }
+              }
+            }
+
+            // Run restafary as the file exists OR it is an unrelated request
+            next();
+          } catch(err) {
+            // The file probably doesn't exist BUT it could be a broken symlink.
+            // restafary does not like broken symlinks and will crash cloudcmd
+            //
+            // Issuing the 404 protects restafary
+            if (req.url === "GET") {
+              const params = { request: req, response: res };
+              ponse.sendError(err, params);
+            } else {
+              res.status(404);
+              res.end();
+            }
+          }
+        },
+        restafary({ prefix: restafaryPrefix, root }),
         userMenu({
             menuName: '.cloudcmd.menu.js',
         }),

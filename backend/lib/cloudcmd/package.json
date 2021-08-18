@@ -112,6 +112,7 @@
     "just-snake-case": "^1.1.0",
     "markdown-it": "^12.0.0",
     "mellow": "^3.0.0",
+    "mmmagic": "^0.5.0",
     "nomine": "^4.0.0",
     "object.omit": "^3.0.0",
     "once": "^1.4.0",

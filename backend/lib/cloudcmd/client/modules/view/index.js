@@ -15,12 +15,9 @@ const createElement = require('@cloudcmd/create-element');
 
 const {time} = require('../../../common/util');
 const {FS} = require('../../../common/cloudfunc');
-const {
-    isImage,
-    isAudio,
-    getType,
-} = require('./types');
+const { getType } = require('./types');
 
+const Dialog = require('../../dom/dialog')
 const Files = require('../../dom/files');
 const Events = require('../../dom/events');
 const Images = require('../../dom/images');
@@ -128,6 +125,12 @@ async function show(data, options = {}) {
     
     switch(type) {
     default:
+        Dialog.alert(`Cannot open file!\n(${type || "unknown"})`);
+        hide();
+        Images.hide();
+        return;
+
+    case 'text':
         return await viewFile();
     
     case 'markdown':
@@ -246,7 +249,7 @@ function hide() {
 }
 
 function viewImage(path, prefixURL) {
-    const isSupportedImage = (a) => isImage(a) || a === path;
+    const isSupportedImage = (a) => a === path;
     const makeTitle = (path) => {
         return {
             href: `${prefixURL}${path}`,
@@ -293,8 +296,7 @@ async function getMediaElement(src) {
     if (!TemplateAudio)
         TemplateAudio = template;
     
-    const is = isAudio(name);
-    const type = is ? 'audio' : 'video';
+    const type = await getType(name);
     
     const innerHTML = rendy(TemplateAudio, {
         src,
