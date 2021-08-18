@@ -17,6 +17,7 @@ const {time} = require('../../../common/util');
 const {FS} = require('../../../common/cloudfunc');
 const { getType } = require('./types');
 
+const Dialog = require('../../dom/dialog')
 const Files = require('../../dom/files');
 const Events = require('../../dom/events');
 const Images = require('../../dom/images');
@@ -124,6 +125,12 @@ async function show(data, options = {}) {
     
     switch(type) {
     default:
+        Dialog.alert(`Cannot open file!\n(${type})`);
+        hide();
+        Images.hide();
+        return;
+
+    case 'text':
         return await viewFile();
     
     case 'markdown':

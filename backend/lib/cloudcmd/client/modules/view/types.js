@@ -23,7 +23,7 @@ module.exports.getType = async (path) => {
       } else if (mime === "text/markdown") {
         return 'markdown';
       } else {
-        return 'test';
+        return 'text';
       }
     } else if (mime.match(imageRegexp)) {
       return 'image';
@@ -35,6 +35,9 @@ module.exports.getType = async (path) => {
     } else if (mime.match(videoRegexp)) {
       // Returns media due to legacy implementation
       return 'media';
+    } else {
+      // Otherwise return the raw MIME type
+      return mime;
     }
 };
 
