@@ -245,23 +245,6 @@ function cloudcmd({modules, config}) {
             token: dropboxToken,
         }),
         async function(req, res, next) {
-          // Helper function which prevents the Content-Type being updated
-          // This prevents "restafary" inferring the header from the file
-          // extension after it has been set.
-          //
-          // NOTE: This may result in the header being wrong on non-404 errors.
-          //       However trying to correct the header after the restafary
-          //       response has been issued, proved to be difficult.
-          const setContentType = function(type) {
-            res.setHeader('Content-Type', type);
-            const oldSetHeader = res.setHeader;
-            res.setHeader = function(key, value) {
-              if ( key !== 'Content-Type' ) {
-                return oldSetHeader.apply(res, arguments);
-              }
-            }
-          }
-
           // Attempt to determine the Content-Type upfront for HEAD/GET file API requests
           try {
             const regex = RegExp(`^${restafaryPrefix}`)
@@ -273,7 +256,20 @@ function cloudcmd({modules, config}) {
                 const realPath = await fs.promises.realpath(path);
                 const mime = await detectFile(realPath)
                 if (mime) {
-                  setContentType(mime);
+                  // Set the new MIME type
+                  res.setHeader('Content-Type', mime);
+
+                  // Redefine res.setHeader to prevent restafary updating the Content-Type
+                  // from the file extension
+                  //
+                  // This may result in non-404 errors having the wrong Content-Type. But
+                  // correcting the header after restafary runs proved to be difficult
+                  const oldSetHeader = res.setHeader;
+                  res.setHeader = function(key, value) {
+                    if ( key !== 'Content-Type' ) {
+                      return oldSetHeader.apply(res, arguments);
+                    }
+                  }
                 }
               }
             }
@@ -281,7 +277,7 @@ function cloudcmd({modules, config}) {
             // Run restafary as the file exists OR it is an unrelated request
             next();
           } catch(err) {
-            // The file probably doesn't exist because BUT it could be a broken symlink
+            // The file probably doesn't exist BUT it could be a broken symlink.
             // restafary does not like broken symlinks and will crash cloudcmd
             //
             // Issuing the 404 protects restafary
