@@ -32,7 +32,10 @@ require 'active_support/string_inquirer'
 module Flight
   class << self
     def config
-      @config ||= FlightFileManager::Configuration.load
+      return @config if @config
+      @config = FlightFileManager::Configuration.load
+      @config.__logs__.log_with(logger)
+      @config
     end
     alias_method :load_configuration, :config
 

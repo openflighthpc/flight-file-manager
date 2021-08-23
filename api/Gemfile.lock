@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/openflighthpc/flight_configuration
-  revision: 2cbc8c4b698c71d2fd18edb082fff5110701cb7e
-  branch: 0.4.0
+  revision: 4c0e27cd911db7f40372c86716f67663392013f3
+  branch: 0.5.0
   specs:
-    flight_configuration (0.1.0)
+    flight_configuration (0.5.0)
 
 GEM
   remote: https://rubygems.org/
