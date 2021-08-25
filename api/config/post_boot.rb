@@ -27,25 +27,16 @@
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
 
-require 'sinatra'
-require_relative 'config/boot'
+require 'yaml'
+require 'json'
+require 'pathname'
 
-Flight.load_configuration
-# Ensures the shared secret exists
-Flight.config.auth_decoder
+# Shared activesupport libraries
+require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/object/blank'
+require 'active_support/string_inquirer'
+require 'active_support/core_ext/module/delegation'
 
-require_relative 'config/post_boot'
-require_relative 'app'
-
-configure do
-  LOGGER = Flight.logger
-  enable :logging, :dump_errors
-  set :raise_errors, true
-end
-
-app = Rack::Builder.new do
-  map('/backend') { run BackendProxy.new }
-  map('/v0') { run App }
-end
-
-run app
+require_relative '../app'
+require_relative '../app/backend_proxy'
+require_relative '../app/cloudcmd'
