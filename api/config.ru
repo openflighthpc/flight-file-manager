@@ -30,6 +30,13 @@
 require 'sinatra'
 require_relative 'config/boot'
 
+Flight.load_configuration
+# Ensures the shared secret exists
+Flight.config.auth_decoder
+
+require_relative 'config/post_boot'
+require_relative 'app'
+
 configure do
   LOGGER = Flight.logger
   enable :logging, :dump_errors

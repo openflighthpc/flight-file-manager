@@ -31,9 +31,6 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
 require 'rubygems'
 require 'bundler'
-require 'yaml'
-require 'json'
-require 'pathname'
 
 # NOTE: The RACK_ENV maybe modified during this require, so it must be done
 # before loading the Flight stub
@@ -48,12 +45,6 @@ dot_files = [ '../.env.development.local', '../.env.development' ].map do |file|
 end
 Dotenv.load(*dot_files)
 
-# Shared activesupport libraries
-require 'active_support/core_ext/hash/keys'
-require 'active_support/core_ext/object/blank'
-require 'active_support/string_inquirer'
-require 'active_support/core_ext/module/delegation'
-
 lib = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
@@ -62,9 +53,3 @@ require 'flight'
 Bundler.require(:default, :development) if Flight.env.development?
 
 require 'flight_file_manager'
-
-Flight.load_configuration
-
-require_relative '../app'
-require_relative '../app/backend_proxy'
-require_relative '../app/cloudcmd'

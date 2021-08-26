@@ -26,14 +26,17 @@
 # For more information on Flight File Manager, please visit:
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
+
+require 'yaml'
+require 'json'
+require 'pathname'
+
+# Shared activesupport libraries
+require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/object/blank'
+require 'active_support/string_inquirer'
 require 'active_support/core_ext/module/delegation'
 
-require 'flight'
-
-module FlightFileManager
-  autoload(:Configuration, 'flight_file_manager/configuration')
-
-  class << self
-    delegate :config, :logger, to: Flight
-  end
-end
+require_relative '../app'
+require_relative '../app/backend_proxy'
+require_relative '../app/cloudcmd'
