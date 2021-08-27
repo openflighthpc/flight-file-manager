@@ -34,6 +34,7 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 gem 'activesupport', require: 'active_support'
 gem 'activemodel'
 gem 'console'
+gem 'concurrent-ruby'
 gem 'flight_auth', github: "openflighthpc/flight_auth", branch: "297cb7241b820d334e5d593c4e237a81b83a9995"
 gem 'flight_configuration', github: 'openflighthpc/flight_configuration', branch: '0.5.0'
 gem 'dotenv'

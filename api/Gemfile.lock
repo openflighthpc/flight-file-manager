@@ -90,6 +90,7 @@ PLATFORMS
 DEPENDENCIES
   activemodel
   activesupport
+  concurrent-ruby
   console
   dotenv
   flight_auth!

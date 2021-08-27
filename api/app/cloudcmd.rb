@@ -26,8 +26,27 @@
 # For more information on Flight File Manager, please visit:
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
+require 'concurrent/hash'
 
 class CloudCmd
+  # Maps known instances of cloudcmd sessions and their corresponding user
+  # Primarily used in the shutdown process
+  def self.instances
+    @instances ||= Concurrent::Hash.new
+  end
+
+  def self.kill_instances(sig)
+    cloudcmds = instances.values.select(&:running?)
+    cloudcmds.each { |cmd| cmd.kill(sig) }
+    cloudcmds.each do |cmd|
+      begin
+        Process.wait cmd.pid
+      rescue Errno::ECHILD
+        # Do not worry if the child has already exited
+      end
+    end
+  end
+
   def initialize(user)
     @user = user
   end
@@ -38,10 +57,10 @@ class CloudCmd
     run_subprocess
   end
 
-  def kill
-    Flight.logger.info "Shutting down cloudcmd server for '#{@user}' pid=#{pid}"
+  def kill(sig = 'TERM')
+    Flight.logger.info "Shutting down cloudcmd server for '#{@user}' pid=#{pid} sig=#{sig}"
     begin
-      Process.kill(-Signal.list['TERM'], pid)
+      Process.kill(-Signal.list[sig], pid)
     rescue Errno::ESRCH
       # NOOP - Don't worry if it has already ended
     end
