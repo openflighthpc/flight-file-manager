@@ -26,12 +26,13 @@
 # For more information on Flight File Manager, please visit:
 # https://github.com/openflighthpc/flight-file-manager
 #===============================================================================
+require 'concurrent/hash'
 
 class CloudCmd
   # Maps known instances of cloudcmd sessions and their corresponding user
   # Primarily used in the shutdown process
   def self.instances
-    @instances ||= {}
+    @instances ||= Concurrent::Hash.new
   end
 
   def self.kill_instances(sig)
