@@ -2,7 +2,9 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
+orbs:
+  slack: circleci/slack@4.4.4
 jobs:
   build:
     docker:
@@ -42,6 +44,9 @@ jobs:
 
       - store_test_results:
           path: client/test-results
+
+      - slack/notify:
+          channel: randd-repo-spam 
 
 workflows:
   version: 2
