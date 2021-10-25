@@ -1,11 +1,6 @@
 {
   "environment": {
-    "name": "Dev cluster",
-    "description": "This is a dev environment.",
-    "logo": {
-      "url": "",
-      "classNames": ""
-    }
+    "name": "Dev cluster"
   },
   "organisation": {
     "name": ""

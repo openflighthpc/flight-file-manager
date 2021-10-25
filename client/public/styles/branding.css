@@ -52,6 +52,59 @@ body {
     font-size: larger;
 }
 
+/*------------------------------------------------
+ * Product bar branding
+ * ----------------------------------------------- */
+
+.productbar {
+    background-color: var(--secondary);
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.productbar .navbar-nav {
+    min-height: 30px;
+}
+.productbar .nav-item,
+.productbar .nav-item .nav-link {
+    padding-top: 0;
+    padding-bottom: 0;
+    /* color: #dcdee0; */
+}
+.productbar .nav-item.active,
+.productbar .nav-item .nav-link.active {
+    /* color: #fff; */
+}
+
+/*------------------------------------------------
+ * Sidenav branding
+ * ----------------------------------------------- */
+
+.sidenav >:first-child {
+    position: sticky;
+    top: 24px;
+    will-change: transform;
+    z-index: 10;
+}
+
+.sidenav h2 {
+    text-transform: uppercase;
+    font-size: 13px;
+    color: #333;
+    letter-spacing: 1px;
+    line-height: 20px;
+}
+
+.sidenav ul {
+    list-style-type: none;
+    padding-left: 0.5rem;
+    margin: 0 0 1rem 0;
+}
+
+.sidenav ul li {
+    padding-top: 0;
+}
+
 /* -----------------------------------------------
  * Non-sticky header and sticky footer
  * ----------------------------------------------- */
@@ -71,19 +124,6 @@ footer {
     border-top: 1px solid #dee2e6 !important;
 }
 
-/*------------------------------------------------
- * Landing page dashboard branding
- * ----------------------------------------------- */
-.branding-landingpage-dashboard-logo-wrapper { }
-img.branding-landingpage-dashboard-logo { }
-
-
-/* -----------------------------------------------
- * Apps dashboard branding
- * ----------------------------------------------- */
-.branding-apps-dashboard-logo-wrapper { }
-img.branding-apps-dashboard-logo { }
-
 /* -----------------------------------------------
  * Logo
  * ----------------------------------------------- */
@@ -94,3 +134,24 @@ img.logo {
     margin-left: auto;
     margin-right: auto;
 }
+
+/*------------------------------------------------
+ * Landing page dashboard branding
+ * ----------------------------------------------- */
+.branding-landingpage-dashboard-logo-wrapper { }
+img.branding-landingpage-dashboard-logo { }
+
+/* -----------------------------------------------
+ * App branding
+ * ----------------------------------------------- */
+
+.App .sidenav {
+    padding-left: 3rem;
+}
+
+/* -----------------------------------------------
+ * Apps dashboard branding
+ * ----------------------------------------------- */
+.branding-apps-dashboard-logo-wrapper { }
+img.branding-apps-dashboard-logo { }
+
