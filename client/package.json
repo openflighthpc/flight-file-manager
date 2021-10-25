@@ -3,13 +3,9 @@
   "version": "1.2.2",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
     "classnames": "^2.2.6",
     "debug": "^4.3.1",
     "flight-webapp-components": "git+https://github.com/openflighthpc/flight-webapp-components#0.1.7",
-    "http-proxy-middleware": "^1.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -41,6 +37,23 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "http-proxy-middleware": "^1.0.6",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-junit": "^13.0.0"
+  },
+  "jest-junit": {
+    "suiteName": "jest tests",
+    "outputDirectory": ".",
+    "outputName": "test-results/junit.xml",
+    "classNameTemplate": "{classname}-{title}",
+    "titleTemplate": "{classname}-{title}",
+    "ancestorSeparator": " › ",
+    "usePathForSuiteName": "true"
   },
   "homepage": "http://example.com/files"
 }

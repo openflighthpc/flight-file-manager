@@ -1,0 +1,50 @@
+# JavaScript CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: cimg/node:14.15
+    steps:
+      - checkout
+
+      - restore_cache:
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          keys: 
+            - yarn-deps-v1-{{ checksum "client/yarn.lock" }}
+            - yarn-deps-v1-
+
+      - run:
+          name: Install dependencies
+          command: |
+            cd client
+            yarn install
+
+      - save_cache:
+          key: yarn-deps-v1-{{ checksum "client/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+
+      - run:
+          name: Run tests
+          # Runs jest with "--maxWorkers=2" argument to avoid OOM issues
+          command: |
+            cd client
+            yarn run test --maxWorkers=2 --ci --coverage --reporters=default --reporters=jest-junit
+
+      - store_artifacts: 
+          path: client/test-results
+
+      - store_artifacts: 
+          path: client/coverage
+
+      - store_test_results:
+          path: client/test-results
+
+workflows:
+  version: 2
+  Build and Test:
+    jobs:
+      - build
