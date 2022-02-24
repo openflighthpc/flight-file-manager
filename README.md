@@ -95,6 +95,22 @@ optional and can be achieved by editing the `flight-file-manager.yaml` file in
 the `etc/` subdirectory of the tool.  [The file](etc/flight-file-manager.yaml)
 is well documented and outlines all the configuration values available.
 
+By default, the Flight File Manager uses the production version of the API that is installed. To use the development version of the API:
+
+Build the development version of the backend:
+```
+cd flight-file-manager/backend/lib/cloudcmd
+/opt/flight/bin/yarn install
+/opt/flight/bin/yarn run build
+```
+
+Set up the development version of the API:
+```
+cd flight-file-manager/api/
+sudo /opt/flight/bin/bundle install
+sudo /opt/flight/bin/ruby ./bin/puma
+```
+
 ## Operation
 
 ### When installed with Flight Runway
