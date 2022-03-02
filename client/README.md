@@ -1,18 +1,43 @@
 # Flight File Manager Client
 
-Browser client for Flight File Manager.  See [the main README](README.md)
+Browser client for Flight File Manager.  See [the main README](/README.md)
 for more details.
+
+# Installation
+
+## From source
+
+Flight File Manager Webapp requires a recent version of Node and `yarn`.
+
+The following will install from source using `git`:
+
+```
+git clone https://github.com/alces-flight/flight-file-manager.git
+cd flight-file-manager/client
+yarn install
+yarn run build
+```
+
+Flight File Manager Webapp has been built into `build/`.  It can be served by
+any webserver configured to serve static files from that directory.  By
+default, Flight File Manager Webapp expects to be served from a path of
+`/files`.  If that does not suit your needs, see the configuration section
+below for details on how to configure it.
+
+## Installing with Flight Runway
+
+See details in [the main README](/README.md).
 
 # Contributing
 
 Fork the project. Make your feature addition or bug fix. Send a pull
 request. Bonus points for topic branches.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+Read [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
 
 # Copyright and License
 
-Eclipse Public License 2.0, see [LICENSE.txt](LICENSE.txt) for details.
+Eclipse Public License 2.0, see [LICENSE.txt](/LICENSE.txt) for details.
 
 Copyright (C) 2021-present Alces Flight Ltd.
 

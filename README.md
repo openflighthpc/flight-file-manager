@@ -11,7 +11,9 @@ Flight File Manager allows you to access your HPC environment files via a GUI
 
 ### From source
 
-XXX TBC
+Flight File Manager consists of three separate components: [browser
+client](client), [API process](api) and [per-user backend process](backend).
+The installation instructions for each component can be found in its readme.
 
 ### Installing with Flight Runway
 
@@ -94,22 +96,6 @@ For Flight File Manager API, making changes to the default configuration is
 optional and can be achieved by editing the `flight-file-manager.yaml` file in
 the `etc/` subdirectory of the tool.  [The file](etc/flight-file-manager.yaml)
 is well documented and outlines all the configuration values available.
-
-By default, the Flight File Manager uses the production version of the API that is installed. To use the development version of the API:
-
-Build the development version of the backend:
-```
-cd flight-file-manager/backend/lib/cloudcmd
-/opt/flight/bin/yarn install
-/opt/flight/bin/yarn run build
-```
-
-Set up the development version of the API:
-```
-cd flight-file-manager/api/
-sudo /opt/flight/bin/bundle install
-sudo /opt/flight/bin/ruby ./bin/puma
-```
 
 ## Operation
 
