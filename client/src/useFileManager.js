@@ -112,13 +112,14 @@ export default function useFileManager() {
         const file = sessionRef.current.file;
         debug('Loading directory %s', dir);
         window.CloudCmd.addListener('current-file', currentFileListener);
-        window.CloudCmd.loadDir({path: dir}).then(() => {
-          if (file) {
-            debug("loading file %s", file);
-            window.DOM.setCurrentByName(file);
-            window.CloudCmd.View.show();
-          }
-        });
+        window.CloudCmd.loadDir({path: dir})
+          .then(() => {
+            if (file) {
+              debug("Displaying file %s", file);
+              window.DOM.setCurrentByName(file);
+              window.CloudCmd.View.show();
+            }
+          });
         setState('connected');
         clearSearchParams();
       };
