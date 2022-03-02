@@ -74,9 +74,9 @@ class CloudCmd
   def running?
     return false if pid.nil?
     begin
-      Process.getpgid(pid)
+      Process.waitpid(pid, Process::WNOHANG)
       true
-    rescue Errno::ESRCH
+    rescue Errno::ECHILD
       false
     end
   end

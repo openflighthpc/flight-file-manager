@@ -1,18 +1,54 @@
 # Flight File Manager Backend
 
 Backend for Flight File Manager.  This serves the file management requests
-from the client.  See [the main README](README.md) for more details.
+from the client.  See [the main README](/README.md) for more details.
+
+# Installation
+
+## From source
+
+Flight File Manager backend requires a recent version of Node and `yarn`.
+
+The following will install from source using `git`.
+
+* Checkout the source code:
+
+```
+git clone https://github.com/alces-flight/flight-file-manager.git
+```
+
+* Build the `cloudcmd` library:
+
+```
+cd flight-file-manager/backend/lib/cloudcmd
+yarn install
+yarn run build
+```
+
+* Build the per-user backend:
+
+```
+cd flight-file-manager/backend
+yarn install
+```
+
+The per-user backend will be started by the [API process](/api) as and when it
+is required.
+
+## Installing with Flight Runway
+
+See details in [the main README](/README.md).
 
 # Contributing
 
 Fork the project. Make your feature addition or bug fix. Send a pull
 request. Bonus points for topic branches.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+Read [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
 
 # Copyright and License
 
-Eclipse Public License 2.0, see [LICENSE.txt](LICENSE.txt) for details.
+Eclipse Public License 2.0, see [LICENSE.txt](/LICENSE.txt) for details.
 
 Copyright (C) 2021-present Alces Flight Ltd.
 

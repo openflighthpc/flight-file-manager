@@ -4,18 +4,39 @@ Supervisor process for Flight File Manager.  The supervisor starts and stops
 Flight File Manager backend processes and proxies requests from the client to
 the backend.
 
-See [the main README](README.md) for more details.
+See [the main README](/README.md) for more details.
+
+# Installation
+
+## From source
+
+Flight Desktop RestAPI requires a recent version of Ruby and `bundler`.
+
+The following will install from source using `git`:
+
+```
+git clone https://github.com/alces-flight/flight-file-manager.git
+cd flight-file-manager/api
+bundle config set --local with default
+bundle config set --local without development test pry
+bundle config set --local path vendor
+bin/bundle install
+```
+
+## Installing with Flight Runway
+
+See details in [the main README](/README.md).
 
 # Contributing
 
 Fork the project. Make your feature addition or bug fix. Send a pull
 request. Bonus points for topic branches.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+Read [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
 
 # Copyright and License
 
-Eclipse Public License 2.0, see [LICENSE.txt](LICENSE.txt) for details.
+Eclipse Public License 2.0, see [LICENSE.txt](/LICENSE.txt) for details.
 
 Copyright (C) 2021-present Alces Flight Ltd.
 

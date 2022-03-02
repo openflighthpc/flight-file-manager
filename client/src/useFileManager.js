@@ -81,6 +81,7 @@ export default function useFileManager() {
         sessionRef.current = {
           url: responseBody.url,
           dir: responseBody.dir,
+          file: responseBody.file
         };
         debug('Retrieving assets %s', sessionRef.current.url);
         setState('retrieving');
@@ -108,16 +109,17 @@ export default function useFileManager() {
     if (state === 'retrieved') {
       const onConnected = () => {
         const dir = sessionRef.current.dir || '/';
+        const file = sessionRef.current.file;
         debug('Loading directory %s', dir);
         window.CloudCmd.addListener('current-file', currentFileListener);
-        window.CloudCmd.loadDir({path: dir});
-        // XXX Add this in properly.
-        // .then(() => {
-        //   if (true) {
-        //     window.DOM.setCurrentByName('stuff.md');
-        //     setTimeout(() => window.CloudCmd.View.show(), 0)
-        //   }
-        // });
+        window.CloudCmd.loadDir({path: dir})
+          .then(() => {
+            if (file) {
+              debug("Displaying file %s", file);
+              window.DOM.setCurrentByName(file);
+              window.CloudCmd.View.show();
+            }
+          });
         setState('connected');
         clearSearchParams();
       };

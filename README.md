@@ -11,7 +11,9 @@ Flight File Manager allows you to access your HPC environment files via a GUI
 
 ### From source
 
-XXX TBC
+Flight File Manager consists of three separate components: [browser
+client](client), [API process](api) and [per-user backend process](backend).
+The installation instructions for each component can be found in its readme.
 
 ### Installing with Flight Runway
 

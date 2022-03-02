@@ -35,7 +35,7 @@ module.exports = window.CloudCmd = async (config) => {
     
     const prefix = getPrefix(config.prefix);
     
-    window.CloudCmd.init(prefix, config);
+    await window.CloudCmd.init(prefix, config);
 };
 
 function getPrefix(prefix) {
