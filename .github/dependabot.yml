@@ -3,12 +3,16 @@ version: 2
 updates:
   - package-ecosystem: "bundler"
     directory: "/api"
+    schedule:
+      interval: "weekly"
     target-branch: "master"
     labels:
       - "dependencies"
 
   - package-ecosystem: "npm"
     directory: "/client"
+    schedule:
+      interval: "weekly"
     target-branch: "master"
     labels:
       - "dependencies"
