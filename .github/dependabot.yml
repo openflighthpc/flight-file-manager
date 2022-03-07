@@ -1,0 +1,14 @@
+version: 2
+
+updates:
+  - package-ecosystem: "bundler"
+    directory: "/api"
+    target-branch: "master"
+    labels:
+      - "dependencies"
+
+  - package-ecosystem: "npm"
+    directory: "/client"
+    target-branch: "master"
+    labels:
+      - "dependencies"
