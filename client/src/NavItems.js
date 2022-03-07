@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 
 import { CurrentUserContext } from 'flight-webapp-components';
 
-function NavItems() {
+function NavItems({ includeHome=true }) {
   const { currentUser } = useContext(CurrentUserContext);
 
   if (currentUser == null) {
@@ -14,7 +14,7 @@ function NavItems() {
 
   return (
     <>
-    <NavLink path="/">Home</NavLink>
+    { includeHome ? <NavLink path="/">Home</NavLink> : null }
     <NavLink path="/browse">My files</NavLink>
     </>
   );

@@ -19,7 +19,11 @@ function AppLayout() {
 
   return (
     <>
-    <BrandBar />
+    <BrandBar
+      className="brandbar brandbar-combined"
+      navItems={<NavItems includeHome={false} />}
+    />
+    <BrandBar className="brandbar" />
     <ProductBar navItems={<NavItems />} />
     <div
       className="container-fluid"
