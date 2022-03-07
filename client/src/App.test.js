@@ -19,13 +19,17 @@ test('renders without crashing', async () => {
 
 test('can sign in', async () => {
   const {
-    getByText, getByRole, getByLabelText, queryByText,
+    getAllByText, getByText, getByRole, getByLabelText, queryAllByText,
+    queryByText,
   } = await renderApp();
+
+  const getFirstByText = (...args) => getAllByText(...args)[0];
+  const queryFirstByText = (...args) => queryAllByText(...args)[0] || null;
 
   expect(queryByText(/test-user/)).toBeNull();
   expect(queryByText(/Test user/)).toBeNull();
 
-  const loginButton = getByText(/Log in/);
+  const loginButton = getFirstByText(/Log in/);
   expect(loginButton).toBeInTheDocument();
   fireEvent.click(loginButton)
 
@@ -36,8 +40,8 @@ test('can sign in', async () => {
   fireEvent.change(passwordInput, { target: { value: 'test-password' } });
   fireEvent.click(button);
   await waitFor(
-    () => expect(queryByText(/Log in/)).toBeNull()
+    () => expect(queryFirstByText(/Log in/)).toBeNull()
   )
-  expect(getByText('test-user')).toBeInTheDocument();
-  expect(getByText('Test user')).toBeInTheDocument();
+  expect(getFirstByText('test-user')).toBeInTheDocument();
+  expect(getFirstByText('Test user')).toBeInTheDocument();
 });
