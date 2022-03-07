@@ -9,83 +9,18 @@ Flight File Manager allows you to access your HPC environment files via a GUI
 
 ## Installation
 
-### From source
+### Installing with the OpenFlight package repos
+
+Flight File Manager is available as part of the *Flight Web Suite*.  This is
+the easiest method for installing Flight File Manager and all its
+dependencies.  It is documented in [the OpenFlight
+Documentation](https://use.openflighthpc.org/installing-web-suite/install.html#installing-flight-web-suite).
+
+### Manual Installation
 
 Flight File Manager consists of three separate components: [browser
 client](client), [API process](api) and [per-user backend process](backend).
 The installation instructions for each component can be found in its readme.
-
-### Installing with Flight Runway
-
-Flight Runway provides a Ruby environment and command-line helpers for
-running openflightHPC tools.  Flight File Manager integrates with Flight
-Runway to provide easier installation and configuration.
-
-To install Flight Runway, see the [Flight Runway installation
-docs](https://github.com/openflighthpc/flight-runway#installation).
-
-These instructions assume that `flight-runway` has been installed from
-the openflightHPC yum repository and that either [system-wide
-integration](https://github.com/openflighthpc/flight-runway#system-wide-integration)
-has been enabled or the
-[`flight-starter`](https://github.com/openflighthpc/flight-starter) tool has
-been installed and the environment activated with the `flight start` command.
-
- * Enable the Alces Flight RPM repository:
-
-    ```
-    yum install -e0 https://repo.openflighthpc.org/openflight/centos/7/x86_64/openflighthpc-release-2-1.noarch.rpm
-    ```
-
- * Rebuild your `yum` cache:
-
-    ```
-    yum makecache
-    ```
-    
- * Install the `flight-file-manager-*` RPMs:
-
-    ```
-    [root@myhost ~]# yum install flight-file-manager-webapp flight-file-manager-api
-    ```
-
- * Enable HTTPs support
-
-    Flight File Manager is designed to operate over HTTPs connections.  You
-    can enable HTTPs with Let's Encrypt certificates by running the commands
-    below.
-
-    ```
-    [root@myhost ~]# flight www cert-gen --cert-type letsencrypt --domain HOST --email EMAIL
-    [root@myhost ~]# flight www enable-https
-    ```
-
- * Configure details about your cluster
-
-    Flight File Manager Webapp needs to be configured with some details about
-    the cluster it is providing access to.  This can be done with the `flight
-    service configure` command as described below.  You will be asked to
-    provide values for:
-
-    **Cluster name**: set it to a string that identifies this cluster in a
-    human friendly way.
-
-    **Cluster description**: set it to a string that describes this cluster in
-    a human friendly way.
-
-    **Cluster logo URL**: Optionally, set it to the URL for a logo for this
-    cluster.  Or leave it unset.
-
-    **Hostname or IP address**: set this to the fully qualified
-    hostname for your server.  This name needs to resolve correctly and be the
-    name used for the Let's Encrypt certificate created above. 
-
-    Once you have values for the above, you can configure the webapp by running:
-
-    ```
-    [root@myhost ~]# flight service configure file-manager-webapp
-    ```
-
 
 ## Configuration
 
