@@ -7,7 +7,6 @@ import {
   BrandBar,
   ConfigContext,
   Footer,
-  ProductBar,
 } from 'flight-webapp-components';
 
 import NavItems from './NavItems';
@@ -20,11 +19,9 @@ function AppLayout() {
   return (
     <>
     <BrandBar
-      className="brandbar brandbar-combined"
+      className="brandbar"
       navItems={<NavItems includeHome={false} />}
     />
-    <BrandBar className="brandbar" />
-    <ProductBar navItems={<NavItems />} />
     <div
       className="container-fluid"
       id="main"
