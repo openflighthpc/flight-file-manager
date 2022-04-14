@@ -52,28 +52,7 @@ body {
     font-size: larger;
 }
 
-/*------------------------------------------------
- * Product bar branding
- * ----------------------------------------------- */
-
-.productbar {
-    background-color: var(--secondary);
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.productbar .navbar-nav {
-    min-height: 30px;
-}
-.productbar .nav-item,
-.productbar .nav-item .nav-link {
-    padding-top: 0;
-    padding-bottom: 0;
-    /* color: #dcdee0; */
-}
-.productbar .nav-item.active,
-.productbar .nav-item .nav-link.active {
-    /* color: #fff; */
+.App .brandbar {
 }
 
 /*------------------------------------------------
