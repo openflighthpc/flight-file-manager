@@ -44,11 +44,20 @@ function ActionButtons() {
 };
 
 function BookmarkButtons() {
+  const { navigate } = useContext(FileManagerContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
 
   const data = useData()
   const bookmarks = data("bookmarks")
+  const items = bookmarks.map(item =>
+    <DropdownItem
+      onClick={() => {navigate({path: item.path})}}
+      key={item.path}
+    >
+      {item.text}
+    </DropdownItem>
+  );
 
   return (
     <Dropdown
@@ -60,7 +69,9 @@ function BookmarkButtons() {
         <i className="fa fa-bookmark mr-2" />
       </DropdownToggle>
       <DropdownMenu>
-        {/* DROPDOWN ITEMS GO HERE */}
+        {
+          items
+        }
       </DropdownMenu>
     </Dropdown>
   );
