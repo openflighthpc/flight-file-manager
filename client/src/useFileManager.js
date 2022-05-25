@@ -53,6 +53,16 @@ export default function useFileManager() {
   // * `failed`: something went wrong.
   const [ state, setState ] = useState('launching');
 
+  const navigate = useCallback((dir) => {
+    if (state === 'connected') {
+      const path = (dir.path.startsWith('/')) ?
+        dir.path :
+        sessionRef.current.home_dir + '/' + dir.path
+
+      window.CloudCmd.loadDir({path: path});
+    }
+  }, [state]);
+
   const currentFileListener = useCallback(() => {
     setTimeout(() => {
       const Info = window.DOM.CurrentInfo;
@@ -81,6 +91,7 @@ export default function useFileManager() {
         sessionRef.current = {
           url: responseBody.url,
           dir: responseBody.dir,
+          home_dir: responseBody.home_dir,
           file: responseBody.file
         };
         debug('Retrieving assets %s', sessionRef.current.url);
@@ -175,5 +186,6 @@ export default function useFileManager() {
     isFileSelected,
     isRootDir,
     state,
+    navigate
   };
 }
