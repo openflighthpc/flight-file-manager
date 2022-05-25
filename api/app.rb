@@ -98,6 +98,7 @@ class App < Sinatra::Base
       {
         dir: dir || cloudcmd.default_dir,
         file: file,
+        home_dir: cloudcmd.default_dir,
         url: "//#{request.host}:#{port}#{url_path}"
       }.to_json
     end
