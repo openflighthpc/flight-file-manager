@@ -1,9 +1,10 @@
 import classNames from 'classnames';
-import { Button, ButtonGroup } from 'reactstrap';
-import { useContext } from 'react';
+import { Button, ButtonGroup, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { useContext, useState } from 'react';
 
 import {
   FullscreenButton,
+  useData,
 } from 'flight-webapp-components';
 
 import { Context as FileManagerContext } from './FileManagerContext';
@@ -35,11 +36,35 @@ function ActionButtons() {
     <UpDownloadButtons />
     <TarballButtons />
     <SelectionButtons />
+    <BookmarkButtons />
     </>
   );
 
   return actions;
 };
+
+function BookmarkButtons() {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
+
+  const data = useData()
+  const bookmarks = data("bookmarks")
+
+  return (
+    <Dropdown
+      className="btn-group mr-2"
+      isOpen={dropdownOpen}
+      toggle={toggleDropdown}
+    >
+      <DropdownToggle split color="light" size="sm" caret>
+        <i className="fa fa-bookmark mr-2" />
+      </DropdownToggle>
+      <DropdownMenu>
+        {/* DROPDOWN ITEMS GO HERE */}
+      </DropdownMenu>
+    </Dropdown>
+  );
+}
 
 function NavButtons() {
   const { goToParentDir, isRootDir } = useContext(FileManagerContext);
