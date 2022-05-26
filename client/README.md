@@ -32,20 +32,31 @@ See details in [the main README](/README.md).
 
 ## Bookmarks/common directories
 
-At the moment, bookmarks are specified in the `REACT_APP_DATA_FILE`. To create a new bookmark, add a new JSON entry to the `bookmarks` array of the form:
+At the moment, bookmarks are specified in the `REACT_APP_DATA_FILE`. To create
+a new bookmark, add a new JSON entry to the `bookmarks` array of the form:
 
 ```json
 {
   "bookmarks": [
     {
       "path": "Desktop/",
-      "text": "Desktop"
+      "text": "Desktop",
+      "fa_icon": "desktop"
     }
   ]
 }
 ```
 
-Where `path` is the path to the directory, and `text` is the text used for the dropdown menu item. Include a preceding `/` to the `path` value to make the path absolute; omit it to make the path relative to the user's home directory.
+Where `path` is the path to the directory; `text` is the text used for the
+dropdown menu item; and `fa_icon` is optional and if given the name of Font
+Awesome icon to use.
+
+If the path is a relative path (i.e., it does not begin with `/`) it is
+relative to the user's home directory.
+
+There is currently a known issue where if the bookmark path matches a file
+instead of a directory, the File Manager will become unresponsive until it is
+reloaded.
 
 # Contributing
 
