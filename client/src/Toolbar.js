@@ -49,7 +49,9 @@ function BookmarkButtons() {
   const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
 
   const data = useData()
-  const bookmarks = data("bookmarks")
+  var bookmarks = data("bookmarks")
+  bookmarks = (bookmarks == null || !Array.isArray(bookmarks)) ? [] : bookmarks;
+
   const items = bookmarks.map(item =>
     <DropdownItem
       onClick={() => {navigate({path: item.path})}}
