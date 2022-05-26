@@ -53,16 +53,6 @@ export default function useFileManager() {
   // * `failed`: something went wrong.
   const [ state, setState ] = useState('launching');
 
-  const navigate = useCallback((dir) => {
-    if (state === 'connected') {
-      const path = (dir.path.startsWith('/')) ?
-        dir.path :
-        sessionRef.current.home_dir + '/' + dir.path
-
-      window.CloudCmd.loadDir({path: path});
-    }
-  }, [state]);
-
   const currentFileListener = useCallback(() => {
     setTimeout(() => {
       const Info = window.DOM.CurrentInfo;
@@ -164,6 +154,16 @@ export default function useFileManager() {
   function pack()          { if (state === 'connected') { window.CloudCmd.Operation.show('pack'); } };
   function extract()       { if (state === 'connected') { window.CloudCmd.Operation.show('extract'); } };
   function toggleAllSelectedFiles() { if (state === 'connected') { window.DOM.toggleAllSelectedFiles(); } };
+
+  const navigate = useCallback((dir) => {
+    if (state === 'connected') {
+      const path = (dir.path.startsWith('/')) ?
+        dir.path :
+        sessionRef.current.home_dir + '/' + dir.path
+
+      window.CloudCmd.loadDir({path: path});
+    }
+  }, [state]);
 
   return {
     goToParentDir: useCallback(goToParentDir, [state]),
