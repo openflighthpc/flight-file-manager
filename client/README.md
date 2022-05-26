@@ -28,6 +28,25 @@ below for details on how to configure it.
 
 See details in [the main README](/README.md).
 
+# Configuration
+
+## Bookmarks/common directories
+
+At the moment, bookmarks are specified in the `REACT_APP_DATA_FILE`. To create a new bookmark, add a new JSON entry to the `bookmarks` array of the form:
+
+```json
+{
+  "bookmarks": [
+    {
+      "path": "Desktop/",
+      "text": "Desktop"
+    }
+  ]
+}
+```
+
+Where `path` is the path to the directory, and `text` is the text used for the dropdown menu item. Include a preceding `/` to the `path` value to make the path absolute; omit it to make the path relative to the user's home directory.
+
 # Contributing
 
 Fork the project. Make your feature addition or bug fix. Send a pull
