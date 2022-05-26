@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import { Button, ButtonGroup, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { useContext, useState } from 'react';
+import { Button, ButtonGroup, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { useContext } from 'react';
 
 import {
   FullscreenButton,
@@ -45,8 +45,6 @@ function ActionButtons() {
 
 function BookmarkButtons() {
   const { navigate } = useContext(FileManagerContext);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
 
   const data = useData()
   var bookmarks = data("bookmarks")
@@ -62,10 +60,8 @@ function BookmarkButtons() {
   );
 
   return (
-    <Dropdown
+    <UncontrolledDropdown
       className="btn-group mr-2"
-      isOpen={dropdownOpen}
-      toggle={toggleDropdown}
     >
       <DropdownToggle split color="light" size="sm" caret>
         <i className="fa fa-bookmark mr-2" />
@@ -75,7 +71,7 @@ function BookmarkButtons() {
           items
         }
       </DropdownMenu>
-    </Dropdown>
+    </UncontrolledDropdown>
   );
 }
 
