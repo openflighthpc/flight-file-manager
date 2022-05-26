@@ -59,11 +59,21 @@ function BookmarkButtons() {
     </DropdownItem>
   );
 
+  const disabled = bookmarks.length === 0;
+  const title = (disabled) ? "No bookmarked directories" : "Go to a bookmarked directory"
+
   return (
     <UncontrolledDropdown
       className="btn-group mr-2"
     >
-      <DropdownToggle split color="light" size="sm" caret>
+      <DropdownToggle
+        color="light"
+        size="sm" 
+        title={title}
+        disabled={disabled}
+        caret
+        split
+      >
         <i className="fa fa-bookmark mr-2" />
       </DropdownToggle>
       <DropdownMenu>
