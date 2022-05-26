@@ -52,10 +52,12 @@ function BookmarkButtons() {
 
   const items = bookmarks.map(item =>
     <DropdownItem
+      className={styles.DropdownItem}
       onClick={() => {navigate({path: item.path})}}
       key={item.path}
     >
-      {item.text}
+      <span className={classNames(`fa fa-${item.fa_icon} mr-2`, styles.fa)} />
+      <span className="title">{item.text}</span>
     </DropdownItem>
   );
 

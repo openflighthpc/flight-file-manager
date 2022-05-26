@@ -31,4 +31,6 @@
     display: inline-block;
     width: 14px;
 }
-
+.DropdownItem .fa {
+    width: 1rem;
+}
