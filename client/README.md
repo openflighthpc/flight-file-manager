@@ -51,6 +51,10 @@ Where `path` is the path to the directory; `text` is the text used for the
 dropdown menu item; and `fa_icon` is optional and if given the name of Font
 Awesome icon to use.
 
+If the `REACT_APP_DATA_FILE` is created/managed by a Flight Landing Page
+installation, you should modify the `bookmarks.yaml` file present in the 
+landing page.
+
 If the path is a relative path (i.e., it does not begin with `/`) it is
 relative to the user's home directory.
 
