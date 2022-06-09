@@ -118,8 +118,8 @@ class CloudCmd
     end
   end
 
-  def default_dir
-    @default_dir ||= Etc.getpwnam(@user).dir
+  def home_dir
+    @home_dir ||= Etc.getpwnam(@user).dir
   end
 
   def root_dir

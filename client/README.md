@@ -28,6 +28,60 @@ below for details on how to configure it.
 
 See details in [the main README](/README.md).
 
+# Configuration
+
+## When installed with Flight Runway
+
+When Flight File Manager Webapp is installed with Flight Runway, configuration
+is provided through [Flight Landing
+page](https://github.com/openflighthpc/flight-landing-page).  See the
+README.md file in that repo for details.
+
+## When installed form source
+
+When Flight File Manager Webapp is installed from source, the configuration is
+loaded from URLs which are set via environment variables when the application
+is built.  These environment variables are set and documented in the `.env`
+file.
+
+Example configuration files can be found in the [public](public/) directory.
+In particular, the [public/data](public/data/) and
+[public/styles](public/styles) directories.
+
+
+## Bookmarks
+
+Bookmarks are specified in the JSON file loaded from the URL given by
+`REACT_APP_DATA_FILE`, defaulting to `/data/index.json`.
+
+To create a new bookmark, add a new JSON entry to the `bookmarks` array in the
+form:
+
+```json
+{
+  "bookmarks": [
+    {
+      "id": "desktop",
+      "path": "Desktop/",
+      "text": "Desktop",
+      "fa_icon": "desktop"
+    }
+  ]
+}
+```
+
+Where `id` is a unique identifier for the bookmark; `path` is the relative or
+absolute path to the directory; `text` is the text used for the dropdown menu
+item; and `fa_icon` is optional and if given the name of Font Awesome icon to
+use.
+
+If the path is a relative path (i.e., it does not begin with `/`) it is
+relative to the user's home directory.
+
+There is currently a known issue where if the bookmark path matches a file
+instead of a directory, the File Manager will become unresponsive until it is
+reloaded.
+
 # Contributing
 
 Fork the project. Make your feature addition or bug fix. Send a pull

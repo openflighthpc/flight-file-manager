@@ -81,6 +81,7 @@ export default function useFileManager() {
         sessionRef.current = {
           url: responseBody.url,
           dir: responseBody.dir,
+          homeDir: responseBody.home_dir,
           file: responseBody.file
         };
         debug('Retrieving assets %s', sessionRef.current.url);
@@ -154,6 +155,16 @@ export default function useFileManager() {
   function extract()       { if (state === 'connected') { window.CloudCmd.Operation.show('extract'); } };
   function toggleAllSelectedFiles() { if (state === 'connected') { window.DOM.toggleAllSelectedFiles(); } };
 
+  const navigate = useCallback((dir) => {
+    if (state === 'connected') {
+      const path = (dir.path.startsWith('/')) ?
+        dir.path :
+        sessionRef.current.homeDir + '/' + dir.path
+
+      window.CloudCmd.loadDir({path: path});
+    }
+  }, [state]);
+
   return {
     goToParentDir: useCallback(goToParentDir, [state]),
     promptNewFile: useCallback(promptNewFile, [state]),
@@ -175,5 +186,6 @@ export default function useFileManager() {
     isFileSelected,
     isRootDir,
     state,
+    navigate
   };
 }

@@ -1,9 +1,10 @@
 import classNames from 'classnames';
-import { Button, ButtonGroup } from 'reactstrap';
+import { Button, ButtonGroup, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { useContext } from 'react';
 
 import {
   FullscreenButton,
+  useData,
 } from 'flight-webapp-components';
 
 import { Context as FileManagerContext } from './FileManagerContext';
@@ -35,11 +36,56 @@ function ActionButtons() {
     <UpDownloadButtons />
     <TarballButtons />
     <SelectionButtons />
+    <BookmarkButtons />
     </>
   );
 
   return actions;
 };
+
+function BookmarkButtons() {
+  const { navigate } = useContext(FileManagerContext);
+
+  const data = useData()
+  var bookmarks = data("bookmarks")
+  bookmarks = (bookmarks == null || !Array.isArray(bookmarks)) ? [] : bookmarks;
+
+  const items = bookmarks.map(item =>
+    <DropdownItem
+      className={styles.DropdownItem}
+      onClick={() => {navigate({path: item.path})}}
+      key={item.path}
+    >
+      <span className={classNames(`fa fa-${item.fa_icon} mr-2`, styles.fa)} />
+      <span className="title">{item.text}</span>
+    </DropdownItem>
+  );
+
+  const disabled = bookmarks.length === 0;
+  const title = (disabled) ? "No bookmarked directories" : "Go to a bookmarked directory"
+
+  return (
+    <UncontrolledDropdown
+      className="btn-group mr-2"
+    >
+      <DropdownToggle
+        color="light"
+        size="sm" 
+        title={title}
+        disabled={disabled}
+        caret
+        split
+      >
+        <i className="fa fa-bookmark mr-2" />
+      </DropdownToggle>
+      <DropdownMenu>
+        {
+          items
+        }
+      </DropdownMenu>
+    </UncontrolledDropdown>
+  );
+}
 
 function NavButtons() {
   const { goToParentDir, isRootDir } = useContext(FileManagerContext);

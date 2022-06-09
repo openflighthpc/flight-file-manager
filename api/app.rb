@@ -76,7 +76,7 @@ class App < Sinatra::Base
 
     def dir_and_file(cloudcmd)
       if params["dir"].present?
-        path = Pathname.new(params["dir"]).expand_path(cloudcmd.default_dir)
+        path = Pathname.new(params["dir"]).expand_path(cloudcmd.home_dir)
         begin
           path.realpath
         rescue Errno::ENOENT
@@ -96,8 +96,9 @@ class App < Sinatra::Base
       port = request.port if port.nil? || port == ""
       dir, file = dir_and_file(cloudcmd)
       {
-        dir: dir || cloudcmd.default_dir,
+        dir: dir || cloudcmd.home_dir,
         file: file,
+        home_dir: cloudcmd.home_dir,
         url: "//#{request.host}:#{port}#{url_path}"
       }.to_json
     end
