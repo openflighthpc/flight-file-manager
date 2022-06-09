@@ -26,16 +26,19 @@
   "sidebar" : "<aside class=\"sidenav col-12 col-md-3 col-lg-2\">\n  <div>\n    \n\n    \n\n    \n\n    \n\n    \n      <h2>Quick Access</h2>\n      <ul class=\"w-100\">\n        \n          <li>\n            <a data-http-strike-disable=\"\" data-http-add-title=\"Flight Web Suite requires HTTPS to be enabled\" href=\"/dev/console\">Console (Dev)</a>\n          </li>\n        \n          <li>\n            <a data-http-strike-disable=\"\" data-http-add-title=\"Flight Web Suite requires HTTPS to be enabled\" href=\"/dev/desktop\">Desktop (Dev)</a>\n          </li>\n        \n          <li>\n            <a data-http-strike-disable=\"\" data-http-add-title=\"Flight Web Suite requires HTTPS to be enabled\" href=\"/dev/files\">File Manager (Dev)</a>\n          </li>\n        \n          <li>\n            <a data-http-strike-disable=\"\" data-http-add-title=\"Flight Web Suite requires HTTPS to be enabled\" href=\"/dev/job-scripts\">Job Scripts (Dev)</a>\n          </li>\n        \n      </ul>\n    \n  </div>\n</aside>\n",
   "bookmarks": [
     {
+      "id": "desktop",
       "path": "Desktop/",
       "text": "Desktop",
       "fa_icon": "desktop"
     },
     {
+      "id": "documents",
       "path": "Documents/",
       "text": "Documents",
       "fa_icon": "file-text-o"
     },
     {
+      "id": "site-data",
       "path": "/opt/site/",
       "text": "Site data"
     }
