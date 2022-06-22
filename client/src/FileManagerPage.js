@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import {
   DefaultErrorMessage,
   ErrorBoundary,
+  Overlay,
+  OverlayContainer,
   Spinner,
 } from 'flight-webapp-components';
 
@@ -32,11 +34,21 @@ function FileManagerPage() {
   );
 }
 
+function Loading({ text }) {
+  return (
+    <OverlayContainer>
+      <Overlay>
+        <Spinner text={text} />
+      </Overlay>
+    </OverlayContainer>
+  );
+}
+
 function Layout({ children, className, onZenChange }) {
   const { state } = useContext(FileManagerContext);
   let loadingMessage = null;
-  if (state === 'initialising') {
-    loadingMessage = <Spinner text="Loading file manager..." />;
+  if (state !== 'connected' && state !== 'failed') {
+    loadingMessage = <Loading text="Loading file manager..." />;
   }
   let errorMessage = null;
   if (state === 'failed') {
