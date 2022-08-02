@@ -11,7 +11,8 @@ function UnauthenticatedDashboard() {
       <ClusterOverview className="mt-2 mb-2" />
       <Blurb />
       <p>
-        To start managing your files with Flight File Manager sign in below.
+        To start managing your files with Flight File Manager you will need to
+        login by clicking the "Log in" button above.
       </p>
     </div>
   );
