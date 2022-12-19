@@ -14,7 +14,7 @@ Flight File Manager allows you to access your HPC environment files via a GUI
 Flight File Manager is available as part of the *Flight Web Suite*.  This is
 the easiest method for installing Flight File Manager and all its
 dependencies.  It is documented in [the OpenFlight
-Documentation](https://use.openflighthpc.org/installing-web-suite/install.html#installing-flight-web-suite).
+Documentation](https://docs.openflighthpc.org/hpc_environment_usage/flight_overview/installing_flight_user_suite/).
 
 ### Manual Installation
 
