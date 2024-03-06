@@ -22,6 +22,10 @@ body.zen-mode .flight.fm {
     text-transform: capitalize;
 }
 
+.reduce-text {
+    text-align: left;
+}
+
 .flight.fm, .flight.fm pre, .flight.fm code, .modal-main {
     font-family     : 'Droid Sans Mono', 'Ubuntu Mono', 'Consolas', monospace;
     font-size       : 16px;
