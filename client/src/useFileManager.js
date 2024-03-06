@@ -41,6 +41,7 @@ export default function useFileManager() {
   // Holds the cloudcmd config returned by the backend.
   const configRef = useRef(null);
   const [ currentAbsDir, setCurrentAbsDir ] = useState(null);
+  const [ title, setTitle ] = useState(null);
   const [ isFileSelected, setIsFileSelected ] = useState(null);
   const [ isRootDir, setIsRootDir ] = useState(null);
 
@@ -63,9 +64,13 @@ export default function useFileManager() {
         Info.dirPath === '/',
       );
       if (configRef.current.root === '/') {
-        setCurrentAbsDir(Info.dirPath);
+        const absDir = Info.dirPath;
+        setCurrentAbsDir(absDir);
+        setTitle(`${Info.homeDirName}:${absDir.startsWith(Info.homeDir) ? absDir.replace(Info.homeDir, '~') : absDir}`);
       } else {
-        setCurrentAbsDir(configRef.current.root + Info.dirPath);
+        const absDir = configRef.current.root + Info.dirPath;
+        setCurrentAbsDir(absDir);
+        setTitle(`${Info.homeDirName}:${absDir.startsWith(Info.homeDir) ? absDir.replace(Info.homeDir, '~') : absDir}`);
       }
       setIsFileSelected(!Info.isDir);
       setIsRootDir(Info.dirPath === '/');
@@ -121,6 +126,10 @@ export default function useFileManager() {
               window.CloudCmd.View.show();
             }
           });
+        const homeDir = sessionRef.current.homeDir;
+        const homeDirNames = homeDir.split('/');
+        window.DOM.CurrentInfo.homeDir = homeDir;
+        window.DOM.CurrentInfo.homeDirName = homeDirNames[homeDirNames.length - 1];
         setState('connected');
         clearSearchParams();
       };
@@ -183,6 +192,7 @@ export default function useFileManager() {
     toggleAllSelectedFiles: useCallback(toggleAllSelectedFiles, [state]),
 
     currentAbsDir,
+    title,
     isFileSelected,
     isRootDir,
     state,

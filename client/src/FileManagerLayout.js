@@ -18,7 +18,7 @@ import FileToolbar from './FIleToolbar';
 function FileManagerLayout({
   children
 }) {
-  const { state, currentAbsDir } = useContext(FileManagerContext);
+  const { state, currentAbsDir, title } = useContext(FileManagerContext);
   let loadingMessage = null;
   if (state !== 'connected' && state !== 'failed') {
     loadingMessage = <Loading text="Loading file manager..." />;
@@ -37,7 +37,7 @@ function FileManagerLayout({
                 <div className="col">
                   <div className="d-flex align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {currentAbsDir}
+                      {title}
                     </h5>
                     <Toolbar
                       fileManagerState={state}
