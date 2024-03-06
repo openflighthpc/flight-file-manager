@@ -3,13 +3,12 @@ import classNames from 'classnames';
 
 import {
   DefaultErrorMessage,
-  ErrorBoundary,
   Overlay,
   OverlayContainer,
   Spinner,
   FullscreenButton
 } from 'flight-webapp-components';
-
+import { Button, ButtonGroup } from 'reactstrap';
 import {
   Context as FileManagerContext,
 } from './FileManagerContext';
@@ -43,6 +42,7 @@ function FileManagerLayout({
                     <Toolbar
                       fileManagerState={state}
                       onZenChange={ () => {} }
+                      currentAbsDir={currentAbsDir}
                     />
                   </div>
                 </div>
@@ -63,8 +63,30 @@ function FileManagerLayout({
 function Toolbar({
     onFullscreenChange,
     onZenChange,
+    currentAbsDir,
     fileManagerState
 }) {
+  const ToConsoleButton = fileManagerState === 'connected' ? (
+    // <ButtonGroup>
+    //   <Button
+    //     className="fa fa-terminal ml-2 link white-text"
+    //     href={`../console?dir=/`}
+    //     style={{ lineHeight: 2 }}
+    //     title="Open the current directory in Flight Console"
+    //   >
+    //   </Button>
+    // </ButtonGroup>
+    <i
+      title="console"
+    >
+      <a
+        className="fa fa-terminal ml-2 link white-text"
+        href={`../console?dir=${currentAbsDir}`}
+      >
+      </a>
+    </i>
+  ) : null;
+
   const fullscreenBtn = fileManagerState === 'connected' ?
     <FullscreenButton
       onFullscreenChange={onFullscreenChange}
@@ -75,6 +97,7 @@ function Toolbar({
   return (
     <div className="btn-toolbar">
       {fullscreenBtn}
+      {ToConsoleButton}
     </div>
   );
 }
