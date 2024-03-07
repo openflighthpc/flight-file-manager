@@ -41,7 +41,8 @@ export default function useFileManager() {
   // Holds the cloudcmd config returned by the backend.
   const configRef = useRef(null);
   const [ currentAbsDir, setCurrentAbsDir ] = useState(null);
-  const [ title, setTitle ] = useState(null);
+  const [ user, setUser ] = useState(null);
+  const [ currentDir, setCurrentDir ] = useState(null);
   const [ isFileSelected, setIsFileSelected ] = useState(null);
   const [ isRootDir, setIsRootDir ] = useState(null);
 
@@ -66,12 +67,13 @@ export default function useFileManager() {
       if (configRef.current.root === '/') {
         const absDir = Info.dirPath;
         setCurrentAbsDir(absDir);
-        setTitle(`${Info.homeDirName}:${absDir.startsWith(Info.homeDir) ? absDir.replace(Info.homeDir, '~') : absDir}`);
+        setCurrentDir(`${absDir.startsWith(Info.homeDir) ? absDir.replace(Info.homeDir, '~').replace(/\/$/, "") : absDir.replace(/\/$/, "")}`);
       } else {
         const absDir = configRef.current.root + Info.dirPath;
         setCurrentAbsDir(absDir);
-        setTitle(`${Info.homeDirName}:${absDir.startsWith(Info.homeDir) ? absDir.replace(Info.homeDir, '~') : absDir}`);
+        setCurrentDir(`${absDir.startsWith(Info.homeDir) ? absDir.replace(Info.homeDir, '~').replace(/\/$/, "") : absDir.replace(/\/$/, "")}`);
       }
+      setUser(Info.homeDirName);
       setIsFileSelected(!Info.isDir);
       setIsRootDir(Info.dirPath === '/');
     }, 0);
@@ -192,7 +194,8 @@ export default function useFileManager() {
     toggleAllSelectedFiles: useCallback(toggleAllSelectedFiles, [state]),
 
     currentAbsDir,
-    title,
+    currentDir,
+    user,
     isFileSelected,
     isRootDir,
     state,

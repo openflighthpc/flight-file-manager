@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import classNames from 'classnames';
 
 import {
   DefaultErrorMessage,
@@ -8,7 +7,7 @@ import {
   Spinner,
   FullscreenButton
 } from 'flight-webapp-components';
-import { Button, ButtonGroup } from 'reactstrap';
+
 import {
   Context as FileManagerContext,
 } from './FileManagerContext';
@@ -18,7 +17,7 @@ import FileToolbar from './FIleToolbar';
 function FileManagerLayout({
   children
 }) {
-  const { state, currentAbsDir, title } = useContext(FileManagerContext);
+  const { state, currentAbsDir, user, currentDir } = useContext(FileManagerContext);
   let loadingMessage = null;
   if (state !== 'connected' && state !== 'failed') {
     loadingMessage = <Loading text="Loading file manager..." />;
@@ -37,7 +36,8 @@ function FileManagerLayout({
                 <div className="col">
                   <div className="d-flex align-items-center">
                     <h5 className="flex-grow-1 mb-0">
-                      {title}
+                      <span className="font-weight-bolder">{user} - </span>
+                      {currentDir}
                     </h5>
                     <Toolbar
                       fileManagerState={state}
@@ -67,15 +67,6 @@ function Toolbar({
     fileManagerState
 }) {
   const ToConsoleButton = fileManagerState === 'connected' ? (
-    // <ButtonGroup>
-    //   <Button
-    //     className="fa fa-terminal ml-2 link white-text"
-    //     href={`../console?dir=/`}
-    //     style={{ lineHeight: 2 }}
-    //     title="Open the current directory in Flight Console"
-    //   >
-    //   </Button>
-    // </ButtonGroup>
     <i
       title="console"
     >
