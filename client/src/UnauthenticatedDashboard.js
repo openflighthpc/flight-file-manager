@@ -14,8 +14,7 @@ function UnauthenticatedDashboard() {
           <p
             className='tagline'
           >
-            Sign in above to start interacting with your console and gain access to your HPC
-            environment.
+            Sign in above to start managing your files.
           </p>
         </div>
       </div>
