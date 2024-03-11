@@ -5,7 +5,7 @@
   },
   "apps_link" : {
     "path": "/dev/apps",
-    "text": "Apps"
+    "text": "Web suite"
   },
   "config_packs_link" : {
     "path": "/dev/config-packs",

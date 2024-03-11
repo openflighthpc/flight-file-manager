@@ -1,33 +1,28 @@
 import React from 'react';
 
-import { DashboardLogo } from 'flight-webapp-components';
-
 function UnconfiguredDashboard() {
   return (
     <div>
-      <DashboardLogo />
       <p>
-        The Flight File Manager Service allows you to manage your files on
-        your cluster in a familiar file browser GUI (graphical user interface)
-        from within the comfort of your browser.
+        Flight Console Service allows you to access an interactive terminal
+        console session running on your cluster from the comfort of your
+        browser.
       </p>
 
       <p>
-        Before Flight File Manager Service can be used, it needs to be
-        configured by your system administrator.  It can be configured by
-        running:
+        Before Flight Console Service can be used, it needs to be configured
+        by your system administrator.  It can be configured by running:
       </p>
 
       <div className="card card-body">
         <pre className="mb-0">
           <code>
-            flight service configure file-manager-webapp
+            flight service configure console-webapp
           </code>
         </pre>
       </div>
     </div>
   );
 }
-
 
 export default UnconfiguredDashboard;
