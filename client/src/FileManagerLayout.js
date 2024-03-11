@@ -68,7 +68,7 @@ function Toolbar({
 }) {
   const ToConsoleButton = fileManagerState === 'connected' ? (
     <i
-      title="console"
+      title="Open in terminal"
     >
       <a
         className="fa fa-terminal ml-2 link white-text"
