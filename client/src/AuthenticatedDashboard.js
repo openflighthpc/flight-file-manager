@@ -8,6 +8,7 @@ import {
 import { ErrorBoundary } from 'flight-webapp-components';
 import styles from './FileManager.module.css';
 import CloudCmdSkeleton from './CloudCmdSkeleton';
+import './cloudcmd-style-patches.css';
 
 function AuthenticatedDashboard() {
   const contextData = useFileManager();

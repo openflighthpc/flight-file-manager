@@ -66,6 +66,15 @@ function Toolbar({
     currentAbsDir,
     fileManagerState
 }) {
+  const RefreshButton = fileManagerState === 'connected' ? (
+    <i
+      className="fa fa-arrows-rotate ml-2 link white-text"
+      title="refresh (Ctrl+R)"
+      onClick={refresh}
+    >
+    </i>
+  ) : null;
+
   const ToConsoleButton = fileManagerState === 'connected' ? (
     <i
       title="Open in terminal"
@@ -89,6 +98,7 @@ function Toolbar({
     <div className="btn-toolbar">
       {fullscreenBtn}
       {ToConsoleButton}
+      {RefreshButton}
     </div>
   );
 }
@@ -101,6 +111,10 @@ function Loading({ text }) {
       </Overlay>
     </OverlayContainer>
   );
+}
+
+function refresh() {
+  document.querySelector('.path-icon.icon-refresh').click();
 }
 
 export default FileManagerLayout;

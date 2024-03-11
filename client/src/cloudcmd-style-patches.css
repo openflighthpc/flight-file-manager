@@ -69,3 +69,9 @@ body.zen-mode .modal-main video {
 body.zen-mode .modal-main .modal-image {
     max-height: calc( 100vh - 150px ) !important;
 }
+
+.path-icon[data-name="js-refresh"] {
+    display: inline-block;
+    width: 0;
+    visibility: hidden;
+}
