@@ -14,7 +14,7 @@ function Blurb() {
           src={Logo}
         />
         <h2 className="card-title card-text">
-          flight<strong>FileManager</strong>
+          flight<strong>Files</strong>
         </h2>
         <p className="tagline card-subtitle card-text">
           Access interactive file manager.
