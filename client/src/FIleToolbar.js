@@ -294,26 +294,6 @@ function AppLinkButtons() {
       >
         Open in console
       </Button>
-      {/*
-      <Button
-        color="light"
-        // disabled={!isFileSelected}
-        onClick={() => {
-          const DOM = window.DOM;
-          const files = DOM.getAllFiles();
-          const idx = DOM.getFilenames(files).findIndex((f) => f === '.flight-job-id');
-          if (idx >= 0) {
-            const idFile = files[idx];
-            DOM.CurrentInfo.getData(idFile).then((_, content) => {
-              console.log('content:', content);  // eslint-disable-line no-console
-            });
-          }
-        }}
-        size="sm"
-      >
-        Open in Flight Job
-      </Button>
-      */}
     </ButtonGroup>
   );
 }
