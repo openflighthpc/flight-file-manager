@@ -12,7 +12,7 @@ function UnconfiguredDashboard() {
         <div className='narrow-container'>
           <Blurb />
           <p>
-            Before Flight File Manager Service can be used, it needs to be
+            Before Flight Files Service can be used, it needs to be
             configured by your system administrator.  It can be configured by
             running:
           </p>
