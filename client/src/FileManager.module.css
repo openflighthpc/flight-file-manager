@@ -10,7 +10,7 @@
 }
 
 .FileToolBar {
-    height: 87px;
+    height: max-content;
     background-color: #e5e5e5;
 }
 
@@ -28,8 +28,8 @@
 .ButtonGroupTitle {
     margin: 0;
     color: #3d3d3d;
-    line-height: 16px;
-    font-size: 16px;
+    line-height: 1rem;
+    font-size: 1rem;
 }
 
 .ButtonGroup {

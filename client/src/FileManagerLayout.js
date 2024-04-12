@@ -76,15 +76,12 @@ function Toolbar({
   ) : null;
 
   const ToConsoleButton = fileManagerState === 'connected' ? (
-    <i
+    <a
       title="Open in terminal"
+      className="fa fa-terminal ml-2 link white-text"
+      href={`../console?dir=${currentAbsDir}`}
     >
-      <a
-        className="fa fa-terminal ml-2 link white-text"
-        href={`../console?dir=${currentAbsDir}`}
-      >
-      </a>
-    </i>
+    </a>
   ) : null;
 
   const fullscreenBtn = fileManagerState === 'connected' ?

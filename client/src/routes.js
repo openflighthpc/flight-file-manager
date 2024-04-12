@@ -23,13 +23,6 @@ const notFoundRoute = {
 };
 
 const routes = [
-  // {
-  //   path: '/browse',
-  //   name: 'My files',
-  //   Component: FileManagerPage,
-  //   authenticated: true,
-  //   sideNav: false,
-  // },
   {
     path: '/',
     name: 'Files',

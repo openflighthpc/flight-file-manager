@@ -11,7 +11,7 @@ import styles from './FileManager.module.css';
 
 function FileToolbar() {
   return (
-    <div className={classNames("btn-toolbar", "flex-grow-1", styles.FileToolBar)}>
+    <div className={classNames("btn-toolbar", "pt-2", "pb-2", "flex-grow-1", styles.FileToolBar)}>
       <NavButtons />
       <NewFileFolderButtons />
       <SelectionButtons />

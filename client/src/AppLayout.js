@@ -41,10 +41,4 @@ function AppLayout() {
   );
 }
 
-// function SideNav() {
-//   return (
-//     <div className="sidenav col-sm-2"></div>
-//   );
-// }
-
 export default AppLayout;
