@@ -1,33 +1,31 @@
 import React from 'react';
 
-import { DashboardLogo } from 'flight-webapp-components';
+import Blurb from "./Blurb";
+import {Footer} from "flight-webapp-components";
 
 function UnconfiguredDashboard() {
   return (
-    <div>
-      <DashboardLogo />
-      <p>
-        The Flight File Manager Service allows you to manage your files on
-        your cluster in a familiar file browser GUI (graphical user interface)
-        from within the comfort of your browser.
-      </p>
-
-      <p>
-        Before Flight File Manager Service can be used, it needs to be
-        configured by your system administrator.  It can be configured by
-        running:
-      </p>
-
-      <div className="card card-body">
-        <pre className="mb-0">
-          <code>
+    <>
+      <div
+        className="centernav col-8"
+      >
+        <div className='narrow-container'>
+          <Blurb />
+          <p>
+            Before Flight Files Service can be used, it needs to be
+            configured by your system administrator.  It can be configured by
+            running:
+          </p>
+          <p>
+            <code>
             flight service configure file-manager-webapp
-          </code>
-        </pre>
+            </code>
+          </p>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
-
 
 export default UnconfiguredDashboard;

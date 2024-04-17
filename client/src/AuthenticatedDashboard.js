@@ -1,37 +1,34 @@
-import { Link } from "react-router-dom";
-import { DashboardLogo } from 'flight-webapp-components';
+import FileManagerLayout from "./FileManagerLayout";
+import useFileManager from './useFileManager';
 
-import Blurb from './Blurb';
-import { CardFooter } from './CardParts';
+import {
+  Provider as FileManagerProvider,
+} from './FileManagerContext';
+
+import { ErrorBoundary } from 'flight-webapp-components';
+import styles from './FileManager.module.css';
+import CloudCmdSkeleton from './CloudCmdSkeleton';
+import './cloudcmd-style-patches.css';
 
 function AuthenticatedDashboard() {
+  const contextData = useFileManager();
+
   return (
-    <div>
-      <DashboardLogo />
-      <Blurb />
-      <div className="card-deck">
-        <div className="card" style={{ minHeight: "225px" }} >
-          <div className="card-body fa-background fa-background-files-o">
-            <h5 className="card-title text-center">
-              Manage your compute environment files
-            </h5>
-            <p className="card-text">
-              Manage the files on your compute environment by clicking on the
-              button below.
-            </p>
-          </div>
-          <CardFooter>
-            <Link
-              className="btn btn-success btn-block"
-              to="/browse"
-            >
-              <i className="fa fa-files-o mr-1"></i>
-              <span>Manage files</span>
-            </Link>
-          </CardFooter>
-        </div>
+    <>
+      <div
+        className="centernav col-12 fullscreen"
+      >
+        <FileManagerProvider value={contextData}>
+          <FileManagerLayout>
+            <ErrorBoundary>
+              <div className={`fullscreen-content ${styles.FileManagerWrapper}`} >
+                <CloudCmdSkeleton />
+              </div>
+            </ErrorBoundary>
+          </FileManagerLayout>
+        </FileManagerProvider>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -10,7 +10,7 @@ import {
 } from 'flight-webapp-components';
 
 import CloudCmdSkeleton from './CloudCmdSkeleton';
-import Toolbar from './Toolbar';
+import FileToolbar from './FIleToolbar';
 import styles from './FileManager.module.css';
 import useFileManager from './useFileManager';
 import {
@@ -64,7 +64,7 @@ function Layout({ children, className, onZenChange }) {
               <div className="row no-gutters">
                 <div className="col">
                   <div className="d-flex align-items-center">
-                    <Toolbar onZenChange={onZenChange} />
+                    <FileToolbar onZenChange={onZenChange} />
                   </div>
                 </div>
               </div>

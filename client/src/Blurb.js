@@ -1,12 +1,26 @@
 import React from 'react';
+import Logo from './assets/files.png';
 
 function Blurb() {
   return (
-    <p>
-      The Flight File Manager service provides access to your files held on
-      your cluster via a familiar in-browser GUI (graphical user interface)
-      interface.
-    </p>
+    <>
+      <div
+        className="app-card blurb"
+        style={{ width: 'unset' }}
+      >
+        <img
+          className="app-icon mr-3"
+          alt=""
+          src={Logo}
+        />
+        <h2 className="card-title card-text">
+          flight<strong>Files</strong>
+        </h2>
+        <p className="tagline card-subtitle card-text">
+          Access interactive file manager.
+        </p>
+      </div>
+    </>
   );
 }
 

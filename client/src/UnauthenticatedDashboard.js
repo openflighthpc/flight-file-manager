@@ -1,21 +1,26 @@
 import React from 'react';
-import { DashboardLogo } from 'flight-webapp-components';
 
 import Blurb from './Blurb';
-import ClusterOverview from './ClusterOverview';
+import {
+  Footer
+} from 'flight-webapp-components';
 
 function UnauthenticatedDashboard() {
   return (
-    <div>
-      <DashboardLogo />
-      <ClusterOverview className="mt-2 mb-2" />
-      <Blurb />
-      <p>
-        To start managing your files with Flight File Manager sign in below.
-      </p>
-    </div>
+    <>
+      <div className="centernav col-8">
+        <div className='narrow-container'>
+          <Blurb />
+          <p
+            className='tagline'
+          >
+            Sign in above to start managing your files.
+          </p>
+        </div>
+      </div>
+      <Footer />
+    </>
   );
 }
-
 
 export default UnauthenticatedDashboard;

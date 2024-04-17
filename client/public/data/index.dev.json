@@ -3,10 +3,6 @@
     "path": "/dev/",
     "text": "Home"
   },
-  "apps_link" : {
-    "path": "/dev/apps",
-    "text": "Apps"
-  },
   "config_packs_link" : {
     "path": "/dev/config-packs",
     "text": "Config Packs"

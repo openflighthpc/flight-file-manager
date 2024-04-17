@@ -19,25 +19,16 @@ const notFoundRoute = {
       }
     />
   ),
-  sideNav: true,
   key: 'notfound',
 };
 
 const routes = [
   {
-    path: '/browse',
-    name: 'My files',
-    Component: FileManagerPage,
-    authenticated: true,
-    sideNav: false,
-  },
-  {
     path: '/',
-    name: 'Home',
+    name: 'Files',
     Component: Dashboard,
-    sideNav: true,
   },
-  notFoundRoute,
+  notFoundRoute
 ]
 
 const unconfiguredRoutes = [
@@ -45,7 +36,6 @@ const unconfiguredRoutes = [
     path: '/',
     name: 'Home',
     Component: UnconfiguredDashboard,
-    sideNav: true,
   },
   notFoundRoute,
 ];
