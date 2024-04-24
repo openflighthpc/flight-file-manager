@@ -52,7 +52,8 @@ at_exit do
 end
 
 app = Rack::Builder.new do
-  map('/backend') { run BackendProxy.new }
+  # This has been replaced by ../backend-proxy/
+  # map('/backend') { run BackendProxy.new }
   map('/v0') { run App }
 end
 
