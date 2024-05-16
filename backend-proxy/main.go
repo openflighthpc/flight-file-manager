@@ -86,10 +86,12 @@ func credentialsFromCookies(r *http.Request) (username string, password string, 
 	if err != nil {
 		return "", "", err
 	}
-	// Ruby leaves a URL encoded linefeed at the end of the cookie value.
-	// Let's remove it.
-	cookieValue := strings.TrimRight(strings.TrimRight(cookie.Value, "%0A"), "%0a")
-	credentials, err := base64.StdEncoding.DecodeString(cookieValue)
+	// The value is URL and base64 encoded.
+	decodedValue, err := url.QueryUnescape(cookie.Value)
+	if err != nil {
+		return "", "", err
+	}
+	credentials, err := base64.StdEncoding.DecodeString(decodedValue)
 	if err != nil {
 		return "", "", err
 	}
