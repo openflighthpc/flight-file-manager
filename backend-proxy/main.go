@@ -18,6 +18,7 @@ var (
 	addr               = flag.String("addr", "127.0.0.1:925", "address for this server to listen on")
 	cloudCmdCookieName = flag.String("cookie-name", "flight_file_manager_backend", "cookie name used for cloudcmd cookie")
 	dataDir            = flag.String("data-dir", "/opt/flight/var/lib/file-manager-api", "directory for runtime data about running cloudcmd servers")
+	logFile            = flag.String("log-file", "/opt/flight/var/log/file-manager-backend-proxy.log", "log file path")
 )
 
 func proxyHandler(w http.ResponseWriter, r *http.Request) {
@@ -86,10 +87,12 @@ func credentialsFromCookies(r *http.Request) (username string, password string, 
 	if err != nil {
 		return "", "", err
 	}
-	// Ruby leaves a URL encoded linefeed at the end of the cookie value.
-	// Let's remove it.
-	cookieValue := strings.TrimRight(strings.TrimRight(cookie.Value, "%0A"), "%0a")
-	credentials, err := base64.StdEncoding.DecodeString(cookieValue)
+	// The value is URL and base64 encoded.
+	decodedValue, err := url.QueryUnescape(cookie.Value)
+	if err != nil {
+		return "", "", err
+	}
+	credentials, err := base64.StdEncoding.DecodeString(decodedValue)
 	if err != nil {
 		return "", "", err
 	}
@@ -112,6 +115,14 @@ func cloudCmdPort(username string) (int, error) {
 
 func main() {
 	flag.Parse()
+	if logFile != nil {
+		f, err := os.OpenFile(*logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
+		if err != nil {
+			log.Fatalf("error opening log file: %v", err)
+		}
+		defer f.Close()
+		log.SetOutput(f)
+	}
 	http.HandleFunc("/", proxyHandler)
 	log.Printf("Starting proxy server on %s\n", *addr)
 	if err := http.ListenAndServe(*addr, nil); err != nil {
