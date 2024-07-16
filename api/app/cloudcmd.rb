@@ -139,12 +139,13 @@ class CloudCmd
   private
 
   def prepare
+    passwd = Etc.getpwnam(@user)
     FileUtils.mkdir_p(File.dirname(config_path))
     File.write(config_path, cloudcmd_config.to_json)
     FileUtils.rm_f(port_path)
     FileUtils.rm_f(password_path)
     File.open(password_path, 'w', 0600) { |f| f.write(generate_password) }
-    FileUtils.chown(@user, @user, password_path)
+    FileUtils.chown(passwd.uid, passwd.gid, password_path)
     FileUtils.mkdir_p(File.dirname(log_path))
   end
 
@@ -185,7 +186,7 @@ class CloudCmd
       # process may not have permission to create it otherwise.
       FileUtils.rm_f port_path
       FileUtils.touch port_path
-      FileUtils.chown(@user, @user, port_path)
+      FileUtils.chown(passwd.uid, passwd.gid, port_path)
 
       # Jump through hoops to 1) drop the parent process's group permissions
       # and 2) add all groups for user.
